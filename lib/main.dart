@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(App());
 }
 
-class MyApp extends StatelessWidget {
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Flutter Demo',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//       ),
+//       home: MyFirstWidget(),
+//     );
+//   }
+// }
+
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      title: 'App title',
       home: MyFirstWidget(),
     );
   }
@@ -33,9 +43,14 @@ class _MyFirstWidgetState extends State<MyFirstWidget> {
     print('Count build: $_countBuild');
   }
 
+  Type _getContextRuntimeType() {
+    return context.runtimeType;
+  }
+
   @override
   Widget build(BuildContext context) {
     _incrementCountBuild();
+    print(_getContextRuntimeType());
 
     return Container(
       child: Center(
