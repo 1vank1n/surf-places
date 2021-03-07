@@ -54,7 +54,24 @@ class _MyFirstWidgetState extends State<MyFirstWidget> {
 
     return Container(
       child: Center(
-        child: Text('Hello'),
+        child: Text('Hello state'),
+      ),
+    );
+  }
+}
+
+class MyFirstStatelessWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Type _getContextRuntimeType() {
+      return context.runtimeType;
+    }
+
+    print(_getContextRuntimeType());
+
+    return Container(
+      child: Center(
+        child: Text('Goodbye state'),
       ),
     );
   }
