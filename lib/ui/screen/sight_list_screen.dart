@@ -15,24 +15,42 @@ class _SightListScreenState extends State<SightListScreen> {
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: const Text(
-              'Список\nинтересных мест',
-              style: TextStyle(
-                color: Color(0xFF3B3E5B),
-                fontFamily: 'Roboto',
-                fontSize: 32.0,
-                fontWeight: FontWeight.bold,
-                height: 36 / 32,
+            child: RichText(
+              text: const TextSpan(
+                style: TextStyle(
+                  color: Color(0xFF3B3E5B),
+                  fontFamily: 'Roboto',
+                  fontSize: 32.0,
+                  fontWeight: FontWeight.bold,
+                  height: 36 / 32,
+                ),
+                children: [
+                  TextSpan(
+                    text: 'С',
+                    style: TextStyle(
+                      color: Color(0xFF4CAF50),
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'писок\n',
+                  ),
+                  TextSpan(
+                    text: 'и',
+                    style: TextStyle(
+                      color: Color(0xFFFCDD3D),
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'нтересных мест',
+                  ),
+                ],
               ),
-              maxLines: 2,
-              textAlign: TextAlign.left,
             ),
           ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      backgroundColor: Colors.white,
     );
   }
 }
