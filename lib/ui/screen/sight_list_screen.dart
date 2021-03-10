@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/ui/res/text_styles.dart';
 
 class SightListScreen extends StatefulWidget {
   @override
@@ -16,14 +17,8 @@ class _SightListScreenState extends State<SightListScreen> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: RichText(
-              text: const TextSpan(
-                style: TextStyle(
-                  color: Color(0xFF3B3E5B),
-                  fontFamily: 'Roboto',
-                  fontSize: 32.0,
-                  fontWeight: FontWeight.bold,
-                  height: 36 / 32,
-                ),
+              text: TextSpan(
+                style: headingTextStyle,
                 children: [
                   TextSpan(
                     text: 'С',
