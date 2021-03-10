@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/ui/screen/sight_details_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 
 void main() {
@@ -10,7 +11,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Surf Places',
-      home: SightListScreen(),
+      // home: SightListScreen(),
+      home: SightDetailsScreen(),
     );
   }
 }

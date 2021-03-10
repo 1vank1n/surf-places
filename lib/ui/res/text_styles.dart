@@ -26,4 +26,19 @@ TextStyle mediumTextStyle = _text.copyWith(
 TextStyle smallTextStyle = _text.copyWith(
   fontSize: 14.0,
   height: 18 / 14,
+  color: Color(0xFF7C7E92),
+);
+
+TextStyle titleTextStyle = _text.copyWith(
+  fontSize: 24.0,
+  fontWeight: FontWeight.bold,
+  height: 28.8 / 24,
+);
+
+TextStyle buttonTextStyle = _text.copyWith(
+  fontSize: 14.0,
+  fontWeight: FontWeight.bold,
+  letterSpacing: 0.3,
+  height: 18 / 14,
+  color: Colors.white,
 );

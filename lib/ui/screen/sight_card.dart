@@ -49,14 +49,14 @@ class SightCard extends StatelessWidget {
                 children: [
                   Text(
                     sight.name,
-                    style: mediumTextStyle.copyWith(color: Color(0xFF3B3E5B)),
+                    style: mediumTextStyle,
                   ),
                   SizedBox(
                     height: 2.0,
                   ),
                   Text(
                     sight.details,
-                    style: smallTextStyle.copyWith(color: Color(0xFF7C7E92)),
+                    style: smallTextStyle,
                   ),
                 ],
               ),
