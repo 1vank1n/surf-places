@@ -16,11 +16,30 @@ class _SightListScreenState extends State<SightListScreen> {
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(
-              'Список\nинтересных мест',
-              style: headingTextStyle,
-              maxLines: 2,
-              textAlign: TextAlign.left,
+            child: RichText(
+              text: TextSpan(
+                style: headingTextStyle,
+                children: [
+                  TextSpan(
+                    text: 'С',
+                    style: TextStyle(
+                      color: Color(0xFF4CAF50),
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'писок\n',
+                  ),
+                  TextSpan(
+                    text: 'и',
+                    style: TextStyle(
+                      color: Color(0xFFFCDD3D),
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'нтересных мест',
+                  ),
+                ],
+              ),
             ),
           ),
         ),
