@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/ui/res/text_styles.dart';
 
 class SightListScreen extends StatefulWidget {
   @override
@@ -15,15 +16,9 @@ class _SightListScreenState extends State<SightListScreen> {
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: const Text(
+            child: Text(
               'Список\nинтересных мест',
-              style: TextStyle(
-                color: Color(0xFF3B3E5B),
-                fontFamily: 'Roboto',
-                fontSize: 32.0,
-                fontWeight: FontWeight.bold,
-                height: 36 / 32,
-              ),
+              style: headingTextStyle,
               maxLines: 2,
               textAlign: TextAlign.left,
             ),
