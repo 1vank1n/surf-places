@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:places/mocks.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/screen/sight_card.dart';
 
 class SightListScreen extends StatefulWidget {
   @override
@@ -16,30 +18,9 @@ class _SightListScreenState extends State<SightListScreen> {
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: RichText(
-              text: TextSpan(
-                style: headingTextStyle,
-                children: [
-                  TextSpan(
-                    text: 'С',
-                    style: TextStyle(
-                      color: Color(0xFF4CAF50),
-                    ),
-                  ),
-                  TextSpan(
-                    text: 'писок\n',
-                  ),
-                  TextSpan(
-                    text: 'и',
-                    style: TextStyle(
-                      color: Color(0xFFFCDD3D),
-                    ),
-                  ),
-                  TextSpan(
-                    text: 'нтересных мест',
-                  ),
-                ],
-              ),
+            child: Text(
+              'Список\nинтересных мест',
+              style: headingTextStyle,
             ),
           ),
         ),
@@ -47,6 +28,14 @@ class _SightListScreenState extends State<SightListScreen> {
         elevation: 0,
       ),
       backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: mocks.map((sight) => SightCard(sight)).toList(),
+          ),
+        ),
+      ),
     );
   }
 }
