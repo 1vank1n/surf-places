@@ -16,10 +16,13 @@ class SightCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Stack(
         children: [
-          Container(
-            width: double.infinity,
-            height: 188.0,
-            color: primaryBgColor,
+          AspectRatio(
+            aspectRatio: 3 / 2,
+            child: Container(
+              width: double.infinity,
+              height: 188.0,
+              color: primaryBgColor,
+            ),
           ),
           Positioned(
             top: 16.0,
@@ -47,21 +50,27 @@ class SightCard extends StatelessWidget {
             child: Container(
               color: secondaryBgColor,
               padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    sight.name,
-                    style: mediumTextStyle.copyWith(color: primaryTextColor),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        sight.name,
+                        style: mediumTextStyle.copyWith(color: primaryTextColor),
+                      ),
+                      SizedBox(
+                        height: 2.0,
+                      ),
+                      Text(
+                        sight.details,
+                        style: smallTextStyle.copyWith(color: secondaryTextColor),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: 2.0,
-                  ),
-                  Text(
-                    sight.details,
-                    style: smallTextStyle.copyWith(color: secondaryTextColor),
-                  ),
-                ],
+                ),
               ),
             ),
           )
