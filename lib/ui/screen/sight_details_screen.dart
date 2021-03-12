@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
+import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 
 class SightDetailsScreen extends StatelessWidget {
@@ -15,7 +16,7 @@ class SightDetailsScreen extends StatelessWidget {
             Stack(
               children: [
                 Container(
-                  color: Colors.black12,
+                  color: primaryBgColor,
                   width: double.infinity,
                   height: MediaQuery.of(context).size.width,
                 ),
@@ -26,7 +27,7 @@ class SightDetailsScreen extends StatelessWidget {
                     child: Container(
                       width: 36.0,
                       height: 36.0,
-                      color: Colors.black12,
+                      color: primaryColor,
                     ),
                   ),
                 ),
@@ -76,7 +77,7 @@ class SightDetailsScreen extends StatelessWidget {
                     height: 48.0,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFF4CAF50),
+                        primary: successColor,
                         elevation: 0,
                       ),
                       child: Text(
@@ -90,7 +91,7 @@ class SightDetailsScreen extends StatelessWidget {
                     height: 24.0,
                   ),
                   Divider(
-                    color: Color.fromRGBO(124, 126, 146, 0.56),
+                    color: dividerColor,
                   ),
                   SizedBox(
                     height: 8.0,
@@ -107,7 +108,7 @@ class SightDetailsScreen extends StatelessWidget {
                               child: Text(
                                 'Запланировать',
                                 style: smallTextStyle.copyWith(
-                                  color: Color(0xFF3B3E5B),
+                                  color: primaryColor,
                                 ),
                               ),
                               onPressed: () {},
@@ -122,7 +123,7 @@ class SightDetailsScreen extends StatelessWidget {
                             child: Text(
                               'В Избранное',
                               style: smallTextStyle.copyWith(
-                                color: Color(0xFF3B3E5B),
+                                color: primaryColor,
                               ),
                             ),
                             onPressed: () {},
