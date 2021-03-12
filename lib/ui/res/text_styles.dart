@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:places/ui/res/colors.dart';
 
 TextStyle _text = const TextStyle(
-  color: Color(0xFF3B3E5B),
+  color: primaryTextColor,
   fontFamily: 'Roboto',
 );
 
