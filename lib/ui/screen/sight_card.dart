@@ -50,27 +50,21 @@ class SightCard extends StatelessWidget {
             child: Container(
               color: secondaryBgColor,
               padding: EdgeInsets.all(16),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        sight.name,
-                        style: mediumTextStyle.copyWith(color: primaryTextColor),
-                      ),
-                      SizedBox(
-                        height: 2.0,
-                      ),
-                      Text(
-                        sight.details,
-                        style: smallTextStyle.copyWith(color: secondaryTextColor),
-                      ),
-                    ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    sight.name,
+                    style: mediumTextStyle.copyWith(color: primaryTextColor),
                   ),
-                ),
+                  SizedBox(
+                    height: 2.0,
+                  ),
+                  Text(
+                    sight.details,
+                    style: smallTextStyle.copyWith(color: secondaryTextColor),
+                  ),
+                ],
               ),
             ),
           )
