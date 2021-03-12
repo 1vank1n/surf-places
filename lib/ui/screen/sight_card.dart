@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 
 class SightCard extends StatelessWidget {
+  // Карточка достопримечательности. Виджет используется в фиде
+
   final Sight sight;
 
   SightCard(this.sight);
@@ -16,7 +19,7 @@ class SightCard extends StatelessWidget {
           Container(
             width: double.infinity,
             height: 188.0,
-            color: Colors.black26,
+            color: primaryBgColor,
           ),
           Positioned(
             top: 16.0,
@@ -34,7 +37,7 @@ class SightCard extends StatelessWidget {
             child: Container(
               width: 20.0,
               height: 18.0,
-              color: Colors.black12,
+              color: primaryColor,
             ),
           ),
           Positioned(
@@ -42,21 +45,21 @@ class SightCard extends StatelessWidget {
             bottom: 0,
             left: 0,
             child: Container(
-              color: Colors.white12,
+              color: secondaryBgColor,
               padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     sight.name,
-                    style: mediumTextStyle,
+                    style: mediumTextStyle.copyWith(color: primaryTextColor),
                   ),
                   SizedBox(
                     height: 2.0,
                   ),
                   Text(
                     sight.details,
-                    style: smallTextStyle,
+                    style: smallTextStyle.copyWith(color: secondaryTextColor),
                   ),
                 ],
               ),
