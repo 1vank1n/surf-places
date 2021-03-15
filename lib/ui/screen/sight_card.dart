@@ -16,10 +16,13 @@ class SightCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Stack(
         children: [
-          Container(
-            width: double.infinity,
-            height: 188.0,
-            color: primaryBgColor,
+          AspectRatio(
+            aspectRatio: 3 / 2,
+            child: Container(
+              width: double.infinity,
+              height: 188.0,
+              color: primaryBgColor,
+            ),
           ),
           Positioned(
             top: 16.0,
