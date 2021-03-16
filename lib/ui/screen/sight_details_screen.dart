@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
@@ -15,10 +16,28 @@ class SightDetailsScreen extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Container(
-                  color: primaryBgColor,
-                  width: double.infinity,
-                  height: MediaQuery.of(context).size.width,
+                AspectRatio(
+                  aspectRatio: 1,
+                  child: Container(
+                    color: primaryBgColor,
+                    width: double.infinity,
+                    child: Image.network(
+                      sight.url,
+                      fit: BoxFit.cover,
+                      loadingBuilder:
+                          (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CupertinoActivityIndicator.partiallyRevealed(
+                            progress: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : 1,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 Positioned(
                   top: 36.0,
