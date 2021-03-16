@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/res/colors.dart';
@@ -20,8 +21,23 @@ class SightCard extends StatelessWidget {
             aspectRatio: 3 / 2,
             child: Container(
               width: double.infinity,
-              height: 188.0,
               color: primaryBgColor,
+              child: Image.network(
+                sight.url,
+                fit: BoxFit.cover,
+                loadingBuilder:
+                    (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: CupertinoActivityIndicator.partiallyRevealed(
+                      progress: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!
+                          : 1,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
           Positioned(

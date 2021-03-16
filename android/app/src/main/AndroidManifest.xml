@@ -2,6 +2,7 @@
     package="ru.Ivan.Lukyanets.places">
    <application
         android:label="places"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
