@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/common/widgets/sight_navigation_bar.dart';
-import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/common/widgets/sight_visited_card.dart';
 import 'package:places/ui/common/widgets/sight_wanted_card.dart';
 
@@ -16,27 +14,22 @@ class _VisitingScreenState extends State<VisitingScreen> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
+      initialIndex: 1,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
             'Избранное',
-            style: headingMediumTextStyle,
+            style: Theme.of(context).textTheme.headline3,
           ),
-          backgroundColor: Colors.white,
           elevation: 0,
           bottom: TabBar(
+            indicatorColor: Colors.transparent,
             tabs: [
               Tab(
-                child: Text(
-                  'Хочу посетить',
-                  style: smallBoldTextStyle,
-                ),
+                child: Text('Хочу посетить'),
               ),
               Tab(
-                child: Text(
-                  'Посетил',
-                  style: smallBoldTextStyle,
-                ),
+                child: Text('Посетил'),
               ),
             ],
           ),

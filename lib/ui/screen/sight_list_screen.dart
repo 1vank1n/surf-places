@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:places/mocks.dart';
-import 'package:places/ui/common/widgets/sight_navigation_bar.dart';
-import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/common/widgets/sight_card.dart';
+import 'package:places/ui/common/widgets/sight_navigation_bar.dart';
 
 class SightListScreen extends StatefulWidget {
   @override
@@ -21,14 +20,12 @@ class _SightListScreenState extends State<SightListScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
               'Список\nинтересных мест',
-              style: headingTextStyle,
+              style: Theme.of(context).textTheme.headline1,
             ),
           ),
         ),
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
-      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

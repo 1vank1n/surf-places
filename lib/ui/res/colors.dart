@@ -14,3 +14,7 @@ const Color dividerColor = Color.fromRGBO(124, 126, 146, 0.56);
 // text
 const Color primaryTextColor = primaryColor;
 const Color secondaryTextColor = Color(0xFF7C7E92);
+
+// dark
+const Color darkBgColor = Color(0xFF21222C);
+const Color secondaryDarkBgColor = Color(0xFF1A1A20);
