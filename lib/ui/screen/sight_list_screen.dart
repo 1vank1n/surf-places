@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:places/mocks.dart';
+import 'package:places/ui/common/widgets/sight_navigation_bar.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screen/sight_card.dart';
+import 'package:places/ui/common/widgets/sight_card.dart';
 
 class SightListScreen extends StatefulWidget {
   @override
@@ -36,6 +37,7 @@ class _SightListScreenState extends State<SightListScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: SightNavigationBar(),
     );
   }
 }

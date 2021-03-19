@@ -12,6 +12,12 @@ TextStyle headingTextStyle = _text.copyWith(
   height: 36 / 32,
 );
 
+TextStyle headingMediumTextStyle = _text.copyWith(
+  fontSize: 18.0,
+  fontWeight: FontWeight.w500,
+  height: 24 / 18,
+);
+
 TextStyle smallBoldTextStyle = _text.copyWith(
   fontSize: 14.0,
   fontWeight: FontWeight.bold,
