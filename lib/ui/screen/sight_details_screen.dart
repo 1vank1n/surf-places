@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/text_styles.dart';
 
 class SightDetailsScreen extends StatelessWidget {
   final Sight sight = mocks.first;
@@ -19,7 +18,6 @@ class SightDetailsScreen extends StatelessWidget {
                 AspectRatio(
                   aspectRatio: 1,
                   child: Container(
-                    color: primaryBgColor,
                     width: double.infinity,
                     child: Image.network(
                       sight.url,
@@ -46,7 +44,7 @@ class SightDetailsScreen extends StatelessWidget {
                     child: Container(
                       width: 36.0,
                       height: 36.0,
-                      color: primaryColor,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -62,7 +60,7 @@ class SightDetailsScreen extends StatelessWidget {
                 children: [
                   Text(
                     sight.name,
-                    style: titleTextStyle,
+                    style: Theme.of(context).textTheme.headline2,
                   ),
                   SizedBox(
                     height: 2.0,
@@ -71,14 +69,14 @@ class SightDetailsScreen extends StatelessWidget {
                     children: [
                       Text(
                         sight.type.toLowerCase(),
-                        style: smallBoldTextStyle,
+                        style: Theme.of(context).textTheme.headline4,
                       ),
                       SizedBox(
                         width: 16.0,
                       ),
                       Text(
                         'закрыто до 09:00',
-                        style: smallTextStyle,
+                        style: Theme.of(context).textTheme.bodyText2,
                       )
                     ],
                   ),
@@ -87,7 +85,7 @@ class SightDetailsScreen extends StatelessWidget {
                   ),
                   Text(
                     sight.details,
-                    style: smallTextStyle,
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                   SizedBox(
                     height: 24.0,
@@ -101,7 +99,7 @@ class SightDetailsScreen extends StatelessWidget {
                       ),
                       child: Text(
                         'ПОСТРОИТЬ МАРШРУТ',
-                        style: buttonTextStyle,
+                        style: Theme.of(context).textTheme.button,
                       ),
                       onPressed: () {},
                     ),
@@ -126,9 +124,7 @@ class SightDetailsScreen extends StatelessWidget {
                             child: TextButton(
                               child: Text(
                                 'Запланировать',
-                                style: smallTextStyle.copyWith(
-                                  color: primaryColor,
-                                ),
+                                style: Theme.of(context).textTheme.bodyText1,
                               ),
                               onPressed: () {},
                             ),
@@ -141,9 +137,7 @@ class SightDetailsScreen extends StatelessWidget {
                           child: TextButton(
                             child: Text(
                               'В Избранное',
-                              style: smallTextStyle.copyWith(
-                                color: primaryColor,
-                              ),
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
                             onPressed: () {},
                           ),

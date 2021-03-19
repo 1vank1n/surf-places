@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/res/colors.dart';
 
 class SightNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      selectedItemColor: primaryColor,
-      unselectedItemColor: primaryBgColor,
       currentIndex: 2,
       items: [
         BottomNavigationBarItem(

@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/text_styles.dart';
 
 class SightVisitedCard extends StatelessWidget {
   // Карточка достопримечательности для таба «Посетил»
@@ -21,7 +19,6 @@ class SightVisitedCard extends StatelessWidget {
             aspectRatio: 3 / 2,
             child: Container(
               width: double.infinity,
-              color: primaryBgColor,
               child: Image.network(
                 sight.url,
                 fit: BoxFit.cover,
@@ -45,9 +42,7 @@ class SightVisitedCard extends StatelessWidget {
             left: 16.0,
             child: Text(
               sight.type.toLowerCase(),
-              style: smallBoldTextStyle.copyWith(
-                color: Colors.white,
-              ),
+              style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.white),
             ),
           ),
           Positioned(
@@ -56,7 +51,7 @@ class SightVisitedCard extends StatelessWidget {
             child: Container(
               width: 20.0,
               height: 18.0,
-              color: primaryColor,
+              color: Colors.white,
             ),
           ),
           Positioned(
@@ -64,28 +59,28 @@ class SightVisitedCard extends StatelessWidget {
             bottom: 0,
             left: 0,
             child: Container(
-              color: secondaryBgColor,
+              color: Theme.of(context).secondaryHeaderColor,
               padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     sight.name,
-                    style: mediumTextStyle.copyWith(color: primaryTextColor),
+                    style: Theme.of(context).textTheme.headline4,
                   ),
                   SizedBox(
                     height: 2.0,
                   ),
                   Text(
                     'Цель достигнута 12 окт. 2020',
-                    style: smallTextStyle.copyWith(color: secondaryTextColor),
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                   SizedBox(
                     height: 12.0,
                   ),
                   Text(
                     'закрыто до 09:00',
-                    style: smallTextStyle.copyWith(color: secondaryTextColor),
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
               ),
