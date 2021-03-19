@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
 
+/// Карточка достопримечательности. Виджет используется в фиде
 class SightCard extends StatelessWidget {
-  // Карточка достопримечательности. Виджет используется в фиде
-
   final Sight sight;
 
   SightCard(this.sight);

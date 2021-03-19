@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
 
+/// Карточка достопримечательности для таба «Посетил»
 class SightVisitedCard extends StatelessWidget {
-  // Карточка достопримечательности для таба «Посетил»
-
   final Sight sight;
 
   SightVisitedCard(this.sight);

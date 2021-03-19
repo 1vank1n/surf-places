@@ -4,9 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/res/colors.dart';
 
+/// Карточка достопримечательности для таба «Хочу посетить»
 class SightWantedCard extends StatelessWidget {
-  // Карточка достопримечательности для таба «Хочу посетить»
-
   final Sight sight;
 
   SightWantedCard(this.sight);
