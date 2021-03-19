@@ -15,8 +15,8 @@ class App extends StatelessWidget {
       title: 'Surf Places',
       theme: lightThemeData,
       // theme: darkThemeData,
-      home: VisitingScreen(),
-      // home: SightListScreen(),
+      // home: VisitingScreen(),
+      home: SightListScreen(),
       // home: SightDetailsScreen(),
     );
   }
