@@ -13,7 +13,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Surf Places',
-      theme: darkThemeData,
+      theme: lightThemeData,
+      // theme: darkThemeData,
       home: VisitingScreen(),
       // home: SightListScreen(),
       // home: SightDetailsScreen(),

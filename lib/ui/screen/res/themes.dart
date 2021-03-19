@@ -3,6 +3,7 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 
 ThemeData lightThemeData = ThemeData(
+  primaryColor: primaryColor,
   appBarTheme: AppBarTheme(
     backgroundColor: Colors.white,
     brightness: Brightness.light,
@@ -34,6 +35,7 @@ ThemeData lightThemeData = ThemeData(
 );
 
 ThemeData darkThemeData = ThemeData(
+  primaryColor: Colors.white,
   appBarTheme: AppBarTheme(
     backgroundColor: darkBgColor,
     brightness: Brightness.dark,
@@ -62,4 +64,14 @@ ThemeData darkThemeData = ThemeData(
     unselectedItemColor: Colors.white54,
     type: BottomNavigationBarType.fixed,
   ),
+  // elevatedButtonTheme: ElevatedButtonThemeData(
+  //   style: ElevatedButton.styleFrom(
+  //     primary: Colors.white,
+  //   ),
+  // ),
+  // textButtonTheme: TextButtonThemeData(
+  //   style: TextButton.styleFrom(
+  //     primary: Colors.white,
+  //   ),
+  // ),
 );

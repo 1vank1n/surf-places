@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/res/colors.dart';
@@ -42,9 +43,24 @@ class SightDetailsScreen extends StatelessWidget {
                   left: 16.0,
                   child: SafeArea(
                     child: Container(
-                      width: 36.0,
-                      height: 36.0,
-                      color: Colors.white,
+                      width: 32.0,
+                      height: 32.0,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          print('Pressed icon button');
+                        },
+                        icon: SvgPicture.asset(
+                          'res/icons/icon-arrow.svg',
+                          width: 24.0,
+                          height: 24.0,
+                        ),
+                        padding: EdgeInsets.zero,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
@@ -92,16 +108,22 @@ class SightDetailsScreen extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 48.0,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: successColor,
-                        elevation: 0,
-                      ),
-                      child: Text(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        print('Pressed route button');
+                      },
+                      icon: SvgPicture.asset('res/icons/icon-go.svg'),
+                      label: Text(
                         'ПОСТРОИТЬ МАРШРУТ',
                         style: Theme.of(context).textTheme.button,
                       ),
-                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        primary: successColor,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -119,14 +141,17 @@ class SightDetailsScreen extends StatelessWidget {
                       Expanded(
                         child: SizedBox(
                           height: 40.0,
-                          child: Opacity(
-                            opacity: 0.56,
-                            child: TextButton(
-                              child: Text(
-                                'Запланировать',
-                                style: Theme.of(context).textTheme.bodyText1,
-                              ),
-                              onPressed: () {},
+                          child: TextButton.icon(
+                            onPressed: () {
+                              print('Pressed calendar button');
+                            },
+                            icon: SvgPicture.asset(
+                              'res/icons/icon-calendar.svg',
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            label: Text(
+                              'Запланировать',
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ),
                         ),
@@ -134,12 +159,18 @@ class SightDetailsScreen extends StatelessWidget {
                       Expanded(
                         child: SizedBox(
                           height: 40.0,
-                          child: TextButton(
-                            child: Text(
+                          child: TextButton.icon(
+                            onPressed: () {
+                              print('Pressed favorite button');
+                            },
+                            icon: SvgPicture.asset(
+                              'res/icons/icon-hearth.svg',
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            label: Text(
                               'В Избранное',
                               style: Theme.of(context).textTheme.bodyText1,
                             ),
-                            onPressed: () {},
                           ),
                         ),
                       ),

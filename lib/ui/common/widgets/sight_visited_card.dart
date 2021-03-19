@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
 
 class SightVisitedCard extends StatelessWidget {
@@ -49,9 +50,20 @@ class SightVisitedCard extends StatelessWidget {
             top: 19.0,
             right: 18.0,
             child: Container(
-              width: 20.0,
-              height: 18.0,
-              color: Colors.white,
+              width: 24.0,
+              height: 24.0,
+              child: IconButton(
+                onPressed: () {
+                  print('Pressed favorite button');
+                },
+                padding: EdgeInsets.zero,
+                icon: SvgPicture.asset(
+                  'res/icons/icon-hearth.svg',
+                  color: Colors.white,
+                  width: 24.0,
+                  height: 24.0,
+                ),
+              ),
             ),
           ),
           Positioned(
