@@ -3,6 +3,7 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 
 ThemeData lightThemeData = ThemeData(
+  primaryColor: primaryColor,
   appBarTheme: AppBarTheme(
     backgroundColor: Colors.white,
     brightness: Brightness.light,
@@ -23,6 +24,8 @@ ThemeData lightThemeData = ThemeData(
     headline5: headline5.copyWith(color: primaryTextColor),
     bodyText1: textBody1.copyWith(color: primaryTextColor),
     bodyText2: textBody2.copyWith(color: secondaryTextColor),
+    subtitle1: subtitle1.copyWith(color: primaryTextColor),
+    subtitle2: subtitle2.copyWith(color: primaryTextColor),
     button: button.copyWith(color: Colors.white),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -31,9 +34,27 @@ ThemeData lightThemeData = ThemeData(
     unselectedItemColor: Colors.grey.shade500,
     type: BottomNavigationBarType.fixed,
   ),
+  sliderTheme: SliderThemeData(
+    thumbColor: Colors.white,
+    overlayColor: successColor.withAlpha(0x1f),
+    activeTrackColor: successColor,
+    inactiveTrackColor: Color(0x8F7C7E92),
+    trackHeight: 2.0,
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      primary: successColor,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+      ),
+      textStyle: button,
+    ),
+  ),
 );
 
 ThemeData darkThemeData = ThemeData(
+  primaryColor: Colors.white,
   appBarTheme: AppBarTheme(
     backgroundColor: darkBgColor,
     brightness: Brightness.dark,
@@ -54,6 +75,8 @@ ThemeData darkThemeData = ThemeData(
     headline5: headline5.copyWith(color: Colors.white),
     bodyText1: textBody1.copyWith(color: Colors.white),
     bodyText2: textBody2.copyWith(color: secondaryTextColor),
+    subtitle1: subtitle1.copyWith(color: Colors.white),
+    subtitle2: subtitle2.copyWith(color: Colors.white),
     button: button.copyWith(color: Colors.white),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -61,5 +84,22 @@ ThemeData darkThemeData = ThemeData(
     selectedItemColor: Colors.white,
     unselectedItemColor: Colors.white54,
     type: BottomNavigationBarType.fixed,
+  ),
+  sliderTheme: SliderThemeData(
+    thumbColor: Colors.white,
+    overlayColor: successColor.withAlpha(0x1f),
+    activeTrackColor: successColor,
+    inactiveTrackColor: Color(0x8F7C7E92),
+    trackHeight: 2.0,
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      primary: successColor,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+      ),
+      textStyle: button,
+    ),
   ),
 );

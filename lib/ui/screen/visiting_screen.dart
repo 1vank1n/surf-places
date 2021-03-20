@@ -40,7 +40,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
-                  children: mocks.map((sight) => SightWantedCard(sight)).toList(),
+                  children: [for (var sight in mocks) SightWantedCard(sight)],
                 ),
               ),
             ),
@@ -48,7 +48,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
-                  children: mocks.map((sight) => SightVisitedCard(sight)).toList(),
+                  children: [for (var sight in mocks) SightVisitedCard(sight)],
                 ),
               ),
             ),

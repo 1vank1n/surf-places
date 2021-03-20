@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/res/icons.dart';
 
+/// Карточка достопримечательности для таба «Посетил»
 class SightVisitedCard extends StatelessWidget {
-  // Карточка достопримечательности для таба «Посетил»
-
   final Sight sight;
 
   SightVisitedCard(this.sight);
@@ -49,9 +50,20 @@ class SightVisitedCard extends StatelessWidget {
             top: 19.0,
             right: 18.0,
             child: Container(
-              width: 20.0,
-              height: 18.0,
-              color: Colors.white,
+              width: 24.0,
+              height: 24.0,
+              child: IconButton(
+                onPressed: () {
+                  print('Pressed favorite button');
+                },
+                padding: EdgeInsets.zero,
+                icon: SvgPicture.asset(
+                  iconHearth,
+                  color: Colors.white,
+                  width: 24.0,
+                  height: 24.0,
+                ),
+              ),
             ),
           ),
           Positioned(
