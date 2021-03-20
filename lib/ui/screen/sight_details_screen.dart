@@ -115,14 +115,6 @@ class SightDetailsScreen extends StatelessWidget {
                       icon: SvgPicture.asset('res/icons/icon-go.svg'),
                       label: Text(
                         'ПОСТРОИТЬ МАРШРУТ',
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: successColor,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                        ),
                       ),
                     ),
                   ),

@@ -24,6 +24,7 @@ ThemeData lightThemeData = ThemeData(
     headline5: headline5.copyWith(color: primaryTextColor),
     bodyText1: textBody1.copyWith(color: primaryTextColor),
     bodyText2: textBody2.copyWith(color: secondaryTextColor),
+    subtitle1: subtitle2.copyWith(color: primaryTextColor),
     button: button.copyWith(color: Colors.white),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -31,6 +32,23 @@ ThemeData lightThemeData = ThemeData(
     selectedItemColor: primaryColor,
     unselectedItemColor: Colors.grey.shade500,
     type: BottomNavigationBarType.fixed,
+  ),
+  sliderTheme: SliderThemeData(
+    thumbColor: Colors.white,
+    overlayColor: successColor.withAlpha(0x1f),
+    activeTrackColor: successColor,
+    inactiveTrackColor: Color(0x8F7C7E92),
+    trackHeight: 2.0,
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      primary: successColor,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+      ),
+      textStyle: button,
+    ),
   ),
 );
 
