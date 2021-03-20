@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/res/colors.dart';
+import 'package:places/ui/res/icons.dart';
 
 class SightDetailsScreen extends StatelessWidget {
   final Sight sight = mocks.first;
@@ -54,7 +55,7 @@ class SightDetailsScreen extends StatelessWidget {
                           print('Pressed icon button');
                         },
                         icon: SvgPicture.asset(
-                          'res/icons/icon-arrow.svg',
+                          iconArrow,
                           width: 24.0,
                           height: 24.0,
                         ),
@@ -112,10 +113,8 @@ class SightDetailsScreen extends StatelessWidget {
                       onPressed: () {
                         print('Pressed route button');
                       },
-                      icon: SvgPicture.asset('res/icons/icon-go.svg'),
-                      label: Text(
-                        'ПОСТРОИТЬ МАРШРУТ',
-                      ),
+                      icon: SvgPicture.asset(iconGo),
+                      label: Text('ПОСТРОИТЬ МАРШРУТ'),
                     ),
                   ),
                   SizedBox(
@@ -138,7 +137,7 @@ class SightDetailsScreen extends StatelessWidget {
                               print('Pressed calendar button');
                             },
                             icon: SvgPicture.asset(
-                              'res/icons/icon-calendar.svg',
+                              iconCalendar,
                               color: Theme.of(context).primaryColor,
                             ),
                             label: Text(
@@ -156,7 +155,7 @@ class SightDetailsScreen extends StatelessWidget {
                               print('Pressed favorite button');
                             },
                             icon: SvgPicture.asset(
-                              'res/icons/icon-hearth.svg',
+                              iconHearth,
                               color: Theme.of(context).primaryColor,
                             ),
                             label: Text(

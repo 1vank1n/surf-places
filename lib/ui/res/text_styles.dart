@@ -53,11 +53,10 @@ TextStyle button = _text.copyWith(
 
 TextStyle subtitle1 = _text.copyWith(
   fontSize: 16.0,
-  fontWeight: FontWeight.w500,
   height: 20 / 16,
 );
 
 TextStyle subtitle2 = _text.copyWith(
-  fontSize: 16.0,
-  height: 20 / 16,
+  fontSize: 12.0,
+  height: 16 / 12,
 );

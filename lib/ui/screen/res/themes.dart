@@ -24,7 +24,8 @@ ThemeData lightThemeData = ThemeData(
     headline5: headline5.copyWith(color: primaryTextColor),
     bodyText1: textBody1.copyWith(color: primaryTextColor),
     bodyText2: textBody2.copyWith(color: secondaryTextColor),
-    subtitle1: subtitle2.copyWith(color: primaryTextColor),
+    subtitle1: subtitle1.copyWith(color: primaryTextColor),
+    subtitle2: subtitle2.copyWith(color: primaryTextColor),
     button: button.copyWith(color: Colors.white),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
