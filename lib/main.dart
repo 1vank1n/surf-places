@@ -30,8 +30,8 @@ class App extends StatelessWidget {
       // home: VisitingScreen(),
       // home: SightListScreen(),
       // home: SightDetailsScr/een(),
-      // home: FiltersScreen(),
-      home: SettingsScreen(),
+      home: FiltersScreen(),
+      // home: SettingsScreen(),
     );
   }
 }
