@@ -100,6 +100,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
             iconArrow,
             width: 24.0,
             height: 24.0,
+            color: Theme.of(context).primaryColor,
           ),
           padding: EdgeInsets.zero,
           color: Colors.white,
@@ -207,7 +208,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           title: Text('Расстояние'),
           trailing: Text(
             'от $_currentMin до $_currentMax',
-            style: subtitle2.copyWith(color: secondaryTextColor),
+            style: subtitle1.copyWith(color: secondaryTextColor),
           ),
         ),
         RangeSlider(
@@ -254,7 +255,7 @@ class CategoryButton extends StatelessWidget {
           width: 64.0,
           height: 64.0,
           decoration: BoxDecoration(
-            color: isSelected ? successColor.withAlpha(0x5f) : successColor.withAlpha(0x20),
+            color: isSelected ? successColor.withAlpha(0x6f) : successColor.withAlpha(0x20),
             borderRadius: BorderRadius.all(Radius.circular(32.0)),
           ),
           child: IconButton(

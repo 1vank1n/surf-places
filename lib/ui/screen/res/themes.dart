@@ -75,6 +75,8 @@ ThemeData darkThemeData = ThemeData(
     headline5: headline5.copyWith(color: Colors.white),
     bodyText1: textBody1.copyWith(color: Colors.white),
     bodyText2: textBody2.copyWith(color: secondaryTextColor),
+    subtitle1: subtitle1.copyWith(color: Colors.white),
+    subtitle2: subtitle2.copyWith(color: Colors.white),
     button: button.copyWith(color: Colors.white),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -83,14 +85,21 @@ ThemeData darkThemeData = ThemeData(
     unselectedItemColor: Colors.white54,
     type: BottomNavigationBarType.fixed,
   ),
-  // elevatedButtonTheme: ElevatedButtonThemeData(
-  //   style: ElevatedButton.styleFrom(
-  //     primary: Colors.white,
-  //   ),
-  // ),
-  // textButtonTheme: TextButtonThemeData(
-  //   style: TextButton.styleFrom(
-  //     primary: Colors.white,
-  //   ),
-  // ),
+  sliderTheme: SliderThemeData(
+    thumbColor: Colors.white,
+    overlayColor: successColor.withAlpha(0x1f),
+    activeTrackColor: successColor,
+    inactiveTrackColor: Color(0x8F7C7E92),
+    trackHeight: 2.0,
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      primary: successColor,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+      ),
+      textStyle: button,
+    ),
+  ),
 );
