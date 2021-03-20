@@ -41,6 +41,7 @@ ThemeData lightThemeData = ThemeData(
     inactiveTrackColor: Color(0x8F7C7E92),
     trackHeight: 2.0,
   ),
+  toggleableActiveColor: successColor,
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       primary: successColor,
@@ -92,6 +93,7 @@ ThemeData darkThemeData = ThemeData(
     inactiveTrackColor: Color(0x8F7C7E92),
     trackHeight: 2.0,
   ),
+  toggleableActiveColor: successColor,
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       primary: successColor,

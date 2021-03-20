@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/sight_details_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(App());
+  runApp(ChangeNotifierProvider(create: (BuildContext context) => AppModel(), child: App()));
+}
+
+class AppModel extends ChangeNotifier {
+  ThemeData theme = lightThemeData;
+
+  void toggleTheme() {
+    theme = (theme == lightThemeData) ? darkThemeData : lightThemeData;
+    notifyListeners();
+  }
 }
 
 class App extends StatelessWidget {
@@ -14,12 +25,13 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Surf Places',
-      theme: lightThemeData,
+      theme: Provider.of<AppModel>(context).theme,
       // theme: darkThemeData,
       // home: VisitingScreen(),
       // home: SightListScreen(),
       // home: SightDetailsScr/een(),
-      home: FiltersScreen(),
+      // home: FiltersScreen(),
+      home: SettingsScreen(),
     );
   }
 }
