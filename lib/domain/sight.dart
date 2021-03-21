@@ -2,8 +2,8 @@ class Sight {
   // Достопримечательность. Основной класс для формирования фида
 
   String name;
-  String lat;
-  String lon;
+  double lat;
+  double lon;
   String url;
   String details;
   String type;
@@ -16,4 +16,9 @@ class Sight {
     required this.details,
     required this.type,
   });
+
+  @override
+  String toString() {
+    return '${this.name} [${this.lat}, ${this.lon}]';
+  }
 }

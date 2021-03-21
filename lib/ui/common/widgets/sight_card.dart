@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/res/colors.dart';
+import 'package:places/ui/res/icons.dart';
 
+/// Карточка достопримечательности. Виджет используется в фиде
 class SightCard extends StatelessWidget {
-  // Карточка достопримечательности. Виджет используется в фиде
-
   final Sight sight;
 
   SightCard(this.sight);
@@ -46,15 +48,6 @@ class SightCard extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 19.0,
-            right: 18.0,
-            child: Container(
-              width: 20.0,
-              height: 18.0,
-              color: Colors.white,
-            ),
-          ),
-          Positioned(
             right: 0,
             bottom: 0,
             left: 0,
@@ -78,7 +71,42 @@ class SightCard extends StatelessWidget {
                 ],
               ),
             ),
-          )
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  print('Pressed Sight card');
+                },
+                splashColor: successColor.withAlpha(0x88),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 16.0,
+            right: 16.0,
+            child: Container(
+              width: 24.0,
+              height: 24.0,
+              child: IconButton(
+                onPressed: () {
+                  print('Pressed favorite button');
+                },
+                padding: EdgeInsets.zero,
+                icon: SvgPicture.asset(
+                  iconHearth,
+                  color: Colors.white,
+                  width: 24.0,
+                  height: 24.0,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
