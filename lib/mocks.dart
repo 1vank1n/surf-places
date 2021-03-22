@@ -1,6 +1,6 @@
 import 'package:places/domain/sight.dart';
 
-final List<Sight> mocks = [
+List<Sight> mocks = [
   Sight(
     name: 'Памятник «Пермяк солёные уши» в Перми',
     lat: 58.009700,

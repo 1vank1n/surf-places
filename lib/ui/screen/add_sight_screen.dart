@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:places/domain/sight.dart';
+import 'package:places/mocks.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
@@ -10,28 +13,64 @@ class AddSightScreen extends StatefulWidget {
 }
 
 class _AddSightScreenState extends State<AddSightScreen> {
-  late TextEditingController _titleTextEditingController;
-  late TextEditingController _latTextEditingController;
-  late TextEditingController _lonTextEditingController;
+  TextEditingController _titleTextEditingController = TextEditingController();
+  TextEditingController _latTextEditingController = TextEditingController();
+  TextEditingController _lonTextEditingController = TextEditingController();
+  TextEditingController _detailsTextEditingController = TextEditingController();
+  FocusNode _titleFocusNode = FocusNode();
+  FocusNode _latFocusNode = FocusNode();
+  FocusNode _lonFocusNode = FocusNode();
+  FocusNode _detailsFocusNode = FocusNode();
+  bool get isValidSightCreateForm {
+    return _titleTextEditingController.text.isNotEmpty &&
+        _latTextEditingController.text.isNotEmpty &&
+        _lonTextEditingController.text.isNotEmpty;
+  }
 
   @override
   void initState() {
     super.initState();
 
-    _titleTextEditingController = TextEditingController();
     _titleTextEditingController.addListener(() {
       setState(() {});
     });
 
-    _latTextEditingController = TextEditingController();
     _latTextEditingController.addListener(() {
       setState(() {});
     });
 
-    _lonTextEditingController = TextEditingController();
     _lonTextEditingController.addListener(() {
       setState(() {});
     });
+
+    _detailsTextEditingController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  String? requiredValidator(String? value) {
+    if (value != null && value.length > 0) {
+      return null;
+    } else {
+      return 'Поле обязательно';
+    }
+  }
+
+  Sight createSightFromState() {
+    return Sight(
+      name: _titleTextEditingController.text,
+      lat: double.parse(_latTextEditingController.text),
+      lon: double.parse(_lonTextEditingController.text),
+      url: '',
+      details: '',
+      type: '',
+    );
+  }
+
+  void addSightFromStateToStore() {
+    Sight sight = createSightFromState();
+    mocks.add(sight);
+    print('Total sights: ${mocks.length}, last: ${mocks.last}');
   }
 
   @override
@@ -78,29 +117,34 @@ class _AddSightScreenState extends State<AddSightScreen> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: SizedBox(
-                height: 40.0,
-                child: TextFormField(
-                  controller: _titleTextEditingController,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                    suffixIcon: _titleTextEditingController.text.isNotEmpty
-                        ? IconButton(
-                            padding: EdgeInsets.zero,
-                            iconSize: 20.0,
-                            icon: SvgPicture.asset(iconClear),
-                            onPressed: () {
-                              _titleTextEditingController.text = '';
-                            },
-                          )
-                        : null,
-                  ),
+              child: TextFormField(
+                focusNode: _titleFocusNode,
+                controller: _titleTextEditingController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: requiredValidator,
+                textCapitalization: TextCapitalization.sentences,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  _latFocusNode.requestFocus();
+                },
+                decoration: InputDecoration(
+                  suffixIcon: _titleTextEditingController.text.isNotEmpty
+                      ? IconButton(
+                          padding: EdgeInsets.zero,
+                          iconSize: 20.0,
+                          icon: SvgPicture.asset(iconClear),
+                          onPressed: () {
+                            _titleTextEditingController.text = '';
+                          },
+                        )
+                      : null,
                 ),
               ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Column(
@@ -110,7 +154,17 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           subtitle: Text('ШИРОТА'),
                         ),
                         TextFormField(
+                          focusNode: _latFocusNode,
                           controller: _latTextEditingController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: requiredValidator,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
+                          ],
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (_) {
+                            _lonFocusNode.requestFocus();
+                          },
                           decoration: InputDecoration(
                             suffixIcon: _latTextEditingController.text.isNotEmpty
                                 ? IconButton(
@@ -138,7 +192,17 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           subtitle: Text('ДОЛГОТА'),
                         ),
                         TextFormField(
+                          focusNode: _lonFocusNode,
                           controller: _lonTextEditingController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: requiredValidator,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
+                          ],
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (_) {
+                            _detailsFocusNode.requestFocus();
+                          },
                           decoration: InputDecoration(
                             suffixIcon: _lonTextEditingController.text.isNotEmpty
                                 ? IconButton(
@@ -182,7 +246,13 @@ class _AddSightScreenState extends State<AddSightScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: TextFormField(
+                focusNode: _detailsFocusNode,
+                controller: _detailsTextEditingController,
                 maxLines: 4,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) {
+                  _detailsFocusNode.unfocus();
+                },
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(16.0),
                   hintText: 'Введите текст',
@@ -199,7 +269,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
             width: double.infinity,
             height: 48.0,
             child: ElevatedButton(
-              onPressed: null,
+              onPressed: isValidSightCreateForm ? addSightFromStateToStore : null,
               child: Text('СОЗДАТЬ'),
             ),
           ),
