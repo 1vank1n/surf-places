@@ -52,6 +52,35 @@ ThemeData lightThemeData = ThemeData(
       textStyle: button,
     ),
   ),
+  inputDecorationTheme: InputDecorationTheme(
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+      borderSide: BorderSide(
+        width: 1.0,
+        color: successColor.withAlpha(40 * 255 ~/ 100),
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+      borderSide: BorderSide(
+        width: 2.0,
+        color: successColor.withAlpha(40 * 255 ~/ 100),
+      ),
+    ),
+    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+  ),
+  textSelectionTheme: TextSelectionThemeData(
+    cursorColor: primaryColor,
+  ),
 );
 
 ThemeData darkThemeData = ThemeData(
