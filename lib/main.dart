@@ -13,7 +13,7 @@ void main() {
 }
 
 class AppModel extends ChangeNotifier {
-  ThemeData theme = lightThemeData;
+  ThemeData theme = darkThemeData;
 
   void toggleTheme() {
     theme = (theme == lightThemeData) ? darkThemeData : lightThemeData;

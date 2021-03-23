@@ -132,7 +132,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
                       ? IconButton(
                           padding: EdgeInsets.zero,
                           iconSize: 20.0,
-                          icon: SvgPicture.asset(iconClear),
+                          icon: SvgPicture.asset(
+                            iconClear,
+                            color: Theme.of(context).primaryColor,
+                          ),
                           onPressed: () {
                             _titleTextEditingController.text = '';
                           },
@@ -170,7 +173,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                 ? IconButton(
                                     padding: EdgeInsets.zero,
                                     iconSize: 20.0,
-                                    icon: SvgPicture.asset(iconClear),
+                                    icon: SvgPicture.asset(
+                                      iconClear,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                                     onPressed: () {
                                       _latTextEditingController.text = '';
                                     },
@@ -208,7 +214,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                 ? IconButton(
                                     padding: EdgeInsets.zero,
                                     iconSize: 20.0,
-                                    icon: SvgPicture.asset(iconClear),
+                                    icon: SvgPicture.asset(
+                                      iconClear,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                                     onPressed: () {
                                       _lonTextEditingController.text = '';
                                     },

@@ -108,6 +108,7 @@ ThemeData darkThemeData = ThemeData(
     subtitle1: subtitle1.copyWith(color: Colors.white),
     subtitle2: subtitle2.copyWith(color: Colors.white),
     button: button.copyWith(color: Colors.white),
+    caption: subtitle2.copyWith(color: secondaryTextColor.withAlpha(142)),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     backgroundColor: darkBgColor,
@@ -132,5 +133,34 @@ ThemeData darkThemeData = ThemeData(
       ),
       textStyle: button,
     ),
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+      borderSide: BorderSide(
+        width: 1.0,
+        color: successColor.withAlpha(40 * 255 ~/ 100),
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+      borderSide: BorderSide(
+        width: 2.0,
+        color: successColor.withAlpha(40 * 255 ~/ 100),
+      ),
+    ),
+    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+  ),
+  textSelectionTheme: TextSelectionThemeData(
+    cursorColor: primaryColor,
   ),
 );
