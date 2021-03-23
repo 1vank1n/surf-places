@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/sight_details_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
@@ -16,8 +17,9 @@ class App extends StatelessWidget {
       theme: lightThemeData,
       // theme: darkThemeData,
       // home: VisitingScreen(),
-      home: SightListScreen(),
+      // home: SightListScreen(),
       // home: SightDetailsScreen(),
+      home: FiltersScreen(),
     );
   }
 }

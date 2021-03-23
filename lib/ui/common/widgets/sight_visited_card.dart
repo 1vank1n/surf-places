@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/res/icons.dart';
 
 /// Карточка достопримечательности для таба «Посетил»
 class SightVisitedCard extends StatelessWidget {
@@ -57,7 +58,7 @@ class SightVisitedCard extends StatelessWidget {
                 },
                 padding: EdgeInsets.zero,
                 icon: SvgPicture.asset(
-                  'res/icons/icon-hearth.svg',
+                  iconHearth,
                   color: Colors.white,
                   width: 24.0,
                   height: 24.0,
