@@ -11,6 +11,7 @@ Color secondaryBgColor = Colors.grey.shade100;
 
 // elements
 const Color dividerColor = Color.fromRGBO(124, 126, 146, 0.56);
+const Color inactiveTrackColor = Color(0x8F7C7E92);
 
 // text
 const Color primaryTextColor = primaryColor;
