@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 const Color primaryColor = Color(0xFF3B3E5B);
 const Color successColor = Color(0xFF4CAF50);
 const Color warningColor = Color(0xFFFCDD3D);
+const Color deepDarkColor = Color(0xFF1A1A20);
 
 // bg
 Color primaryBgColor = Colors.grey.shade500;

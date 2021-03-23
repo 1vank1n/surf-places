@@ -125,13 +125,22 @@ ThemeData darkThemeData = ThemeData(
   ),
   toggleableActiveColor: successColor,
   elevatedButtonTheme: ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      primary: successColor,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+    style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) return deepDarkColor;
+        return successColor; // Defer to the widget's default.
+      }),
+      foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) return secondaryTextColor.withAlpha(142);
+        return Colors.white; // Defer to the widget's default.
+      }),
+      elevation: MaterialStateProperty.all(0),
+      shape: MaterialStateProperty.all(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        ),
       ),
-      textStyle: button,
+      textStyle: MaterialStateProperty.all(button),
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(
@@ -159,6 +168,7 @@ ThemeData darkThemeData = ThemeData(
       ),
     ),
     contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+    hintStyle: subtitle1.copyWith(color: secondaryTextColor.withAlpha(142)),
   ),
   textSelectionTheme: TextSelectionThemeData(
     cursorColor: primaryColor,

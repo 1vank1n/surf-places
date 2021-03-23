@@ -41,6 +41,7 @@ class _SightListScreenState extends State<SightListScreen> {
           print('Pressed FAB');
         },
         backgroundColor: Colors.transparent,
+        elevation: 0,
         label: Container(
           height: 48.0,
           padding: EdgeInsets.symmetric(horizontal: 22.0),

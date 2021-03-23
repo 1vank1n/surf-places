@@ -102,7 +102,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
               title: Text('Не выбрано'),
               trailing: Icon(
                 Icons.arrow_forward_ios_rounded,
-                color: primaryColor,
+                color: Theme.of(context).primaryColor,
+                size: 16,
               ),
               onTap: () {},
             ),
