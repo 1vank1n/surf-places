@@ -52,6 +52,35 @@ ThemeData lightThemeData = ThemeData(
       textStyle: button,
     ),
   ),
+  inputDecorationTheme: InputDecorationTheme(
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+      borderSide: BorderSide(
+        width: 1.0,
+        color: successColor.withAlpha(40 * 255 ~/ 100),
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+      borderSide: BorderSide(
+        width: 2.0,
+        color: successColor.withAlpha(40 * 255 ~/ 100),
+      ),
+    ),
+    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+  ),
+  textSelectionTheme: TextSelectionThemeData(
+    cursorColor: primaryColor,
+  ),
 );
 
 ThemeData darkThemeData = ThemeData(
@@ -79,6 +108,7 @@ ThemeData darkThemeData = ThemeData(
     subtitle1: subtitle1.copyWith(color: Colors.white),
     subtitle2: subtitle2.copyWith(color: Colors.white),
     button: button.copyWith(color: Colors.white),
+    caption: subtitle2.copyWith(color: secondaryTextColor.withAlpha(142)),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     backgroundColor: darkBgColor,
@@ -95,13 +125,52 @@ ThemeData darkThemeData = ThemeData(
   ),
   toggleableActiveColor: successColor,
   elevatedButtonTheme: ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      primary: successColor,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+    style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) return deepDarkColor;
+        return successColor; // Defer to the widget's default.
+      }),
+      foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) return secondaryTextColor.withAlpha(142);
+        return Colors.white; // Defer to the widget's default.
+      }),
+      elevation: MaterialStateProperty.all(0),
+      shape: MaterialStateProperty.all(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        ),
       ),
-      textStyle: button,
+      textStyle: MaterialStateProperty.all(button),
     ),
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+      borderSide: BorderSide(
+        width: 1.0,
+        color: successColor.withAlpha(40 * 255 ~/ 100),
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+      borderSide: BorderSide(
+        width: 2.0,
+        color: successColor.withAlpha(40 * 255 ~/ 100),
+      ),
+    ),
+    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+    hintStyle: subtitle1.copyWith(color: secondaryTextColor.withAlpha(142)),
+  ),
+  textSelectionTheme: TextSelectionThemeData(
+    cursorColor: primaryColor,
   ),
 );
