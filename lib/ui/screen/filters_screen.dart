@@ -249,7 +249,7 @@ class CategoryButton extends StatelessWidget {
           height: 64.0,
           decoration: BoxDecoration(
             color: isSelected ? successColor.withAlpha(0x6f) : successColor.withAlpha(0x20),
-            borderRadius: BorderRadius.all(Radius.circular(32.0)),
+            borderRadius: BorderRadius.circular(32.0),
           ),
           child: IconButton(
             onPressed: onPressed,

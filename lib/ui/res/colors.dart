@@ -9,6 +9,7 @@ const Color deepDarkColor = Color(0xFF1A1A20);
 // bg
 Color primaryBgColor = Colors.grey.shade500;
 Color secondaryBgColor = Colors.grey.shade100;
+Color lightBgColor = Color(0xFFF5F5F5);
 
 // elements
 const Color dividerColor = Color.fromRGBO(124, 126, 146, 0.56);

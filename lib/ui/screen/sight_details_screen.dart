@@ -48,7 +48,7 @@ class SightDetailsScreen extends StatelessWidget {
                       height: 32.0,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: IconButton(
                         onPressed: () {

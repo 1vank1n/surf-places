@@ -47,30 +47,24 @@ ThemeData lightThemeData = ThemeData(
       primary: successColor,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        borderRadius: BorderRadius.circular(12.0),
       ),
       textStyle: button,
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.all(
-        Radius.circular(8.0),
-      ),
+      borderRadius: BorderRadius.circular(8.0),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(
-        Radius.circular(8.0),
-      ),
+      borderRadius: BorderRadius.circular(8.0),
       borderSide: BorderSide(
         width: 1.0,
         color: successColor.withAlpha(40 * 255 ~/ 100),
       ),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(
-        Radius.circular(8.0),
-      ),
+      borderRadius: BorderRadius.circular(8.0),
       borderSide: BorderSide(
         width: 2.0,
         color: successColor.withAlpha(40 * 255 ~/ 100),
@@ -137,7 +131,7 @@ ThemeData darkThemeData = ThemeData(
       elevation: MaterialStateProperty.all(0),
       shape: MaterialStateProperty.all(
         RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          borderRadius: BorderRadius.circular(12.0),
         ),
       ),
       textStyle: MaterialStateProperty.all(button),
@@ -145,23 +139,17 @@ ThemeData darkThemeData = ThemeData(
   ),
   inputDecorationTheme: InputDecorationTheme(
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.all(
-        Radius.circular(8.0),
-      ),
+      borderRadius: BorderRadius.circular(8.0),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(
-        Radius.circular(8.0),
-      ),
+      borderRadius: BorderRadius.circular(8.0),
       borderSide: BorderSide(
         width: 1.0,
         color: successColor.withAlpha(40 * 255 ~/ 100),
       ),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(
-        Radius.circular(8.0),
-      ),
+      borderRadius: BorderRadius.circular(8.0),
       borderSide: BorderSide(
         width: 2.0,
         color: successColor.withAlpha(40 * 255 ~/ 100),
