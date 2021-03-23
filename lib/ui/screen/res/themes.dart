@@ -38,9 +38,10 @@ ThemeData lightThemeData = ThemeData(
     thumbColor: Colors.white,
     overlayColor: successColor.withAlpha(0x1f),
     activeTrackColor: successColor,
-    inactiveTrackColor: Color(0x8F7C7E92),
+    inactiveTrackColor: inactiveTrackColor,
     trackHeight: 2.0,
   ),
+  toggleableActiveColor: successColor,
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       primary: successColor,
@@ -89,9 +90,10 @@ ThemeData darkThemeData = ThemeData(
     thumbColor: Colors.white,
     overlayColor: successColor.withAlpha(0x1f),
     activeTrackColor: successColor,
-    inactiveTrackColor: Color(0x8F7C7E92),
+    inactiveTrackColor: inactiveTrackColor,
     trackHeight: 2.0,
   ),
+  toggleableActiveColor: successColor,
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       primary: successColor,
