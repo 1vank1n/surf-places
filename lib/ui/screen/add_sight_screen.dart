@@ -69,8 +69,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   void addSightFromStateToStore() {
     Sight sight = createSightFromState();
-    mocks.add(sight);
-    print('Total sights: ${mocks.length}, last: ${mocks.last}');
+    SightStorage.sights.add(sight);
+    print('Total sights: ${SightStorage.sights.length}, last: ${SightStorage.sights.last}');
   }
 
   @override
@@ -109,9 +109,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Divider(
-                color: dividerColor,
-              ),
+              child: Divider(color: dividerColor),
             ),
             ListTile(
               subtitle: Text('НАЗВАНИЕ'),

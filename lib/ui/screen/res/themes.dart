@@ -7,6 +7,9 @@ ThemeData lightThemeData = ThemeData(
   appBarTheme: AppBarTheme(
     backgroundColor: Colors.white,
     brightness: Brightness.light,
+    iconTheme: IconThemeData(
+      color: primaryColor,
+    ),
   ),
   tabBarTheme: TabBarTheme(
     labelStyle: headline4,
@@ -82,6 +85,9 @@ ThemeData darkThemeData = ThemeData(
   appBarTheme: AppBarTheme(
     backgroundColor: darkBgColor,
     brightness: Brightness.dark,
+    iconTheme: IconThemeData(
+      color: Colors.white,
+    ),
   ),
   tabBarTheme: TabBarTheme(
     labelStyle: headline4,

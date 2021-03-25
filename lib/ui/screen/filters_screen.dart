@@ -25,7 +25,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   };
 
   RangeValues _currentRangeValues = RangeValues(START_RANGE, END_RANGE);
-  List<Sight> sights = mocks;
+  List<Sight> sights = SightStorage.sights;
   List<Sight>? _filteredSights;
   Set<String> _filteredTypes = {'Здание', 'Памятник', 'Кафе'};
 
@@ -38,35 +38,15 @@ class _FiltersScreenState extends State<FiltersScreen> {
   String get _currentMin => formatRange(_currentRangeValues.start);
   String get _currentMax => formatRange(_currentRangeValues.end);
 
-  bool isPointInRangeAtUserPoint({
-    required double lat,
-    required double lon,
-    required double userLat,
-    required double userLon,
-    required double startRange,
-    required double endRange,
-  }) {
-    const double ky = 40000000 / 360;
-    double kx = cos(pi * userLat / 180.0) * ky;
-    double dx = (userLon - lon).abs() * kx;
-    double dy = (userLat - lat).abs() * ky;
-    double distance = sqrt(dx * dx + dy * dy);
-    if (startRange <= 100.0) startRange = 0;
-    return startRange <= distance && distance <= endRange;
-  }
-
   List<Sight> filterSight(List<Sight> sights) {
-    return sights
-        .where((sight) => isPointInRangeAtUserPoint(
-              lat: sight.lat,
-              lon: sight.lon,
-              userLat: USER_COORDINATES['lat']!,
-              userLon: USER_COORDINATES['lon']!,
-              startRange: _currentRangeValues.start,
-              endRange: _currentRangeValues.end,
-            ))
-        .where((sight) => _filteredTypes.contains(sight.type))
-        .toList();
+    return SightStorage.filterSight(
+      sights: sights,
+      userLat: USER_COORDINATES['lat']!,
+      userLon: USER_COORDINATES['lon']!,
+      startRange: _currentRangeValues.start,
+      endRange: _currentRangeValues.end,
+      types: _filteredTypes,
+    );
   }
 
   void toggleTypeInFilteredTypes(String type) {
@@ -94,7 +74,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            print('Pressed icon button');
+            Navigator.of(context).pop();
           },
           icon: SvgPicture.asset(
             iconArrow,
