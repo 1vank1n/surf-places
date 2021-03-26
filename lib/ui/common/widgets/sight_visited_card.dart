@@ -7,8 +7,12 @@ import 'package:places/ui/res/icons.dart';
 /// Карточка достопримечательности для таба «Посетил»
 class SightVisitedCard extends StatelessWidget {
   final Sight sight;
+  final Function removeHandler;
 
-  SightVisitedCard(this.sight);
+  SightVisitedCard({
+    required this.sight,
+    required this.removeHandler,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,21 +53,40 @@ class SightVisitedCard extends StatelessWidget {
           Positioned(
             top: 19.0,
             right: 18.0,
-            child: Container(
-              width: 24.0,
-              height: 24.0,
-              child: IconButton(
-                onPressed: () {
-                  print('Pressed favorite button');
-                },
-                padding: EdgeInsets.zero,
-                icon: SvgPicture.asset(
-                  iconHearth,
-                  color: Colors.white,
+            child: Row(
+              children: [
+                Container(
                   width: 24.0,
                   height: 24.0,
+                  child: IconButton(
+                    onPressed: () {
+                      print('Pressed share button');
+                    },
+                    padding: EdgeInsets.zero,
+                    icon: SvgPicture.asset(
+                      iconShare,
+                      color: Colors.white,
+                      width: 24.0,
+                      height: 24.0,
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(width: 16.0),
+                Container(
+                  width: 24.0,
+                  height: 24.0,
+                  child: IconButton(
+                    onPressed: () {
+                      removeHandler();
+                    },
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Positioned(
