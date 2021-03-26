@@ -151,15 +151,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'КАТЕГОРИИ',
-              style: Theme.of(context).textTheme.subtitle2!.copyWith(color: secondaryTextColor),
-            ),
-          ),
-          SizedBox(
-            height: 24.0,
+          ListTile(
+            subtitle: Text('КАТЕГОРИЯ'),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
