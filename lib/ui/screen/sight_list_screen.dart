@@ -4,6 +4,7 @@ import 'package:places/ui/common/widgets/sight_card.dart';
 import 'package:places/ui/common/widgets/sight_navigation_bar.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/screen/widgets/search_bar.dart';
 
 class SightListScreen extends StatefulWidget {
   @override
@@ -15,24 +16,46 @@ class _SightListScreenState extends State<SightListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(
+          'Список интересных мест',
+          style: Theme.of(context).textTheme.headline3,
+        ),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(72.0),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(
-              'Список\nинтересных мест',
-              style: Theme.of(context).textTheme.headline1,
+          preferredSize: const Size.fromHeight(52.0),
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: 0,
+              right: 16.0,
+              bottom: 12.0,
+              left: 16.0,
+            ),
+            child: SearchBar(
+              searchTextEditingController: TextEditingController(),
+              isButton: true,
             ),
           ),
         ),
+        //
+        // TODO непонятно какой окончательный стиль заголовка
+        // bottom: PreferredSize(
+        //   preferredSize: const Size.fromHeight(72.0),
+        //   child: Container(
+        //     width: double.infinity,
+        //     padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        //     child: Text(
+        //       'Список\nинтересных мест',
+        //       style: Theme.of(context).textTheme.headline1,
+        //     ),
+        //   ),
+        // ),
+        //
         elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
-            children: [for (var sight in mocks) SightCard(sight)],
+            children: [for (var sight in SightStorage.sights) SightCard(sight)],
           ),
         ),
       ),

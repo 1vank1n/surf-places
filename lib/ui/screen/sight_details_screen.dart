@@ -7,7 +7,7 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 
 class SightDetailsScreen extends StatelessWidget {
-  final Sight sight = mocks.first;
+  final Sight sight = SightStorage.sights.first;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class SightDetailsScreen extends StatelessWidget {
                       height: 32.0,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: IconButton(
                         onPressed: () {
@@ -117,15 +117,9 @@ class SightDetailsScreen extends StatelessWidget {
                       label: Text('ПОСТРОИТЬ МАРШРУТ'),
                     ),
                   ),
-                  SizedBox(
-                    height: 24.0,
-                  ),
-                  Divider(
-                    color: dividerColor,
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
+                  SizedBox(height: 24.0),
+                  Divider(color: dividerColor),
+                  SizedBox(height: 8.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

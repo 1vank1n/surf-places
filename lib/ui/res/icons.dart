@@ -6,3 +6,5 @@ const String iconGo = 'res/icons/icon-go.svg';
 const String iconHearth = 'res/icons/icon-hearth.svg';
 const String iconMuseum = 'res/icons/icon-museum.svg';
 const String iconClear = 'res/icons/icon-clear.svg';
+const String iconSearch = 'res/icons/icon-search.svg';
+const String iconFilter = 'res/icons/icon-filter.svg';
