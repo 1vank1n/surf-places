@@ -51,8 +51,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
       setState(() {});
     });
 
-    _uploadImages.insert(
-      0,
+    _uploadImages.add(
       UploadImage(
         isCreator: true,
         addUploadImage: _addUploadImage,
@@ -89,10 +88,13 @@ class _AddSightScreenState extends State<AddSightScreen> {
     ValueKey<int> key = ValueKey(Random().nextInt(100));
 
     setState(() {
-      _uploadImages.add(UploadImage(
-        key: key,
-        deleteUploadImage: _deleteUploadImage,
-      ));
+      _uploadImages.insert(
+        1,
+        UploadImage(
+          key: key,
+          deleteUploadImage: _deleteUploadImage,
+        ),
+      );
     });
   }
 
