@@ -29,11 +29,11 @@ class App extends StatelessWidget {
       theme: Provider.of<AppModel>(context).theme,
       // theme: darkThemeData,
       // home: VisitingScreen(),
-      home: SightListScreen(),
+      // home: SightListScreen(),
       // home: SightDetailsScr/een(),
       // home: FiltersScreen(),
       // home: SettingsScreen(),
-      // home: AddSightScreen(),
+      home: AddSightScreen(),
     );
   }
 }

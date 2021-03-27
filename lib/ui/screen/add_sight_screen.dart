@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,6 +16,7 @@ class AddSightScreen extends StatefulWidget {
 }
 
 class _AddSightScreenState extends State<AddSightScreen> {
+  List<UploadImage> _uploadImages = [];
   TextEditingController _titleTextEditingController = TextEditingController();
   TextEditingController _latTextEditingController = TextEditingController();
   TextEditingController _lonTextEditingController = TextEditingController();
@@ -46,6 +50,14 @@ class _AddSightScreenState extends State<AddSightScreen> {
     _detailsTextEditingController.addListener(() {
       setState(() {});
     });
+
+    _uploadImages.insert(
+      0,
+      UploadImage(
+        isCreator: true,
+        addUploadImage: _addUploadImage,
+      ),
+    );
   }
 
   String? requiredValidator(String? value) {
@@ -73,6 +85,23 @@ class _AddSightScreenState extends State<AddSightScreen> {
     print('Total sights: ${SightStorage.sights.length}, last: ${SightStorage.sights.last}');
   }
 
+  void _addUploadImage() {
+    ValueKey<int> key = ValueKey(Random().nextInt(100));
+
+    setState(() {
+      _uploadImages.add(UploadImage(
+        key: key,
+        deleteUploadImage: _deleteUploadImage,
+      ));
+    });
+  }
+
+  void _deleteUploadImage(ValueKey<int> key) {
+    setState(() {
+      _uploadImages.removeWhere((UploadImage uploadImage) => uploadImage.key == key);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +124,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildImageRow(),
             ListTile(
               subtitle: Text('КАТЕГОРИЯ'),
             ),
@@ -283,6 +313,139 @@ class _AddSightScreenState extends State<AddSightScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildImageRow() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 16.0,
+          right: 8.0,
+          left: 8.0,
+        ),
+        child: Row(
+          children: [
+            for (var uploadImage in _uploadImages) uploadImage,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UploadImage extends StatelessWidget {
+  final bool isCreator;
+  final Function? addUploadImage;
+  final Function? deleteUploadImage;
+
+  String get _generateRandomImage =>
+      'http://source.unsplash.com/random/72x72?sig=${Random().nextInt(100)}';
+
+  const UploadImage({
+    Key? key,
+    this.isCreator = false,
+    this.addUploadImage,
+    this.deleteUploadImage,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: isCreator
+          ?
+          // TODO реализация нулеовго элемента через OutlinedButton
+          //
+          // Container(
+          //     width: 72.0,
+          //     height: 72.0,
+          //     child: OutlinedButton(
+          //       onPressed: () {
+          //         if (addUploadImage != null) {
+          //           addUploadImage!();
+          //         }
+          //       },
+          //       child: SvgPicture.asset(iconPlus),
+          //       style: OutlinedButton.styleFrom(
+          //         primary: successColor,
+          //         side: BorderSide(
+          //           width: 2.0,
+          //           color: successColor.withOpacity(0.48),
+          //         ),
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(12.0),
+          //         ),
+          //       ),
+          //     ),
+          //   )
+          GestureDetector(
+              onTap: () {
+                if (addUploadImage != null) {
+                  addUploadImage!();
+                }
+              },
+              child: Container(
+                width: 72.0,
+                height: 72.0,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 2.0,
+                    color: successColor.withOpacity(0.48),
+                  ),
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: Center(child: SvgPicture.asset(iconPlus)),
+              ),
+            )
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(12.0),
+              child: Stack(
+                children: [
+                  Container(
+                    width: 72.0,
+                    height: 72.0,
+                    color: Colors.black12,
+                    child: Image.network(
+                      _generateRandomImage,
+                      fit: BoxFit.cover,
+                      loadingBuilder:
+                          (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return CupertinoActivityIndicator();
+                      },
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: Container(
+                      color: overlayBgColor,
+                    ),
+                  ),
+                  Positioned(
+                    top: 6.0,
+                    right: 6.0,
+                    child: Container(
+                      width: 20.0,
+                      height: 20.0,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        iconSize: 20.0,
+                        icon: SvgPicture.asset(
+                          iconClear,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          if (deleteUploadImage != null) {
+                            deleteUploadImage!(key);
+                          }
+                        },
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
     );
   }
 }
