@@ -401,51 +401,60 @@ class UploadImage extends StatelessWidget {
                 child: Center(child: SvgPicture.asset(iconPlus)),
               ),
             )
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(12.0),
-              child: Stack(
-                children: [
-                  Container(
-                    width: 72.0,
-                    height: 72.0,
-                    color: Colors.black12,
-                    child: Image.network(
-                      _generateRandomImage,
-                      fit: BoxFit.cover,
-                      loadingBuilder:
-                          (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return CupertinoActivityIndicator();
-                      },
-                    ),
-                  ),
-                  Positioned.fill(
-                    child: Container(
-                      color: overlayBgColor,
-                    ),
-                  ),
-                  Positioned(
-                    top: 6.0,
-                    right: 6.0,
-                    child: Container(
-                      width: 20.0,
-                      height: 20.0,
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        iconSize: 20.0,
-                        icon: SvgPicture.asset(
-                          iconClear,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          if (deleteUploadImage != null) {
-                            deleteUploadImage!(key);
-                          }
+          : Dismissible(
+              key: key ?? ValueKey('default'),
+              direction: DismissDirection.up,
+              onDismissed: (_) {
+                if (deleteUploadImage != null) {
+                  deleteUploadImage!(key);
+                }
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 72.0,
+                      height: 72.0,
+                      color: Colors.black12,
+                      child: Image.network(
+                        _generateRandomImage,
+                        fit: BoxFit.cover,
+                        loadingBuilder:
+                            (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return CupertinoActivityIndicator();
                         },
                       ),
                     ),
-                  )
-                ],
+                    Positioned.fill(
+                      child: Container(
+                        color: overlayBgColor,
+                      ),
+                    ),
+                    Positioned(
+                      top: 6.0,
+                      right: 6.0,
+                      child: Container(
+                        width: 20.0,
+                        height: 20.0,
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          iconSize: 20.0,
+                          icon: SvgPicture.asset(
+                            iconClear,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            if (deleteUploadImage != null) {
+                              deleteUploadImage!(key);
+                            }
+                          },
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
     );
