@@ -8,12 +8,15 @@ import 'package:places/ui/res/icons.dart';
 class SightVisitedCard extends StatelessWidget {
   final Sight sight;
 
-  SightVisitedCard(this.sight);
+  SightVisitedCard({
+    Key? key,
+    required this.sight,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16.0),
       child: Stack(
         children: [
           AspectRatio(
