@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/common/widgets/sight_navigation_bar.dart';
 import 'package:places/ui/common/widgets/sight_visited_card.dart';
@@ -10,11 +11,14 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
+  final List<Sight> _wantedSights = []..addAll(SightStorage.sights);
+  final List<Sight> _visitedSights = []..addAll(SightStorage.sights);
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      initialIndex: 1,
+      initialIndex: 0,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -36,19 +40,123 @@ class _VisitingScreenState extends State<VisitingScreen> {
         ),
         body: TabBarView(
           children: [
+            //
+            // Wanted
+            //
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
-                  children: [for (var sight in SightStorage.sights) SightWantedCard(sight)],
+                  children: [
+                    for (var i = 0; i < _wantedSights.length; i++)
+                      Column(
+                        children: [
+                          LongPressDraggable<Sight>(
+                            key: ValueKey(_wantedSights[i].name),
+                            data: _wantedSights[i],
+                            child: SightWantedCard(
+                              key: ValueKey(_wantedSights[i].name),
+                              sight: _wantedSights[i],
+                            ),
+                            feedback: ClipRRect(
+                              borderRadius: BorderRadius.circular(16.0),
+                              child: Material(
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: double.infinity,
+                                    maxHeight: (MediaQuery.of(context).size.width - 24) * 2 / 3,
+                                  ),
+                                  child: SightWantedCard(
+                                    key: ValueKey(_wantedSights[i].name),
+                                    sight: _wantedSights[i],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          DragTarget<Sight>(
+                            onAccept: (Sight? sight) {
+                              setState(() {
+                                _wantedSights.remove(sight!);
+                                _wantedSights.insert(i + 1, sight);
+                              });
+                            },
+                            builder: (BuildContext context, List<Sight?> candidates, rejects) {
+                              if (candidates.length > 0 && candidates.first != null) {
+                                return SightWantedCard(
+                                  key: ValueKey(candidates.first!.name),
+                                  sight: candidates.first!,
+                                );
+                              }
+                              return Container(
+                                width: double.infinity,
+                                height: 24.0,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
               ),
             ),
+            //
+            // Visited
+            //
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
-                  children: [for (var sight in SightStorage.sights) SightVisitedCard(sight)],
+                  children: [
+                    for (var i = 0; i < _visitedSights.length; i++)
+                      Column(
+                        children: [
+                          LongPressDraggable<Sight>(
+                            key: ValueKey(_visitedSights[i].name),
+                            data: _visitedSights[i],
+                            child: SightVisitedCard(
+                              key: ValueKey(_visitedSights[i].name),
+                              sight: _visitedSights[i],
+                            ),
+                            feedback: ClipRRect(
+                              borderRadius: BorderRadius.circular(16.0),
+                              child: Material(
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: double.infinity,
+                                    maxHeight: (MediaQuery.of(context).size.width - 24) * 2 / 3,
+                                  ),
+                                  child: SightVisitedCard(
+                                    key: ValueKey(_visitedSights[i].name),
+                                    sight: _visitedSights[i],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          DragTarget<Sight>(
+                            onAccept: (Sight? sight) {
+                              setState(() {
+                                _visitedSights.remove(sight!);
+                                _visitedSights.insert(i + 1, sight);
+                              });
+                            },
+                            builder: (BuildContext context, List<Sight?> candidates, rejects) {
+                              if (candidates.length > 0 && candidates.first != null) {
+                                return SightVisitedCard(
+                                  key: ValueKey(candidates.first!.name),
+                                  sight: candidates.first!,
+                                );
+                              }
+                              return Container(
+                                width: double.infinity,
+                                height: 24.0,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
               ),
             ),
