@@ -9,3 +9,4 @@ const String iconClear = 'res/icons/icon-clear.svg';
 const String iconSearch = 'res/icons/icon-search.svg';
 const String iconFilter = 'res/icons/icon-filter.svg';
 const String iconPlus = 'res/icons/icon-plus.svg';
+const String iconBucket = 'res/icons/icon-bucket.svg';

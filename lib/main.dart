@@ -28,6 +28,7 @@ class App extends StatelessWidget {
       title: 'Surf Places',
       theme: Provider.of<AppModel>(context).theme,
       // theme: darkThemeData,
+      // home: VisitingScreen(),
       home: VisitingScreen(),
       // home: SightListScreen(),
       // home: SightDetailsScr/een(),
