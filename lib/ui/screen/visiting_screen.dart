@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/common/widgets/sight_navigation_bar.dart';
 import 'package:places/ui/common/widgets/sight_visited_card.dart';
 import 'package:places/ui/common/widgets/sight_wanted_card.dart';
+import 'package:places/ui/res/colors.dart';
+import 'package:places/ui/res/icons.dart';
+import 'package:places/ui/res/text_styles.dart';
 
 class VisitingScreen extends StatefulWidget {
   @override
@@ -45,7 +49,24 @@ class _VisitingScreenState extends State<VisitingScreen> {
             //
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (var i = 0; i < _visitedSights.length; i++)
+                    SightVisitedCard(
+                      sight: _visitedSights[i],
+                      removeHandler: () {
+                        _removeSights(sights: _visitedSights, index: i);
+                      },
+                    )
+                ],
+              ),
+            ),
+          )
+        : Center(
+            child: Padding(
+              padding: const EdgeInsets.all(48.0),
+              child: Opacity(
+                opacity: 0.56,
                 child: Column(
                   children: [
                     for (var i = 0; i < _wantedSights.length; i++)
@@ -105,7 +126,24 @@ class _VisitingScreenState extends State<VisitingScreen> {
             //
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (var i = 0; i < _wantedSights.length; i++)
+                    SightWantedCard(
+                      sight: _wantedSights[i],
+                      removeHandler: () {
+                        _removeSights(sights: _wantedSights, index: i);
+                      },
+                    )
+                ],
+              ),
+            ),
+          )
+        : Center(
+            child: Padding(
+              padding: const EdgeInsets.all(48.0),
+              child: Opacity(
+                opacity: 0.56,
                 child: Column(
                   children: [
                     for (var i = 0; i < _visitedSights.length; i++)
@@ -160,10 +198,6 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 ),
               ),
             ),
-          ],
-        ),
-        bottomNavigationBar: SightNavigationBar(),
-      ),
-    );
+          );
   }
 }
