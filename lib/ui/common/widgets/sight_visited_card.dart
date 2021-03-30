@@ -7,6 +7,7 @@ import 'package:places/ui/res/icons.dart';
 /// Карточка достопримечательности для таба «Посетил»
 class SightVisitedCard extends StatelessWidget {
   final Sight sight;
+  final Function removeHandler;
 
   SightVisitedCard({
     Key? key,
@@ -40,68 +41,87 @@ class SightVisitedCard extends StatelessWidget {
                 },
               ),
             ),
-          ),
-          Positioned(
-            top: 16.0,
-            left: 16.0,
-            child: Text(
-              sight.type.toLowerCase(),
-              style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.white),
-            ),
-          ),
-          Positioned(
-            top: 19.0,
-            right: 18.0,
-            child: Container(
-              width: 24.0,
-              height: 24.0,
-              child: IconButton(
-                onPressed: () {
-                  print('Pressed favorite button');
-                },
-                padding: EdgeInsets.zero,
-                icon: SvgPicture.asset(
-                  iconHearth,
-                  color: Colors.white,
-                  width: 24.0,
-                  height: 24.0,
-                ),
+            Positioned(
+              top: 16.0,
+              left: 16.0,
+              child: Text(
+                sight.type.toLowerCase(),
+                style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.white),
               ),
             ),
-          ),
-          Positioned(
-            right: 0,
-            bottom: 0,
-            left: 0,
-            child: Container(
-              color: Theme.of(context).secondaryHeaderColor,
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Positioned(
+              top: 19.0,
+              right: 18.0,
+              child: Row(
                 children: [
-                  Text(
-                    sight.name,
-                    style: Theme.of(context).textTheme.headline4,
+                  Container(
+                    width: 24.0,
+                    height: 24.0,
+                    child: IconButton(
+                      onPressed: () {
+                        print('Pressed share button');
+                      },
+                      padding: EdgeInsets.zero,
+                      icon: SvgPicture.asset(
+                        iconShare,
+                        color: Colors.white,
+                        width: 24.0,
+                        height: 24.0,
+                      ),
+                    ),
                   ),
-                  SizedBox(
-                    height: 2.0,
-                  ),
-                  Text(
-                    'Цель достигнута 12 окт. 2020',
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                  SizedBox(
-                    height: 12.0,
-                  ),
-                  Text(
-                    'закрыто до 09:00',
-                    style: Theme.of(context).textTheme.bodyText2,
+                  SizedBox(width: 16.0),
+                  Container(
+                    width: 24.0,
+                    height: 24.0,
+                    child: IconButton(
+                      onPressed: () {
+                        removeHandler();
+                      },
+                      padding: EdgeInsets.zero,
+                      icon: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-          )
-        ],
+            Positioned(
+              right: 0,
+              bottom: 0,
+              left: 0,
+              child: Container(
+                color: Theme.of(context).secondaryHeaderColor,
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      sight.name,
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    SizedBox(
+                      height: 2.0,
+                    ),
+                    Text(
+                      'Цель достигнута 12 окт. 2020',
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                    SizedBox(
+                      height: 12.0,
+                    ),
+                    Text(
+                      'закрыто до 09:00',
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
