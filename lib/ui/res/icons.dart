@@ -8,3 +8,5 @@ const String iconMuseum = 'res/icons/icon-museum.svg';
 const String iconClear = 'res/icons/icon-clear.svg';
 const String iconSearch = 'res/icons/icon-search.svg';
 const String iconFilter = 'res/icons/icon-filter.svg';
+const String iconShare = 'res/icons/icon-share.svg';
+const String iconWanted = 'res/icons/icon-wanted.svg';
