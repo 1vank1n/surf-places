@@ -11,38 +11,35 @@ class SightWantedCard extends StatelessWidget {
   final Function removeHandler;
 
   SightWantedCard({
+    Key? key,
     required this.sight,
-    required this.removeHandler,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.0),
-        child: Stack(
-          children: [
-            AspectRatio(
-              aspectRatio: 3 / 2,
-              child: Container(
-                width: double.infinity,
-                child: Image.network(
-                  sight.url,
-                  fit: BoxFit.cover,
-                  loadingBuilder:
-                      (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Center(
-                      child: CupertinoActivityIndicator.partiallyRevealed(
-                        progress: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                            : 1,
-                      ),
-                    );
-                  },
-                ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16.0),
+      child: Stack(
+        children: [
+          AspectRatio(
+            aspectRatio: 3 / 2,
+            child: Container(
+              width: double.infinity,
+              child: Image.network(
+                sight.url,
+                fit: BoxFit.cover,
+                loadingBuilder:
+                    (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: CupertinoActivityIndicator.partiallyRevealed(
+                      progress: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!
+                          : 1,
+                    ),
+                  );
+                },
               ),
             ),
             Positioned(

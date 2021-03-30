@@ -15,17 +15,8 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  List<Sight> _wantedSights = []..addAll(SightStorage.sights);
-  List<Sight> _visitedSights = []..addAll(SightStorage.sights);
-
-  void _removeSights({
-    required List<Sight> sights,
-    required int index,
-  }) {
-    setState(() {
-      sights.removeAt(index);
-    });
-  }
+  final List<Sight> _wantedSights = []..addAll(SightStorage.sights);
+  final List<Sight> _visitedSights = []..addAll(SightStorage.sights);
 
   @override
   Widget build(BuildContext context) {
@@ -53,19 +44,10 @@ class _VisitingScreenState extends State<VisitingScreen> {
         ),
         body: TabBarView(
           children: [
-            _buildWantedList(),
-            _buildVisitedList(),
-          ],
-        ),
-        bottomNavigationBar: SightNavigationBar(),
-      ),
-    );
-  }
-
-  Widget _buildVisitedList() {
-    return _visitedSights.length > 0
-        ? SingleChildScrollView(
-            child: Padding(
+            //
+            // Wanted
+            //
+            Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
@@ -86,36 +68,63 @@ class _VisitingScreenState extends State<VisitingScreen> {
               child: Opacity(
                 opacity: 0.56,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(
-                      iconGo,
-                      width: 64.0,
-                      height: 64.0,
-                      color: secondaryTextColor,
-                    ),
-                    SizedBox(height: 24.0),
-                    Text(
-                      'Пусто',
-                      style: headline3,
-                    ),
-                    SizedBox(height: 8.0),
-                    Text(
-                      'Завершите маршрут, чтобы место попало сюда.',
-                      style: textBody1,
-                      textAlign: TextAlign.center,
-                    ),
+                    for (var i = 0; i < _wantedSights.length; i++)
+                      Column(
+                        children: [
+                          LongPressDraggable<Sight>(
+                            key: ValueKey(_wantedSights[i].name),
+                            data: _wantedSights[i],
+                            child: SightWantedCard(
+                              key: ValueKey(_wantedSights[i].name),
+                              sight: _wantedSights[i],
+                            ),
+                            feedback: ClipRRect(
+                              borderRadius: BorderRadius.circular(16.0),
+                              child: Material(
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: double.infinity,
+                                    maxHeight: (MediaQuery.of(context).size.width - 24) * 2 / 3,
+                                  ),
+                                  child: SightWantedCard(
+                                    key: ValueKey(_wantedSights[i].name),
+                                    sight: _wantedSights[i],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          DragTarget<Sight>(
+                            onAccept: (Sight? sight) {
+                              setState(() {
+                                _wantedSights.remove(sight!);
+                                _wantedSights.insert(i + 1, sight);
+                              });
+                            },
+                            builder: (BuildContext context, List<Sight?> candidates, rejects) {
+                              if (candidates.length > 0 && candidates.first != null) {
+                                return SightWantedCard(
+                                  key: ValueKey(candidates.first!.name),
+                                  sight: candidates.first!,
+                                );
+                              }
+                              return Container(
+                                width: double.infinity,
+                                height: 24.0,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
             ),
-          );
-  }
-
-  Widget _buildWantedList() {
-    return _wantedSights.length > 0
-        ? SingleChildScrollView(
-            child: Padding(
+            //
+            // Visited
+            //
+            Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
@@ -136,24 +145,55 @@ class _VisitingScreenState extends State<VisitingScreen> {
               child: Opacity(
                 opacity: 0.56,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(
-                      iconWanted,
-                      width: 64.0,
-                      height: 64.0,
-                    ),
-                    SizedBox(height: 24.0),
-                    Text(
-                      'Пусто',
-                      style: headline3,
-                    ),
-                    SizedBox(height: 8.0),
-                    Text(
-                      'Отмечайте понравившиеся места и они появиятся здесь.',
-                      style: textBody1,
-                      textAlign: TextAlign.center,
-                    ),
+                    for (var i = 0; i < _visitedSights.length; i++)
+                      Column(
+                        children: [
+                          LongPressDraggable<Sight>(
+                            key: ValueKey(_visitedSights[i].name),
+                            data: _visitedSights[i],
+                            child: SightVisitedCard(
+                              key: ValueKey(_visitedSights[i].name),
+                              sight: _visitedSights[i],
+                            ),
+                            feedback: ClipRRect(
+                              borderRadius: BorderRadius.circular(16.0),
+                              child: Material(
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: double.infinity,
+                                    maxHeight: (MediaQuery.of(context).size.width - 24) * 2 / 3,
+                                  ),
+                                  child: SightVisitedCard(
+                                    key: ValueKey(_visitedSights[i].name),
+                                    sight: _visitedSights[i],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          DragTarget<Sight>(
+                            onAccept: (Sight? sight) {
+                              setState(() {
+                                _visitedSights.remove(sight!);
+                                _visitedSights.insert(i + 1, sight);
+                              });
+                            },
+                            builder: (BuildContext context, List<Sight?> candidates, rejects) {
+                              if (candidates.length > 0 && candidates.first != null) {
+                                return SightVisitedCard(
+                                  key: ValueKey(candidates.first!.name),
+                                  sight: candidates.first!,
+                                );
+                              }
+                              return Container(
+                                width: double.infinity,
+                                height: 24.0,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
