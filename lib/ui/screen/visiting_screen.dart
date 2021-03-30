@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/main.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/common/widgets/sight_navigation_bar.dart';
 import 'package:places/ui/common/widgets/sight_visited_card.dart';
 import 'package:places/ui/common/widgets/sight_wanted_card.dart';
+import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/screen/res/themes.dart';
+import 'package:provider/provider.dart';
 
 class VisitingScreen extends StatefulWidget {
   @override
@@ -24,21 +28,39 @@ class _VisitingScreenState extends State<VisitingScreen> {
       initialIndex: 0,
       child: Scaffold(
         appBar: AppBar(
+          toolbarHeight: 108.0,
           title: Text(
             'Избранное',
             style: Theme.of(context).textTheme.headline3,
           ),
           elevation: 0,
-          bottom: TabBar(
-            indicatorColor: Colors.transparent,
-            tabs: [
-              Tab(
-                child: Text('Хочу посетить'),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(40.0),
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
               ),
-              Tab(
-                child: Text('Посетил'),
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: Provider.of<AppModel>(context).theme == lightThemeData
+                      ? lightBgColor
+                      : deepDarkColor,
+                  borderRadius: BorderRadius.circular(40.0),
+                ),
+                child: TabBar(
+                  tabs: [
+                    Tab(
+                      child: Text('Хочу посетить'),
+                    ),
+                    Tab(
+                      child: Text('Посетил'),
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
         ),
         body: TabBarView(
