@@ -175,7 +175,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   Widget _buildEmptyQuery() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(32.0),
         child: Opacity(
           opacity: 0.56,
           child: Column(
