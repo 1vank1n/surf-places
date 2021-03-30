@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/common/widgets/sight_card.dart';
 import 'package:places/ui/common/widgets/sight_navigation_bar.dart';
@@ -23,12 +24,7 @@ class _SightListScreenState extends State<SightListScreen> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(52.0),
           child: Padding(
-            padding: const EdgeInsets.only(
-              top: 0,
-              right: 16.0,
-              bottom: 12.0,
-              left: 16.0,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: SearchBar(
               searchTextEditingController: TextEditingController(),
               isButton: true,
@@ -51,12 +47,24 @@ class _SightListScreenState extends State<SightListScreen> {
         //
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            children: [for (var sight in SightStorage.sights) SightCard(sight)],
-          ),
+      body: Padding(
+        padding: const EdgeInsets.only(
+          top: 34.0,
+          right: 16.0,
+          left: 16.0,
+        ),
+        child: ListView.separated(
+          itemCount: SightStorage.sights.length,
+          itemBuilder: (BuildContext context, int index) {
+            Sight sight = SightStorage.sights[index];
+            return SightCard(
+              key: ValueKey(sight),
+              sight: sight,
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return SizedBox(height: 24.0);
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
