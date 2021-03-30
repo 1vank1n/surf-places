@@ -14,8 +14,12 @@ ThemeData lightThemeData = ThemeData(
   tabBarTheme: TabBarTheme(
     labelStyle: headline4,
     unselectedLabelStyle: headline4,
-    labelColor: primaryTextColor,
-    unselectedLabelColor: Colors.grey.shade500,
+    labelColor: Colors.white,
+    unselectedLabelColor: secondaryTextColor.withOpacity(.56),
+    indicator: BoxDecoration(
+      borderRadius: BorderRadius.circular(40.0),
+      color: primaryColor,
+    ),
   ),
   scaffoldBackgroundColor: Colors.white,
   secondaryHeaderColor: secondaryBgColor,
@@ -92,8 +96,12 @@ ThemeData darkThemeData = ThemeData(
   tabBarTheme: TabBarTheme(
     labelStyle: headline4,
     unselectedLabelStyle: headline4,
-    labelColor: Colors.white,
-    unselectedLabelColor: Colors.grey.shade300,
+    labelColor: primaryColor,
+    unselectedLabelColor: secondaryTextColor.withOpacity(.56),
+    indicator: BoxDecoration(
+      borderRadius: BorderRadius.circular(40.0),
+      color: Colors.white,
+    ),
   ),
   scaffoldBackgroundColor: darkBgColor,
   secondaryHeaderColor: secondaryDarkBgColor,
