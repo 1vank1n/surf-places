@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
@@ -20,15 +22,6 @@ class VisitingScreen extends StatefulWidget {
 class _VisitingScreenState extends State<VisitingScreen> {
   final List<Sight> _wantedSights = []..addAll(SightStorage.sights);
   final List<Sight> _visitedSights = []..addAll(SightStorage.sights);
-
-  void _removeSights({
-    required List<Sight> sights,
-    required int index,
-  }) {
-    setState(() {
-      sights.removeAt(index);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,26 +78,28 @@ class _VisitingScreenState extends State<VisitingScreen> {
 
   Widget _buildWantedList() {
     return _wantedSights.length > 0
-        ? Padding(
+        ? ReorderableListView.builder(
             padding: const EdgeInsets.only(
-              top: 34.0,
+              top: 22.0,
               right: 16.0,
               left: 16.0,
             ),
-            child: ListView.separated(
-              itemCount: _wantedSights.length,
-              itemBuilder: (BuildContext context, int index) {
-                Sight sight = _wantedSights[index];
+            itemCount: _wantedSights.length,
+            physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
+            itemBuilder: (BuildContext context, int index) {
+              Sight sight = _wantedSights[index];
 
-                return Dismissible(
-                  key: ValueKey(sight.name),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (_) {
-                    setState(() {
-                      _wantedSights.remove(sight);
-                    });
-                  },
-                  background: RemoveBackground(),
+              return Dismissible(
+                key: ValueKey(sight.name),
+                direction: DismissDirection.endToStart,
+                onDismissed: (_) {
+                  setState(() {
+                    _wantedSights.remove(sight);
+                  });
+                },
+                background: RemoveBackground(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: SightWantedCard(
                     key: ValueKey(sight.name),
                     sight: sight,
@@ -114,12 +109,17 @@ class _VisitingScreenState extends State<VisitingScreen> {
                       });
                     },
                   ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return SizedBox(height: 24.0);
-              },
-            ),
+                ),
+              );
+            },
+            onReorder: (int oldIndex, int newIndex) {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+
+              final Sight sight = _wantedSights.removeAt(oldIndex);
+              _wantedSights.insert(newIndex, sight);
+            },
           )
         : Center(
             child: Padding(
@@ -155,27 +155,29 @@ class _VisitingScreenState extends State<VisitingScreen> {
 
   Widget _buildVisitedList() {
     return _visitedSights.length > 0
-        ? Padding(
+        ? ReorderableListView.builder(
             padding: const EdgeInsets.only(
-              top: 34.0,
+              top: 22.0,
               right: 16.0,
               left: 16.0,
             ),
-            child: ListView.separated(
-              itemCount: _visitedSights.length,
-              itemBuilder: (BuildContext context, int index) {
-                Sight sight = _visitedSights[index];
+            itemCount: _visitedSights.length,
+            physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
+            itemBuilder: (BuildContext context, int index) {
+              Sight sight = _visitedSights[index];
 
-                return Dismissible(
-                  key: ValueKey(sight.name),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (_) {
-                    setState(() {
-                      _visitedSights.remove(sight);
-                    });
-                  },
-                  background: RemoveBackground(),
-                  child: SightWantedCard(
+              return Dismissible(
+                key: ValueKey(sight.name),
+                direction: DismissDirection.endToStart,
+                onDismissed: (_) {
+                  setState(() {
+                    _visitedSights.remove(sight);
+                  });
+                },
+                background: RemoveBackground(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: SightVisitedCard(
                     key: ValueKey(sight.name),
                     sight: sight,
                     removeHandler: () {
@@ -184,12 +186,17 @@ class _VisitingScreenState extends State<VisitingScreen> {
                       });
                     },
                   ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return SizedBox(height: 24.0);
-              },
-            ),
+                ),
+              );
+            },
+            onReorder: (int oldIndex, int newIndex) {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+
+              final Sight sight = _visitedSights.removeAt(oldIndex);
+              _visitedSights.insert(newIndex, sight);
+            },
           )
         : Center(
             child: Padding(

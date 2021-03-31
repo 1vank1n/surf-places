@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -122,148 +123,149 @@ class _AddSightScreenState extends State<AddSightScreen> {
         ),
         leadingWidth: 100.0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildImageRow(),
-            ListTile(
-              subtitle: Text('КАТЕГОРИЯ'),
+      body: ListView(
+        physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
+        children: [
+          _buildImageRow(),
+          ListTile(
+            subtitle: Text('КАТЕГОРИЯ'),
+          ),
+          ListTile(
+            title: Text('Не выбрано'),
+            trailing: Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Theme.of(context).primaryColor,
+              size: 16,
             ),
-            ListTile(
-              title: Text('Не выбрано'),
-              trailing: Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: Theme.of(context).primaryColor,
-                size: 16,
+            onTap: () {},
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Divider(color: dividerColor),
+          ),
+          ListTile(
+            subtitle: Text('НАЗВАНИЕ'),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: TextFormField(
+              focusNode: _titleFocusNode,
+              controller: _titleTextEditingController,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: requiredValidator,
+              textCapitalization: TextCapitalization.sentences,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) {
+                _latFocusNode.requestFocus();
+              },
+              decoration: InputDecoration(
+                suffixIcon: _titleTextEditingController.text.isNotEmpty
+                    ? IconButton(
+                        padding: EdgeInsets.zero,
+                        iconSize: 20.0,
+                        icon: SvgPicture.asset(
+                          iconClear,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onPressed: () {
+                          _titleTextEditingController.text = '';
+                        },
+                      )
+                    : null,
               ),
-              onTap: () {},
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Divider(color: dividerColor),
-            ),
-            ListTile(
-              subtitle: Text('НАЗВАНИЕ'),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: TextFormField(
-                focusNode: _titleFocusNode,
-                controller: _titleTextEditingController,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: requiredValidator,
-                textCapitalization: TextCapitalization.sentences,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  _latFocusNode.requestFocus();
-                },
-                decoration: InputDecoration(
-                  suffixIcon: _titleTextEditingController.text.isNotEmpty
-                      ? IconButton(
-                          padding: EdgeInsets.zero,
-                          iconSize: 20.0,
-                          icon: SvgPicture.asset(
-                            iconClear,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          onPressed: () {
-                            _titleTextEditingController.text = '';
-                          },
-                        )
-                      : null,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        subtitle: Text('ШИРОТА'),
+                      ),
+                      TextFormField(
+                        focusNode: _latFocusNode,
+                        controller: _latTextEditingController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: requiredValidator,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
+                        ],
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) {
+                          _lonFocusNode.requestFocus();
+                        },
+                        decoration: InputDecoration(
+                          suffixIcon: _latTextEditingController.text.isNotEmpty
+                              ? IconButton(
+                                  padding: EdgeInsets.zero,
+                                  iconSize: 20.0,
+                                  icon: SvgPicture.asset(
+                                    iconClear,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  onPressed: () {
+                                    _latTextEditingController.text = '';
+                                  },
+                                )
+                              : null,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                SizedBox(
+                  width: 16.0,
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        subtitle: Text('ДОЛГОТА'),
+                      ),
+                      TextFormField(
+                        focusNode: _lonFocusNode,
+                        controller: _lonTextEditingController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: requiredValidator,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
+                        ],
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) {
+                          _detailsFocusNode.requestFocus();
+                        },
+                        decoration: InputDecoration(
+                          suffixIcon: _lonTextEditingController.text.isNotEmpty
+                              ? IconButton(
+                                  padding: EdgeInsets.zero,
+                                  iconSize: 20.0,
+                                  icon: SvgPicture.asset(
+                                    iconClear,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  onPressed: () {
+                                    _lonTextEditingController.text = '';
+                                  },
+                                )
+                              : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          subtitle: Text('ШИРОТА'),
-                        ),
-                        TextFormField(
-                          focusNode: _latFocusNode,
-                          controller: _latTextEditingController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: requiredValidator,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
-                          ],
-                          textInputAction: TextInputAction.next,
-                          onFieldSubmitted: (_) {
-                            _lonFocusNode.requestFocus();
-                          },
-                          decoration: InputDecoration(
-                            suffixIcon: _latTextEditingController.text.isNotEmpty
-                                ? IconButton(
-                                    padding: EdgeInsets.zero,
-                                    iconSize: 20.0,
-                                    icon: SvgPicture.asset(
-                                      iconClear,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                    onPressed: () {
-                                      _latTextEditingController.text = '';
-                                    },
-                                  )
-                                : null,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 16.0,
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          subtitle: Text('ДОЛГОТА'),
-                        ),
-                        TextFormField(
-                          focusNode: _lonFocusNode,
-                          controller: _lonTextEditingController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: requiredValidator,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
-                          ],
-                          textInputAction: TextInputAction.next,
-                          onFieldSubmitted: (_) {
-                            _detailsFocusNode.requestFocus();
-                          },
-                          decoration: InputDecoration(
-                            suffixIcon: _lonTextEditingController.text.isNotEmpty
-                                ? IconButton(
-                                    padding: EdgeInsets.zero,
-                                    iconSize: 20.0,
-                                    icon: SvgPicture.asset(
-                                      iconClear,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                    onPressed: () {
-                                      _lonTextEditingController.text = '';
-                                    },
-                                  )
-                                : null,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Container(
+              alignment: Alignment.topLeft,
               child: TextButton(
                 child: Text(
                   'Указать на карте',
@@ -280,27 +282,27 @@ class _AddSightScreenState extends State<AddSightScreen> {
                 },
               ),
             ),
-            ListTile(
-              subtitle: Text('ОПИСАНИЕ'),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: TextFormField(
-                focusNode: _detailsFocusNode,
-                controller: _detailsTextEditingController,
-                maxLines: 4,
-                textInputAction: TextInputAction.done,
-                onFieldSubmitted: (_) {
-                  _detailsFocusNode.unfocus();
-                },
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(16.0),
-                  hintText: 'Введите текст',
-                ),
+          ),
+          ListTile(
+            subtitle: Text('ОПИСАНИЕ'),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: TextFormField(
+              focusNode: _detailsFocusNode,
+              controller: _detailsTextEditingController,
+              maxLines: 4,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (_) {
+                _detailsFocusNode.unfocus();
+              },
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(16.0),
+                hintText: 'Введите текст',
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
@@ -326,11 +328,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
         right: 16.0,
         left: 16.0,
       ),
-      clipBehavior: Clip.none,
       child: ListView.separated(
-        clipBehavior: Clip.none,
-        scrollDirection: Axis.horizontal,
         itemCount: _uploadImages.length,
+        physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
         itemBuilder: (BuildContext context, int index) {
           return _uploadImages[index];
         },

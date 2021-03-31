@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -94,6 +96,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
         ],
       ),
       body: ListView(
+        physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
         children: [
           _buildCategoriesFilter(),
           SizedBox(height: 40.0),
