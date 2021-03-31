@@ -57,6 +57,7 @@ class _SightListScreenState extends State<SightListScreen> {
           itemCount: SightStorage.sights.length,
           itemBuilder: (BuildContext context, int index) {
             Sight sight = SightStorage.sights[index];
+
             return SightCard(
               key: ValueKey(sight),
               sight: sight,

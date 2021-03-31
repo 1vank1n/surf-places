@@ -85,83 +85,40 @@ class _VisitingScreenState extends State<VisitingScreen> {
 
   Widget _buildWantedList() {
     return _wantedSights.length > 0
-        ? SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  for (var i = 0; i < _wantedSights.length; i++)
-                    Column(
-                      children: [
-                        LongPressDraggable<Sight>(
-                          key: ValueKey(_wantedSights[i].name),
-                          data: _wantedSights[i],
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16.0),
-                            child: Dismissible(
-                              key: ValueKey(_wantedSights[i].name),
-                              direction: DismissDirection.endToStart,
-                              onDismissed: (_) {
-                                setState(() {
-                                  _wantedSights.remove(_wantedSights[i]);
-                                });
-                              },
-                              background: RemoveBackground(),
-                              child: SightWantedCard(
-                                key: ValueKey(_wantedSights[i].name),
-                                sight: _wantedSights[i],
-                                removeHandler: () {
-                                  _removeSights(sights: _visitedSights, index: i);
-                                },
-                              ),
-                            ),
-                          ),
-                          feedback: ClipRRect(
-                            borderRadius: BorderRadius.circular(16.0),
-                            child: Material(
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxWidth: double.infinity,
-                                  maxHeight: (MediaQuery.of(context).size.width - 24) * 2 / 3,
-                                ),
-                                child: SightVisitedCard(
-                                  key: ValueKey(_wantedSights[i].name),
-                                  sight: _wantedSights[i],
-                                  removeHandler: () {
-                                    _removeSights(sights: _visitedSights, index: i);
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        DragTarget<Sight>(
-                          onAccept: (Sight? sight) {
-                            setState(() {
-                              _wantedSights.remove(sight!);
-                              _wantedSights.insert(i + 1, sight);
-                            });
-                          },
-                          builder: (BuildContext context, List<Sight?> candidates, rejects) {
-                            if (candidates.length > 0 && candidates.first != null) {
-                              return SightVisitedCard(
-                                key: ValueKey(candidates.first!.name),
-                                sight: candidates.first!,
-                                removeHandler: () {
-                                  _removeSights(sights: _visitedSights, index: i);
-                                },
-                              );
-                            }
-                            return Container(
-                              width: double.infinity,
-                              height: 24.0,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                ],
-              ),
+        ? Padding(
+            padding: const EdgeInsets.only(
+              top: 34.0,
+              right: 16.0,
+              left: 16.0,
+            ),
+            child: ListView.separated(
+              itemCount: _wantedSights.length,
+              itemBuilder: (BuildContext context, int index) {
+                Sight sight = _wantedSights[index];
+
+                return Dismissible(
+                  key: ValueKey(sight.name),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (_) {
+                    setState(() {
+                      _wantedSights.remove(sight);
+                    });
+                  },
+                  background: RemoveBackground(),
+                  child: SightWantedCard(
+                    key: ValueKey(sight.name),
+                    sight: sight,
+                    removeHandler: () {
+                      setState(() {
+                        _wantedSights.remove(sight);
+                      });
+                    },
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return SizedBox(height: 24.0);
+              },
             ),
           )
         : Center(
@@ -198,83 +155,40 @@ class _VisitingScreenState extends State<VisitingScreen> {
 
   Widget _buildVisitedList() {
     return _visitedSights.length > 0
-        ? SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  for (var i = 0; i < _visitedSights.length; i++)
-                    Column(
-                      children: [
-                        LongPressDraggable<Sight>(
-                          key: ValueKey(_visitedSights[i].name),
-                          data: _visitedSights[i],
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16.0),
-                            child: Dismissible(
-                              key: ValueKey(_visitedSights[i].name),
-                              direction: DismissDirection.endToStart,
-                              onDismissed: (_) {
-                                setState(() {
-                                  _visitedSights.remove(_visitedSights[i]);
-                                });
-                              },
-                              background: RemoveBackground(),
-                              child: SightWantedCard(
-                                key: ValueKey(_visitedSights[i].name),
-                                sight: _visitedSights[i],
-                                removeHandler: () {
-                                  _removeSights(sights: _visitedSights, index: i);
-                                },
-                              ),
-                            ),
-                          ),
-                          feedback: ClipRRect(
-                            borderRadius: BorderRadius.circular(16.0),
-                            child: Material(
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxWidth: double.infinity,
-                                  maxHeight: (MediaQuery.of(context).size.width - 24) * 2 / 3,
-                                ),
-                                child: SightVisitedCard(
-                                  key: ValueKey(_visitedSights[i].name),
-                                  sight: _visitedSights[i],
-                                  removeHandler: () {
-                                    _removeSights(sights: _visitedSights, index: i);
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        DragTarget<Sight>(
-                          onAccept: (Sight? sight) {
-                            setState(() {
-                              _visitedSights.remove(sight!);
-                              _visitedSights.insert(i + 1, sight);
-                            });
-                          },
-                          builder: (BuildContext context, List<Sight?> candidates, rejects) {
-                            if (candidates.length > 0 && candidates.first != null) {
-                              return SightVisitedCard(
-                                key: ValueKey(candidates.first!.name),
-                                sight: candidates.first!,
-                                removeHandler: () {
-                                  _removeSights(sights: _visitedSights, index: i);
-                                },
-                              );
-                            }
-                            return Container(
-                              width: double.infinity,
-                              height: 24.0,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                ],
-              ),
+        ? Padding(
+            padding: const EdgeInsets.only(
+              top: 34.0,
+              right: 16.0,
+              left: 16.0,
+            ),
+            child: ListView.separated(
+              itemCount: _visitedSights.length,
+              itemBuilder: (BuildContext context, int index) {
+                Sight sight = _visitedSights[index];
+
+                return Dismissible(
+                  key: ValueKey(sight.name),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (_) {
+                    setState(() {
+                      _visitedSights.remove(sight);
+                    });
+                  },
+                  background: RemoveBackground(),
+                  child: SightWantedCard(
+                    key: ValueKey(sight.name),
+                    sight: sight,
+                    removeHandler: () {
+                      setState(() {
+                        _visitedSights.remove(sight);
+                      });
+                    },
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return SizedBox(height: 24.0);
+              },
             ),
           )
         : Center(
@@ -317,21 +231,24 @@ class RemoveBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: AlignmentDirectional.centerEnd,
-      color: Colors.red,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(iconBucket),
-            SizedBox(height: 8.0),
-            Text(
-              'Удалить',
-              style: subtitle2.copyWith(color: Colors.white),
-            ),
-          ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16.0),
+      child: Container(
+        alignment: AlignmentDirectional.centerEnd,
+        color: Colors.red,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(iconBucket),
+              SizedBox(height: 8.0),
+              Text(
+                'Удалить',
+                style: subtitle2.copyWith(color: Colors.white),
+              ),
+            ],
+          ),
         ),
       ),
     );
