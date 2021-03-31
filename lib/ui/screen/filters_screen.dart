@@ -93,16 +93,12 @@ class _FiltersScreenState extends State<FiltersScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 40.0,
-            ),
-            _buildCategoriesFilter(),
-            _buildRangeSlider(),
-          ],
-        ),
+      body: ListView(
+        children: [
+          _buildCategoriesFilter(),
+          SizedBox(height: 40.0),
+          _buildRangeSlider(),
+        ],
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
@@ -125,55 +121,53 @@ class _FiltersScreenState extends State<FiltersScreen> {
   }
 
   Widget _buildCategoriesFilter() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        children: [
-          ListTile(
-            subtitle: Text('КАТЕГОРИЯ'),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              CategoryButton(
-                context: context,
-                iconAsset: iconMuseum,
-                title: 'Здания',
-                onPressed: () {
-                  toggleTypeInFilteredTypes('Здание');
-                },
-                isSelected: _filteredTypes.contains('Здание'),
-              ),
-              CategoryButton(
-                context: context,
-                iconAsset: iconPark,
-                title: 'Памятники',
-                onPressed: () {
-                  toggleTypeInFilteredTypes('Памятник');
-                },
-                isSelected: _filteredTypes.contains('Памятник'),
-              ),
-              CategoryButton(
-                context: context,
-                iconAsset: iconCafe,
-                title: 'Кафе',
-                onPressed: () {
-                  toggleTypeInFilteredTypes('Кафе');
-                },
-                isSelected: _filteredTypes.contains('Кафе'),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 40.0,
-          ),
-        ],
-      ),
+    return ListView(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      children: [
+        ListTile(
+          subtitle: Text('КАТЕГОРИЯ'),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            CategoryButton(
+              context: context,
+              iconAsset: iconMuseum,
+              title: 'Здания',
+              onPressed: () {
+                toggleTypeInFilteredTypes('Здание');
+              },
+              isSelected: _filteredTypes.contains('Здание'),
+            ),
+            CategoryButton(
+              context: context,
+              iconAsset: iconPark,
+              title: 'Памятники',
+              onPressed: () {
+                toggleTypeInFilteredTypes('Памятник');
+              },
+              isSelected: _filteredTypes.contains('Памятник'),
+            ),
+            CategoryButton(
+              context: context,
+              iconAsset: iconCafe,
+              title: 'Кафе',
+              onPressed: () {
+                toggleTypeInFilteredTypes('Кафе');
+              },
+              isSelected: _filteredTypes.contains('Кафе'),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
   Widget _buildRangeSlider() {
-    return Column(
+    return ListView(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       children: [
         ListTile(
           title: Text('Расстояние'),
