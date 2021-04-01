@@ -95,13 +95,14 @@ class _FiltersScreenState extends State<FiltersScreen> {
           ),
         ],
       ),
-      body: ListView(
-        physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
-        children: [
-          _buildCategoriesFilter(),
-          SizedBox(height: 40.0),
-          _buildRangeSlider(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildCategoriesFilter(),
+            SizedBox(height: 40.0),
+            _buildRangeSlider(),
+          ],
+        ),
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
