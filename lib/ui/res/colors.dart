@@ -10,7 +10,7 @@ const Color deepDarkColor = Color(0xFF1A1A20);
 Color primaryBgColor = Colors.grey.shade500;
 Color secondaryBgColor = Colors.grey.shade100;
 Color lightBgColor = Color(0xFFF5F5F5);
-Color overlayBgColor = Color(0xFF252849).withOpacity(0.24);
+Color overlayBgColor = Color(0xFF252849);
 
 // elements
 const Color dividerColor = Color.fromRGBO(124, 126, 146, 0.56);

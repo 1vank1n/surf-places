@@ -30,8 +30,8 @@ class App extends StatelessWidget {
       // theme: darkThemeData,
       // home: VisitingScreen(),
       // home: SightListScreen(),
-      // home: SightDetailsScr/een(),
-      home: FiltersScreen(),
+      home: SightDetailsScreen(),
+      // home: FiltersScreen(),
       // home: SettingsScreen(),
       // home: AddSightScreen(),
     );
