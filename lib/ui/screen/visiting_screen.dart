@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
@@ -65,23 +67,59 @@ class _VisitingScreenState extends State<VisitingScreen> {
         ),
         body: TabBarView(
           children: [
-            //
-            // Wanted
-            //
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  for (var i = 0; i < _visitedSights.length; i++)
-                    SightVisitedCard(
-                      sight: _visitedSights[i],
-                      removeHandler: () {
-                        _removeSights(sights: _visitedSights, index: i);
-                      },
-                    )
-                ],
-              ),
+            _buildWantedList(),
+            _buildVisitedList(),
+          ],
+        ),
+        bottomNavigationBar: SightNavigationBar(),
+      ),
+    );
+  }
+
+  Widget _buildWantedList() {
+    return _wantedSights.length > 0
+        ? ReorderableListView.builder(
+            padding: const EdgeInsets.only(
+              top: 22.0,
+              right: 16.0,
+              left: 16.0,
             ),
+            itemCount: _wantedSights.length,
+            physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
+            itemBuilder: (BuildContext context, int index) {
+              Sight sight = _wantedSights[index];
+
+              return Dismissible(
+                key: ValueKey(sight.name),
+                direction: DismissDirection.endToStart,
+                onDismissed: (_) {
+                  setState(() {
+                    _wantedSights.remove(sight);
+                  });
+                },
+                background: RemoveBackground(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: SightWantedCard(
+                    key: ValueKey(sight.name),
+                    sight: sight,
+                    removeHandler: () {
+                      setState(() {
+                        _wantedSights.remove(sight);
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
+            onReorder: (int oldIndex, int newIndex) {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+
+              final Sight sight = _wantedSights.removeAt(oldIndex);
+              _wantedSights.insert(newIndex, sight);
+            },
           )
         : Center(
             child: Padding(
@@ -89,89 +127,76 @@ class _VisitingScreenState extends State<VisitingScreen> {
               child: Opacity(
                 opacity: 0.56,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    for (var i = 0; i < _wantedSights.length; i++)
-                      Column(
-                        children: [
-                          LongPressDraggable<Sight>(
-                            key: ValueKey(_wantedSights[i].name),
-                            data: _wantedSights[i],
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16.0),
-                              child: Dismissible(
-                                key: ValueKey(_wantedSights[i].name),
-                                direction: DismissDirection.endToStart,
-                                onDismissed: (_) {
-                                  setState(() {
-                                    _wantedSights.remove(_wantedSights[i]);
-                                  });
-                                },
-                                background: RemoveBackground(),
-                                child: SightWantedCard(
-                                  key: ValueKey(_wantedSights[i].name),
-                                  sight: _wantedSights[i],
-                                ),
-                              ),
-                            ),
-                            feedback: ClipRRect(
-                              borderRadius: BorderRadius.circular(16.0),
-                              child: Material(
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: double.infinity,
-                                    maxHeight: (MediaQuery.of(context).size.width - 24) * 2 / 3,
-                                  ),
-                                  child: SightWantedCard(
-                                    key: ValueKey(_wantedSights[i].name),
-                                    sight: _wantedSights[i],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          DragTarget<Sight>(
-                            onAccept: (Sight? sight) {
-                              setState(() {
-                                _wantedSights.remove(sight!);
-                                _wantedSights.insert(i + 1, sight);
-                              });
-                            },
-                            builder: (BuildContext context, List<Sight?> candidates, rejects) {
-                              if (candidates.length > 0 && candidates.first != null) {
-                                return SightWantedCard(
-                                  key: ValueKey(candidates.first!.name),
-                                  sight: candidates.first!,
-                                );
-                              }
-                              return Container(
-                                width: double.infinity,
-                                height: 24.0,
-                              );
-                            },
-                          ),
-                        ],
-                      ),
+                    SvgPicture.asset(
+                      iconGo,
+                      width: 64.0,
+                      height: 64.0,
+                      color: secondaryTextColor,
+                    ),
+                    SizedBox(height: 24.0),
+                    Text(
+                      'Пусто',
+                      style: headline3,
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      'Завершите маршрут, чтобы место попало сюда.',
+                      style: textBody1,
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 ),
               ),
             ),
-            //
-            // Visited
-            //
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  for (var i = 0; i < _wantedSights.length; i++)
-                    SightWantedCard(
-                      sight: _wantedSights[i],
-                      removeHandler: () {
-                        _removeSights(sights: _wantedSights, index: i);
-                      },
-                    )
-                ],
-              ),
+          );
+  }
+
+  Widget _buildVisitedList() {
+    return _visitedSights.length > 0
+        ? ReorderableListView.builder(
+            padding: const EdgeInsets.only(
+              top: 22.0,
+              right: 16.0,
+              left: 16.0,
             ),
+            itemCount: _visitedSights.length,
+            physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
+            itemBuilder: (BuildContext context, int index) {
+              Sight sight = _visitedSights[index];
+
+              return Dismissible(
+                key: ValueKey(sight.name),
+                direction: DismissDirection.endToStart,
+                onDismissed: (_) {
+                  setState(() {
+                    _visitedSights.remove(sight);
+                  });
+                },
+                background: RemoveBackground(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: SightVisitedCard(
+                    key: ValueKey(sight.name),
+                    sight: sight,
+                    removeHandler: () {
+                      setState(() {
+                        _visitedSights.remove(sight);
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
+            onReorder: (int oldIndex, int newIndex) {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+
+              final Sight sight = _visitedSights.removeAt(oldIndex);
+              _visitedSights.insert(newIndex, sight);
+            },
           )
         : Center(
             child: Padding(
@@ -179,68 +204,25 @@ class _VisitingScreenState extends State<VisitingScreen> {
               child: Opacity(
                 opacity: 0.56,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    for (var i = 0; i < _visitedSights.length; i++)
-                      Column(
-                        children: [
-                          LongPressDraggable<Sight>(
-                            key: ValueKey(_visitedSights[i].name),
-                            data: _visitedSights[i],
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16.0),
-                              child: Dismissible(
-                                key: ValueKey(_visitedSights[i].name),
-                                direction: DismissDirection.endToStart,
-                                onDismissed: (_) {
-                                  setState(() {
-                                    _visitedSights.remove(_visitedSights[i]);
-                                  });
-                                },
-                                background: RemoveBackground(),
-                                child: SightWantedCard(
-                                  key: ValueKey(_visitedSights[i].name),
-                                  sight: _visitedSights[i],
-                                ),
-                              ),
-                            ),
-                            feedback: ClipRRect(
-                              borderRadius: BorderRadius.circular(16.0),
-                              child: Material(
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: double.infinity,
-                                    maxHeight: (MediaQuery.of(context).size.width - 24) * 2 / 3,
-                                  ),
-                                  child: SightVisitedCard(
-                                    key: ValueKey(_visitedSights[i].name),
-                                    sight: _visitedSights[i],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          DragTarget<Sight>(
-                            onAccept: (Sight? sight) {
-                              setState(() {
-                                _visitedSights.remove(sight!);
-                                _visitedSights.insert(i + 1, sight);
-                              });
-                            },
-                            builder: (BuildContext context, List<Sight?> candidates, rejects) {
-                              if (candidates.length > 0 && candidates.first != null) {
-                                return SightVisitedCard(
-                                  key: ValueKey(candidates.first!.name),
-                                  sight: candidates.first!,
-                                );
-                              }
-                              return Container(
-                                width: double.infinity,
-                                height: 24.0,
-                              );
-                            },
-                          ),
-                        ],
-                      ),
+                    SvgPicture.asset(
+                      iconGo,
+                      width: 64.0,
+                      height: 64.0,
+                      color: secondaryTextColor,
+                    ),
+                    SizedBox(height: 24.0),
+                    Text(
+                      'Пусто',
+                      style: headline3,
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      'Завершите маршрут, чтобы место попало сюда.',
+                      style: textBody1,
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 ),
               ),
@@ -256,21 +238,24 @@ class RemoveBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: AlignmentDirectional.centerEnd,
-      color: Colors.red,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(iconBucket),
-            SizedBox(height: 8.0),
-            Text(
-              'Удалить',
-              style: subtitle2.copyWith(color: Colors.white),
-            ),
-          ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16.0),
+      child: Container(
+        alignment: AlignmentDirectional.centerEnd,
+        color: Colors.red,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(iconBucket),
+              SizedBox(height: 8.0),
+              Text(
+                'Удалить',
+                style: subtitle2.copyWith(color: Colors.white),
+              ),
+            ],
+          ),
         ),
       ),
     );
