@@ -90,7 +90,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
             onPressed: () {},
             child: Text(
               'Очистить',
-              style: subtitle1.copyWith(color: successColor),
+              style: subtitle1.copyWith(
+                color: successColor,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ],
