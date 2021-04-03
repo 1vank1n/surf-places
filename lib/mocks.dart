@@ -63,6 +63,13 @@ class SightStorage {
     ),
   ];
 
+  static List<String> imageList = [
+    'http://source.unsplash.com/random/400x400?sig=1',
+    'http://source.unsplash.com/random/400x400?sig=2',
+    'http://source.unsplash.com/random/400x400?sig=3',
+    'http://source.unsplash.com/random/400x400?sig=4',
+  ];
+
   static bool isPointInRangeAtUserPoint({
     required double lat,
     required double lon,
