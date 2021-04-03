@@ -6,17 +6,8 @@ import 'package:places/mocks.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 
-class SightDetailsScreen extends StatefulWidget {
-  @override
-  _SightDetailsScreenState createState() => _SightDetailsScreenState();
-}
-
-class _SightDetailsScreenState extends State<SightDetailsScreen> {
+class SightDetailsScreen extends StatelessWidget {
   final Sight sight = SightStorage.sights.first;
-
-  final PageController _galleryPageController = PageController();
-
-  int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +17,7 @@ class _SightDetailsScreenState extends State<SightDetailsScreen> {
           children: [
             Stack(
               children: [
-                _buildImageGallery(context),
+                SightImageGallery(),
                 Positioned(
                   top: 36.0,
                   left: 16.0,
@@ -157,8 +148,20 @@ class _SightDetailsScreenState extends State<SightDetailsScreen> {
       ),
     );
   }
+}
 
-  Widget _buildImageGallery(BuildContext context) {
+class SightImageGallery extends StatefulWidget {
+  @override
+  _SightImageGalleryState createState() => _SightImageGalleryState();
+}
+
+class _SightImageGalleryState extends State<SightImageGallery> {
+  final PageController _galleryPageController = PageController();
+
+  int currentPageIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1,
       child: Stack(
