@@ -17,28 +17,7 @@ class SightDetailsScreen extends StatelessWidget {
           children: [
             Stack(
               children: [
-                AspectRatio(
-                  aspectRatio: 1,
-                  child: Container(
-                    width: double.infinity,
-                    child: Image.network(
-                      sight.url,
-                      fit: BoxFit.cover,
-                      loadingBuilder:
-                          (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Center(
-                          child: CupertinoActivityIndicator.partiallyRevealed(
-                            progress: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : 1,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                SightImageGallery(),
                 Positioned(
                   top: 36.0,
                   left: 16.0,
@@ -166,6 +145,72 @@ class SightDetailsScreen extends StatelessWidget {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class SightImageGallery extends StatefulWidget {
+  @override
+  _SightImageGalleryState createState() => _SightImageGalleryState();
+}
+
+class _SightImageGalleryState extends State<SightImageGallery> {
+  final PageController _galleryPageController = PageController();
+
+  int currentPageIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Stack(
+        children: [
+          PageView(
+            controller: _galleryPageController,
+            onPageChanged: (int index) {
+              setState(() {
+                currentPageIndex = index;
+              });
+            },
+            children: [
+              for (String url in SightStorage.imageList)
+                Image.network(
+                  url,
+                  fit: BoxFit.cover,
+                  loadingBuilder:
+                      (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CupertinoActivityIndicator.partiallyRevealed(
+                        progress: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : 1,
+                      ),
+                    );
+                  },
+                ),
+            ],
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: Container(
+              width: (currentPageIndex + 1) *
+                  MediaQuery.of(context).size.width /
+                  SightStorage.imageList.length,
+              height: 8.0,
+              decoration: BoxDecoration(
+                color: overlayBgColor,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(8.0),
+                  bottomRight: Radius.circular(8.0),
+                ),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

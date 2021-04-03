@@ -431,7 +431,7 @@ class UploadImage extends StatelessWidget {
                   ),
                   Positioned.fill(
                     child: Container(
-                      color: overlayBgColor,
+                      color: overlayBgColor.withOpacity(0.24),
                     ),
                   ),
                   Positioned(
