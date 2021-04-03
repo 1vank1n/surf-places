@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
@@ -15,57 +13,86 @@ class SightListScreen extends StatefulWidget {
 }
 
 class _SightListScreenState extends State<SightListScreen> {
+  ScrollController _scrollController = ScrollController();
+  double _titleOpacity = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      setState(() {
+        if (_scrollController.offset > 200) {
+          _titleOpacity = 1;
+        } else if (_scrollController.offset < 100) {
+          _titleOpacity = 0;
+        } else {
+          _titleOpacity = (_scrollController.offset - 100) / 100;
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Список интересных мест',
-          style: Theme.of(context).textTheme.headline3,
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(52.0),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: SearchBar(
-              searchTextEditingController: TextEditingController(),
-              isButton: true,
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverAppBar(
+            elevation: 0,
+            pinned: true,
+            title: Opacity(
+              opacity: _titleOpacity,
+              child: Text(
+                'Список интересных мест',
+                style: Theme.of(context).textTheme.headline3,
+              ),
+            ),
+            expandedHeight: 142.0 + MediaQuery.of(context).padding.top,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Список\nинтересных мест',
+                      style: Theme.of(context).textTheme.headline1,
+                    ),
+                    SizedBox(height: 30.0),
+                    SearchBar(
+                      searchTextEditingController: TextEditingController(),
+                      isButton: true,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-        //
-        // TODO непонятно какой окончательный стиль заголовка
-        // bottom: PreferredSize(
-        //   preferredSize: const Size.fromHeight(72.0),
-        //   child: Container(
-        //     width: double.infinity,
-        //     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        //     child: Text(
-        //       'Список\nинтересных мест',
-        //       style: Theme.of(context).textTheme.headline1,
-        //     ),
-        //   ),
-        // ),
-        //
-        elevation: 0,
-      ),
-      body: ListView.separated(
-        padding: const EdgeInsets.only(
-          top: 34.0,
-          right: 16.0,
-          left: 16.0,
-        ),
-        itemCount: SightStorage.sights.length,
-        physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
-        itemBuilder: (BuildContext context, int index) {
-          Sight sight = SightStorage.sights[index];
+          SliverToBoxAdapter(
+            child: SizedBox(height: 24.0),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                Sight sight = SightStorage.sights[index];
 
-          return SightCard(
-            key: ValueKey(sight),
-            sight: sight,
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) => SizedBox(height: 24.0),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 12.0,
+                  ),
+                  child: SightCard(
+                    key: ValueKey(sight),
+                    sight: sight,
+                  ),
+                );
+              },
+              childCount: SightStorage.sights.length,
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
