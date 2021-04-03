@@ -12,44 +12,46 @@ class SightDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                SightImageGallery(),
-                Positioned(
-                  top: 36.0,
-                  left: 16.0,
-                  child: SafeArea(
-                    child: Container(
-                      width: 32.0,
-                      height: 32.0,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          print('Pressed icon button');
-                        },
-                        icon: SvgPicture.asset(
-                          iconArrow,
-                          width: 24.0,
-                          height: 24.0,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: MediaQuery.of(context).size.width - MediaQuery.of(context).padding.top,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Stack(
+                children: [
+                  SightImageGallery(),
+                  Positioned(
+                    top: 36.0,
+                    left: 16.0,
+                    child: SafeArea(
+                      child: Container(
+                        width: 32.0,
+                        height: 32.0,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                        padding: EdgeInsets.zero,
-                        color: Colors.white,
+                        child: IconButton(
+                          onPressed: () {
+                            print('Pressed icon button');
+                          },
+                          icon: SvgPicture.asset(
+                            iconArrow,
+                            width: 24.0,
+                            height: 24.0,
+                          ),
+                          padding: EdgeInsets.zero,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            SizedBox(
-              height: 8.0,
-            ),
-            Padding(
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -142,9 +144,9 @@ class SightDetailsScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -31,11 +31,11 @@ class App extends StatelessWidget {
       // theme: darkThemeData,
       // home: VisitingScreen(),
       // home: SightListScreen(),
-      // home: SightDetailsScreen(),
+      home: SightDetailsScreen(),
       // home: FiltersScreen(),
       // home: SettingsScreen(),
       // home: AddSightScreen(),
-      home: OnboardingScreen(),
+      // home: OnboardingScreen(),
     );
   }
 }
