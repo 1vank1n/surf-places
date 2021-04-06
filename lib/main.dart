@@ -6,6 +6,7 @@ import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/sight_details_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
+import 'package:places/ui/screen/splash_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -28,14 +29,14 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Surf Places',
       theme: Provider.of<AppModel>(context).theme,
-      // theme: darkThemeData,
       // home: VisitingScreen(),
-      home: SightListScreen(),
+      // home: SightListScreen(),
       // home: SightDetailsScreen(),
       // home: FiltersScreen(),
       // home: SettingsScreen(),
       // home: AddSightScreen(),
       // home: OnboardingScreen(),
+      home: SplashScreen(),
     );
   }
 }
