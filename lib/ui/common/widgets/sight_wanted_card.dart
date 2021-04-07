@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/main.dart' show AppRouter;
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 
@@ -53,6 +54,53 @@ class SightWantedCard extends StatelessWidget {
             ),
           ),
           Positioned(
+            right: 0,
+            bottom: 0,
+            left: 0,
+            child: Container(
+              color: Theme.of(context).secondaryHeaderColor,
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    sight.name,
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                  SizedBox(
+                    height: 2.0,
+                  ),
+                  Text(
+                    'Запланировано на 12 окт. 2021',
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(color: successColor),
+                  ),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  Text(
+                    'закрыто до 09:00',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).pushNamed(AppRouter.sightDetail, arguments: sight.id);
+                },
+                splashColor: successColor.withAlpha(0x88),
+              ),
+            ),
+          ),
+          Positioned(
             top: 19.0,
             right: 18.0,
             child: Row(
@@ -91,38 +139,6 @@ class SightWantedCard extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
-            right: 0,
-            bottom: 0,
-            left: 0,
-            child: Container(
-              color: Theme.of(context).secondaryHeaderColor,
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    sight.name,
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                  SizedBox(
-                    height: 2.0,
-                  ),
-                  Text(
-                    'Запланировано на 12 окт. 2021',
-                    style: Theme.of(context).textTheme.bodyText2!.copyWith(color: successColor),
-                  ),
-                  SizedBox(
-                    height: 12.0,
-                  ),
-                  Text(
-                    'закрыто до 09:00',
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                ],
-              ),
-            ),
-          )
         ],
       ),
     );

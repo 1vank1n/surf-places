@@ -69,7 +69,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
   }
 
   Sight createSightFromState() {
+    int lastId = SightStorage.sights.last.id;
+
     return Sight(
+      id: lastId + 1,
       name: _titleTextEditingController.text,
       lat: double.parse(_latTextEditingController.text),
       lon: double.parse(_lonTextEditingController.text),

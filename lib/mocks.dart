@@ -5,6 +5,7 @@ import 'package:places/domain/sight.dart';
 class SightStorage {
   static List<Sight> sights = [
     Sight(
+      id: 1,
       name: 'Памятник «Пермяк солёные уши» в Перми',
       lat: 58.009700,
       lon: 56.239589,
@@ -14,6 +15,7 @@ class SightStorage {
       type: 'Памятник',
     ),
     Sight(
+      id: 2,
       name: 'Набережная Сочи',
       lat: 43.574782,
       lon: 39.725208,
@@ -23,6 +25,7 @@ class SightStorage {
       type: 'Памятник',
     ),
     Sight(
+      id: 3,
       name: 'Главный усадебный дом и церковь в селе Патакино Владимирской области',
       lat: 56.262086,
       lon: 40.908558,
@@ -32,6 +35,7 @@ class SightStorage {
       type: 'Памятник',
     ),
     Sight(
+      id: 4,
       name: 'Морской вокзал',
       lat: 43.580764,
       lon: 39.718618,
@@ -42,6 +46,7 @@ class SightStorage {
       type: 'Здание',
     ),
     Sight(
+      id: 5,
       name: 'Сочинский художественный музей',
       lat: 43.576327,
       lon: 39.728463,
@@ -52,6 +57,7 @@ class SightStorage {
       type: 'Здание',
     ),
     Sight(
+      id: 6,
       name: 'Смотровая башня на горе Ахун',
       lat: 43.550446,
       lon: 39.843491,

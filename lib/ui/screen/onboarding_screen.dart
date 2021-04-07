@@ -46,7 +46,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
             onPressed: () {
-              Navigator.of(context).pushReplacementNamed(AppRouter.sightList);
+              Navigator.of(context).pushReplacementNamed(AppRouter.navigation);
             },
           ),
         ],
@@ -132,7 +132,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: ElevatedButton(
                     child: Text('НА СТАРТ'),
                     onPressed: () {
-                      Navigator.of(context).pushReplacementNamed(AppRouter.sightList);
+                      Navigator.of(context).pushReplacementNamed(AppRouter.navigation);
                     },
                   ),
                 ),

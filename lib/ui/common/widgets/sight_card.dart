@@ -85,7 +85,7 @@ class SightCard extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  Navigator.of(context).pushNamed(AppRouter.sightDetail);
+                  Navigator.of(context).pushNamed(AppRouter.sightDetail, arguments: sight.id);
                 },
                 splashColor: successColor.withAlpha(0x88),
               ),
@@ -103,7 +103,7 @@ class SightCard extends StatelessWidget {
                 },
                 padding: EdgeInsets.zero,
                 icon: SvgPicture.asset(
-                  iconHearth,
+                  iconHeart,
                   color: Colors.white,
                   width: 24.0,
                   height: 24.0,

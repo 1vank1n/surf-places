@@ -6,6 +6,7 @@ import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/sight_details_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
+import 'package:places/ui/screen/sight_navigation_screen.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
 import 'package:places/ui/screen/splash_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
@@ -32,6 +33,7 @@ class AppModel extends ChangeNotifier {
 class AppRouter {
   static const String splash = '/splash';
   static const String onboarding = '/onboarding';
+  static const String navigation = '/navigation';
   static const String sightList = '/sights';
   static const String sightDetail = '/sights/detail';
   static const String sightSearch = '/sights/search';
@@ -43,6 +45,7 @@ class AppRouter {
   static final Map<String, Widget Function(BuildContext)> routes = {
     AppRouter.splash: (data) => SplashScreen(),
     AppRouter.onboarding: (data) => OnboardingScreen(),
+    AppRouter.navigation: (data) => SightNavigationScreen(),
     AppRouter.sightList: (data) => SightListScreen(),
     AppRouter.sightDetail: (data) => SightDetailsScreen(),
     AppRouter.sightSearch: (data) => SightSearchScreen(),

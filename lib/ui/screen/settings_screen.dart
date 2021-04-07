@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:places/main.dart';
-import 'package:places/ui/common/widgets/sight_navigation_bar.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:provider/provider.dart';
+import 'package:places/main.dart' show AppRouter;
 
 class SettingsScreen extends StatelessWidget {
   @override
@@ -36,11 +36,13 @@ class SettingsScreen extends StatelessWidget {
                 Icons.info_outline,
                 color: successColor,
               ),
+              onTap: () {
+                Navigator.of(context).pushReplacementNamed(AppRouter.onboarding);
+              },
             ),
           ],
         ),
       ),
-      bottomNavigationBar: SightNavigationBar(),
     );
   }
 }
