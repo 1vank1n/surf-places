@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/onboarding_step.dart';
+import 'package:places/main.dart' show AppRouter;
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
@@ -37,7 +38,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         elevation: 0,
         actions: [
           TextButton(
-            onPressed: () {},
             child: Text(
               'Пропустить',
               style: subtitle1.copyWith(
@@ -45,6 +45,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 fontWeight: FontWeight.w500,
               ),
             ),
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed(AppRouter.sightList);
+            },
           ),
         ],
       ),
@@ -127,8 +130,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   width: double.infinity,
                   height: 48.0,
                   child: ElevatedButton(
-                    onPressed: () {},
                     child: Text('НА СТАРТ'),
+                    onPressed: () {
+                      Navigator.of(context).pushReplacementNamed(AppRouter.sightList);
+                    },
                   ),
                 ),
               )

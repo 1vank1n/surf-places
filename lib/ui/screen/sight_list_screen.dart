@@ -4,6 +4,7 @@ import 'package:places/mocks.dart';
 import 'package:places/ui/common/widgets/sight_card.dart';
 import 'package:places/ui/common/widgets/sight_navigation_bar.dart';
 import 'package:places/ui/res/colors.dart';
+import 'package:places/main.dart' show AppRouter;
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 
@@ -95,9 +96,6 @@ class _SightListScreenState extends State<SightListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          print('Pressed FAB');
-        },
         backgroundColor: Colors.transparent,
         elevation: 0,
         label: Container(
@@ -125,6 +123,9 @@ class _SightListScreenState extends State<SightListScreen> {
             ],
           ),
         ),
+        onPressed: () {
+          Navigator.of(context).pushNamed(AppRouter.sightCreate);
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: SightNavigationBar(),

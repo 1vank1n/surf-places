@@ -115,11 +115,13 @@ class _AddSightScreenState extends State<AddSightScreen> {
           style: Theme.of(context).textTheme.headline3,
         ),
         leading: TextButton(
-          onPressed: () {},
           child: Text(
             'Отмена',
             style: subtitle1.copyWith(color: secondaryTextColor),
           ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
         leadingWidth: 100.0,
       ),

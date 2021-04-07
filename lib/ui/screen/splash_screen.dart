@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:places/main.dart' show AppRouter;
 import 'package:places/ui/res/colors.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,13 +17,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    print('initState');
     _navigateToNext();
   }
 
   void _navigateToNext() {
     Future.delayed(Duration(seconds: TIMEOUT_SECONDS), () {
-      print('Navigate to next screen');
+      Navigator.of(context).pushReplacementNamed(AppRouter.onboarding);
     });
   }
 
