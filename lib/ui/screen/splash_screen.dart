@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _navigateToNext() {
-    Timer(Duration(seconds: TIMEOUT_SECONDS), () {
+    Future.delayed(Duration(seconds: TIMEOUT_SECONDS), () {
       print('Navigate to next screen');
     });
   }
