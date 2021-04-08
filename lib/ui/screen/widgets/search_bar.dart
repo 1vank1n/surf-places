@@ -4,9 +4,7 @@ import 'package:places/main.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/sight_search_screen.dart';
 import 'package:provider/provider.dart';
 
 class SearchBar extends StatelessWidget {
@@ -101,8 +99,7 @@ class SearchBar extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) => SightSearchScreen()));
+                    Navigator.of(context).pushNamed(AppRouter.sightSearch);
                   },
                   splashColor: successColor.withAlpha(0x88),
                 ),
@@ -114,8 +111,7 @@ class SearchBar extends StatelessWidget {
               right: 0,
               child: IconButton(
                 onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => FiltersScreen()));
+                  Navigator.of(context).pushNamed(AppRouter.sightFilter);
                 },
                 icon: SvgPicture.asset(
                   iconFilter,

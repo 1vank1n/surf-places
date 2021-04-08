@@ -61,6 +61,19 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: SvgPicture.asset(
+            iconArrow,
+            width: 24.0,
+            height: 24.0,
+            color: Theme.of(context).primaryColor,
+          ),
+          padding: EdgeInsets.zero,
+          color: Colors.white,
+        ),
         title: Text(
           'Список интересных мест',
           style: Theme.of(context).textTheme.headline3,

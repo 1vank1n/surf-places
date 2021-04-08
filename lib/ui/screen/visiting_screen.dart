@@ -5,7 +5,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/main.dart';
 import 'package:places/mocks.dart';
-import 'package:places/ui/common/widgets/sight_navigation_bar.dart';
 import 'package:places/ui/common/widgets/sight_visited_card.dart';
 import 'package:places/ui/common/widgets/sight_wanted_card.dart';
 import 'package:places/ui/res/colors.dart';
@@ -71,7 +70,6 @@ class _VisitingScreenState extends State<VisitingScreen> {
             _buildVisitedList(),
           ],
         ),
-        bottomNavigationBar: SightNavigationBar(),
       ),
     );
   }

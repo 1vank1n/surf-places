@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/res/colors.dart';
+import 'package:places/main.dart' show AppRouter;
 import 'package:places/ui/res/icons.dart';
 
 /// Карточка достопримечательности. Виджет используется в фиде
@@ -84,7 +85,7 @@ class SightCard extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  print('Pressed Sight card');
+                  Navigator.of(context).pushNamed(AppRouter.sightDetail, arguments: sight.id);
                 },
                 splashColor: successColor.withAlpha(0x88),
               ),
@@ -102,7 +103,7 @@ class SightCard extends StatelessWidget {
                 },
                 padding: EdgeInsets.zero,
                 icon: SvgPicture.asset(
-                  iconHearth,
+                  iconHeart,
                   color: Colors.white,
                   width: 24.0,
                   height: 24.0,

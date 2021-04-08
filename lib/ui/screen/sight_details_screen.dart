@@ -7,14 +7,16 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 
 class SightDetailsScreen extends StatelessWidget {
-  final Sight sight = SightStorage.sights.first;
-
   @override
   Widget build(BuildContext context) {
+    final int sightId = ModalRoute.of(context)!.settings.arguments as int;
+    Sight sight = SightStorage.sights.firstWhere((sight) => sight.id == sightId);
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            leading: Container(),
             expandedHeight: MediaQuery.of(context).size.width - MediaQuery.of(context).padding.top,
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
@@ -33,7 +35,7 @@ class SightDetailsScreen extends StatelessWidget {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            print('Pressed icon button');
+                            Navigator.of(context).pop();
                           },
                           icon: SvgPicture.asset(
                             iconArrow,
@@ -130,7 +132,7 @@ class SightDetailsScreen extends StatelessWidget {
                               print('Pressed favorite button');
                             },
                             icon: SvgPicture.asset(
-                              iconHearth,
+                              iconHeart,
                               color: Theme.of(context).primaryColor,
                             ),
                             label: Text(

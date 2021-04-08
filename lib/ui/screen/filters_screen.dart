@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,8 +13,6 @@ class FiltersScreen extends StatefulWidget {
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  static const double MIN_RANGE = 100.0;
-  static const double MAX_RANGE = 10000.0;
   static const double START_RANGE = 100.0;
   static const double END_RANGE = 5500.0;
   static const Map<String, double> USER_COORDINATES = {
@@ -25,22 +21,17 @@ class _FiltersScreenState extends State<FiltersScreen> {
   };
 
   RangeValues _currentRangeValues = RangeValues(START_RANGE, END_RANGE);
-  List<Sight> sights = SightStorage.sights;
+  List<Sight> _sights = SightStorage.sights;
   List<Sight>? _filteredSights;
-  Set<String> _filteredTypes = {'Здание', 'Памятник', 'Кафе'};
+  Set<String> _filteredTypes = {
+    'Здание',
+    'Памятник',
+    'Кафе',
+  };
 
-  String formatRange(double value) {
-    return value < 1000
-        ? '${value.toInt().toString()} м'
-        : '${(value / 1000).toStringAsFixed(1)} км';
-  }
-
-  String get _currentMin => formatRange(_currentRangeValues.start);
-  String get _currentMax => formatRange(_currentRangeValues.end);
-
-  List<Sight> filterSight(List<Sight> sights) {
+  List<Sight> _filterSights() {
     return SightStorage.filterSight(
-      sights: sights,
+      sights: _sights,
       userLat: USER_COORDINATES['lat']!,
       userLon: USER_COORDINATES['lon']!,
       startRange: _currentRangeValues.start,
@@ -49,7 +40,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
     );
   }
 
-  void toggleTypeInFilteredTypes(String type) {
+  void _toggleTypeInFilteredTypes(String type) {
     setState(() {
       if (_filteredTypes.contains(type)) {
         _filteredTypes.remove(type);
@@ -57,14 +48,21 @@ class _FiltersScreenState extends State<FiltersScreen> {
         _filteredTypes.add(type);
       }
 
-      _filteredSights = filterSight(sights);
+      _filteredSights = _filterSights();
+    });
+  }
+
+  void _changeCurrentRangeValues(RangeValues values) {
+    setState(() {
+      _currentRangeValues = values;
+      _filteredSights = _filterSights();
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _filteredSights = filterSight(sights);
+    _filteredSights = _filterSights();
   }
 
   @override
@@ -101,9 +99,16 @@ class _FiltersScreenState extends State<FiltersScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildCategoriesFilter(),
+            CategoriesFilterGrid(
+              filteredTypes: _filteredTypes,
+              toggleTypeInFilteredTypes: _toggleTypeInFilteredTypes,
+            ),
             SizedBox(height: 40.0),
-            _buildRangeSlider(),
+            RangeSightSlider(
+              startRangeValues: _currentRangeValues,
+              changeCurrentRangeValues: _changeCurrentRangeValues,
+              filterSight: _filterSights,
+            ),
           ],
         ),
       ),
@@ -126,8 +131,20 @@ class _FiltersScreenState extends State<FiltersScreen> {
       ),
     );
   }
+}
 
-  Widget _buildCategoriesFilter() {
+class CategoriesFilterGrid extends StatelessWidget {
+  final Set<String> filteredTypes;
+  final Function toggleTypeInFilteredTypes;
+
+  CategoriesFilterGrid({
+    Key? key,
+    required this.filteredTypes,
+    required this.toggleTypeInFilteredTypes,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
@@ -145,7 +162,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
               onPressed: () {
                 toggleTypeInFilteredTypes('Здание');
               },
-              isSelected: _filteredTypes.contains('Здание'),
+              isSelected: filteredTypes.contains('Здание'),
             ),
             CategoryButton(
               context: context,
@@ -154,7 +171,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
               onPressed: () {
                 toggleTypeInFilteredTypes('Памятник');
               },
-              isSelected: _filteredTypes.contains('Памятник'),
+              isSelected: filteredTypes.contains('Памятник'),
             ),
             CategoryButton(
               context: context,
@@ -163,40 +180,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
               onPressed: () {
                 toggleTypeInFilteredTypes('Кафе');
               },
-              isSelected: _filteredTypes.contains('Кафе'),
+              isSelected: filteredTypes.contains('Кафе'),
             ),
           ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRangeSlider() {
-    return ListView(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      children: [
-        ListTile(
-          title: Text('Расстояние'),
-          trailing: Text(
-            'от $_currentMin до $_currentMax',
-            style: subtitle1.copyWith(color: secondaryTextColor),
-          ),
-        ),
-        RangeSlider(
-          values: _currentRangeValues,
-          min: MIN_RANGE,
-          max: MAX_RANGE,
-          onChanged: (RangeValues values) {
-            setState(() {
-              _currentRangeValues = values;
-            });
-          },
-          onChangeEnd: (RangeValues values) {
-            setState(() {
-              _filteredSights = filterSight(sights);
-            });
-          },
         ),
       ],
     );
@@ -242,6 +228,58 @@ class CategoryButton extends StatelessWidget {
         Text(
           title,
           style: Theme.of(context).textTheme.subtitle2,
+        ),
+      ],
+    );
+  }
+}
+
+class RangeSightSlider extends StatelessWidget {
+  static const double MIN_RANGE = 100.0;
+  static const double MAX_RANGE = 10000.0;
+  final RangeValues startRangeValues;
+  final Function changeCurrentRangeValues;
+  final Function filterSight;
+
+  RangeSightSlider({
+    Key? key,
+    required this.startRangeValues,
+    required this.changeCurrentRangeValues,
+    required this.filterSight,
+  }) : super(key: key);
+
+  String formatRange(double value) {
+    return value < 1000
+        ? '${value.toInt().toString()} м'
+        : '${(value / 1000).toStringAsFixed(1)} км';
+  }
+
+  String get _currentMin => formatRange(startRangeValues.start);
+  String get _currentMax => formatRange(startRangeValues.end);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      children: [
+        ListTile(
+          title: Text('Расстояние'),
+          trailing: Text(
+            'от $_currentMin до $_currentMax',
+            style: subtitle1.copyWith(color: secondaryTextColor),
+          ),
+        ),
+        RangeSlider(
+          values: startRangeValues,
+          min: RangeSightSlider.MIN_RANGE,
+          max: RangeSightSlider.MAX_RANGE,
+          onChanged: (RangeValues values) {
+            changeCurrentRangeValues(values);
+          },
+          onChangeEnd: (RangeValues values) {
+            filterSight();
+          },
         ),
       ],
     );
