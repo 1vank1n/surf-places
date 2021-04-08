@@ -85,6 +85,10 @@ ThemeData lightThemeData = ThemeData(
   bottomSheetTheme: BottomSheetThemeData(
     backgroundColor: Colors.transparent,
   ),
+  dividerTheme: DividerThemeData(
+    space: 0,
+    color: secondaryTextColor.withOpacity(0.56),
+  ),
 );
 
 ThemeData darkThemeData = ThemeData(
@@ -139,11 +143,11 @@ ThemeData darkThemeData = ThemeData(
     style: ButtonStyle(
       backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) return deepDarkColor;
-        return successColor; // Defer to the widget's default.
+        return successColor;
       }),
       foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) return secondaryTextColor.withAlpha(142);
-        return Colors.white; // Defer to the widget's default.
+        return Colors.white;
       }),
       elevation: MaterialStateProperty.all(0),
       shape: MaterialStateProperty.all(
@@ -180,5 +184,45 @@ ThemeData darkThemeData = ThemeData(
   ),
   bottomSheetTheme: BottomSheetThemeData(
     backgroundColor: Colors.transparent,
+  ),
+  dividerTheme: DividerThemeData(
+    space: 0,
+    color: secondaryTextColor.withOpacity(0.56),
+  ),
+);
+
+ElevatedButtonThemeData lightCancelElevatedButton = ElevatedButtonThemeData(
+  style: ButtonStyle(
+    backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+      return Colors.white;
+    }),
+    foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+      return successColor;
+    }),
+    elevation: MaterialStateProperty.all(0),
+    shape: MaterialStateProperty.all(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+    ),
+    textStyle: MaterialStateProperty.all(button),
+  ),
+);
+
+ElevatedButtonThemeData darkCancelElevatedButton = ElevatedButtonThemeData(
+  style: ButtonStyle(
+    backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+      return deepDarkColor;
+    }),
+    foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+      return successColor;
+    }),
+    elevation: MaterialStateProperty.all(0),
+    shape: MaterialStateProperty.all(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+    ),
+    textStyle: MaterialStateProperty.all(button),
   ),
 );

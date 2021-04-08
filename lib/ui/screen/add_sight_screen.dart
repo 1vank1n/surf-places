@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/main.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/screen/res/themes.dart';
+import 'package:provider/provider.dart';
 
 class AddSightScreen extends StatefulWidget {
   @override
@@ -88,18 +91,28 @@ class _AddSightScreenState extends State<AddSightScreen> {
     print('Total sights: ${SightStorage.sights.length}, last: ${SightStorage.sights.last}');
   }
 
-  void _addUploadImage() {
-    ValueKey<int> key = ValueKey(Random().nextInt(100));
+  void _addUploadImage() async {
+    bool? isCreate = await showDialog<bool>(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return ImageSourceDialog();
+      },
+    );
 
-    setState(() {
-      _uploadImages.insert(
-        1,
-        UploadImage(
-          key: key,
-          deleteUploadImage: _deleteUploadImage,
-        ),
-      );
-    });
+    if (isCreate ?? false) {
+      ValueKey<int> key = ValueKey(Random().nextInt(100));
+
+      setState(() {
+        _uploadImages.insert(
+          1,
+          UploadImage(
+            key: key,
+            deleteUploadImage: _deleteUploadImage,
+          ),
+        );
+      });
+    }
   }
 
   void _deleteUploadImage(ValueKey<int> key) {
@@ -340,7 +353,109 @@ class _AddSightScreenState extends State<AddSightScreen> {
         itemBuilder: (BuildContext context, int index) {
           return _uploadImages[index];
         },
-        separatorBuilder: (BuildContext context, int index) => SizedBox(width: 8.0),
+        separatorBuilder: (BuildContext context, int index) => SizedBox(width: 16.0),
+      ),
+    );
+  }
+}
+
+class ImageSourceDialog extends StatelessWidget {
+  const ImageSourceDialog({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 8.0,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 6.0,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.0),
+              color: Provider.of<AppModel>(context).theme == lightThemeData
+                  ? Colors.white
+                  : deepDarkColor,
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: Column(
+                children: [
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
+                    leading: SvgPicture.asset(
+                      iconCamera,
+                      color: Provider.of<AppModel>(context).theme == lightThemeData
+                          ? secondaryTextColor
+                          : Colors.white,
+                    ),
+                    minLeadingWidth: 0,
+                    title: Text('Камера'),
+                    onTap: () {
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                  Divider(),
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
+                    leading: SvgPicture.asset(
+                      iconPhoto,
+                      color: Provider.of<AppModel>(context).theme == lightThemeData
+                          ? secondaryTextColor
+                          : Colors.white,
+                    ),
+                    minLeadingWidth: 0,
+                    title: Text('Фотография'),
+                    onTap: () {
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                  Divider(),
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
+                    leading: SvgPicture.asset(
+                      iconFile,
+                      color: Provider.of<AppModel>(context).theme == lightThemeData
+                          ? secondaryTextColor
+                          : Colors.white,
+                    ),
+                    minLeadingWidth: 0,
+                    title: Text('Файл'),
+                    onTap: () {
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 8.0),
+          SizedBox(
+            width: double.infinity,
+            height: 48.0,
+            child: Theme(
+              data: ThemeData(
+                elevatedButtonTheme: Provider.of<AppModel>(context).theme == lightThemeData
+                    ? lightCancelElevatedButton
+                    : darkCancelElevatedButton,
+              ),
+              child: ElevatedButton(
+                child: Text('ОТМЕНА'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -12,6 +12,9 @@ const String iconBucket = 'res/icons/icon-bucket.svg';
 const String iconShare = 'res/icons/icon-share.svg';
 const String iconWanted = 'res/icons/icon-wanted.svg';
 const String iconClose = 'res/icons/icon-close.svg';
+const String iconCamera = 'res/icons/icon-camera.svg';
+const String iconPhoto = 'res/icons/icon-photo.svg';
+const String iconFile = 'res/icons/icon-file.svg';
 
 // Onboarding
 const String iconOnboardingPointer = 'res/icons/icon-onboarding-pointer.svg';
