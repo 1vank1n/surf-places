@@ -7,148 +7,178 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 
 class SightDetailsScreen extends StatelessWidget {
+  final Sight sight;
+
+  const SightDetailsScreen({
+    Key? key,
+    required this.sight,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final int sightId = ModalRoute.of(context)!.settings.arguments as int;
-    Sight sight = SightStorage.sights.firstWhere((sight) => sight.id == sightId);
+    final double maxHeight =
+        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - 64;
 
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            leading: Container(),
-            expandedHeight: MediaQuery.of(context).size.width - MediaQuery.of(context).padding.top,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                children: [
-                  SightImageGallery(),
-                  Positioned(
-                    top: 36.0,
-                    left: 16.0,
-                    child: SafeArea(
-                      child: Container(
-                        width: 32.0,
-                        height: 32.0,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: IconButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          icon: SvgPicture.asset(
-                            iconArrow,
-                            width: 24.0,
-                            height: 24.0,
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(16.0),
+        topRight: Radius.circular(16.0),
+      ),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: maxHeight),
+        child: Scaffold(
+          body: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                leading: Container(),
+                expandedHeight:
+                    MediaQuery.of(context).size.width - MediaQuery.of(context).padding.top,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Stack(
+                    children: [
+                      SightImageGallery(),
+                      Positioned(
+                        top: 12.0,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: Container(
+                            width: 40.0,
+                            height: 4.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.0),
+                              color: Colors.white,
+                            ),
                           ),
-                          padding: EdgeInsets.zero,
-                          color: Colors.white,
                         ),
                       ),
-                    ),
+                      Positioned(
+                        top: 16.0,
+                        right: 16.0,
+                        child: Container(
+                          width: 40.0,
+                          height: 40.0,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: SvgPicture.asset(
+                              iconClose,
+                              width: 24.0,
+                              height: 24.0,
+                            ),
+                            padding: EdgeInsets.zero,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    sight.name,
-                    style: Theme.of(context).textTheme.headline2,
-                  ),
-                  SizedBox(
-                    height: 2.0,
-                  ),
-                  Row(
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        sight.type.toLowerCase(),
-                        style: Theme.of(context).textTheme.headline4,
+                        sight.name,
+                        style: Theme.of(context).textTheme.headline2,
                       ),
                       SizedBox(
-                        width: 16.0,
+                        height: 2.0,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            sight.type.toLowerCase(),
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
+                          SizedBox(
+                            width: 16.0,
+                          ),
+                          Text(
+                            'закрыто до 09:00',
+                            style: Theme.of(context).textTheme.bodyText2,
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 24.0,
                       ),
                       Text(
-                        'закрыто до 09:00',
+                        sight.details,
                         style: Theme.of(context).textTheme.bodyText2,
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 24.0,
-                  ),
-                  Text(
-                    sight.details,
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                  SizedBox(
-                    height: 24.0,
-                  ),
-                  SizedBox(
-                    height: 48.0,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        print('Pressed route button');
-                      },
-                      icon: SvgPicture.asset(iconGo),
-                      label: Text('ПОСТРОИТЬ МАРШРУТ'),
-                    ),
-                  ),
-                  SizedBox(height: 24.0),
-                  Divider(color: dividerColor),
-                  SizedBox(height: 8.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 40.0,
-                          child: TextButton.icon(
-                            onPressed: () {
-                              print('Pressed calendar button');
-                            },
-                            icon: SvgPicture.asset(
-                              iconCalendar,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            label: Text(
-                              'Запланировать',
-                              style: Theme.of(context).textTheme.bodyText1,
-                            ),
-                          ),
+                      ),
+                      SizedBox(
+                        height: 24.0,
+                      ),
+                      SizedBox(
+                        height: 48.0,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            print('Pressed route button');
+                          },
+                          icon: SvgPicture.asset(iconGo),
+                          label: Text('ПОСТРОИТЬ МАРШРУТ'),
                         ),
                       ),
-                      Expanded(
-                        child: SizedBox(
-                          height: 40.0,
-                          child: TextButton.icon(
-                            onPressed: () {
-                              print('Pressed favorite button');
-                            },
-                            icon: SvgPicture.asset(
-                              iconHeart,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            label: Text(
-                              'В Избранное',
-                              style: Theme.of(context).textTheme.bodyText1,
+                      SizedBox(height: 24.0),
+                      Divider(color: dividerColor),
+                      SizedBox(height: 8.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 40.0,
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  print('Pressed calendar button');
+                                },
+                                icon: SvgPicture.asset(
+                                  iconCalendar,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                label: Text(
+                                  'Запланировать',
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          Expanded(
+                            child: SizedBox(
+                              height: 40.0,
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  print('Pressed favorite button');
+                                },
+                                icon: SvgPicture.asset(
+                                  iconHeart,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                label: Text(
+                                  'В Избранное',
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

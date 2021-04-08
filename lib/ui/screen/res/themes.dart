@@ -82,6 +82,9 @@ ThemeData lightThemeData = ThemeData(
   textSelectionTheme: TextSelectionThemeData(
     cursorColor: primaryColor,
   ),
+  bottomSheetTheme: BottomSheetThemeData(
+    backgroundColor: Colors.transparent,
+  ),
 );
 
 ThemeData darkThemeData = ThemeData(
@@ -174,5 +177,8 @@ ThemeData darkThemeData = ThemeData(
   ),
   textSelectionTheme: TextSelectionThemeData(
     cursorColor: primaryColor,
+  ),
+  bottomSheetTheme: BottomSheetThemeData(
+    backgroundColor: Colors.transparent,
   ),
 );
