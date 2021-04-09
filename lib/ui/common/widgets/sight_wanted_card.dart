@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/main.dart' show AppRouter;
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
+import 'package:places/ui/screen/sight_details_screen.dart';
 
 /// Карточка достопримечательности для таба «Хочу посетить»
 class SightWantedCard extends StatelessWidget {
@@ -94,7 +94,13 @@ class SightWantedCard extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  Navigator.of(context).pushNamed(AppRouter.sightDetail, arguments: sight.id);
+                  showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return SightDetailsScreen(sight: sight);
+                    },
+                  );
                 },
                 splashColor: successColor.withAlpha(0x88),
               ),

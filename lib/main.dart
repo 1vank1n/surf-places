@@ -4,7 +4,6 @@ import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/settings_screen.dart';
-import 'package:places/ui/screen/sight_details_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 import 'package:places/ui/screen/sight_navigation_screen.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
@@ -47,7 +46,6 @@ class AppRouter {
     AppRouter.onboarding: (data) => OnboardingScreen(),
     AppRouter.navigation: (data) => SightNavigationScreen(),
     AppRouter.sightList: (data) => SightListScreen(),
-    AppRouter.sightDetail: (data) => SightDetailsScreen(),
     AppRouter.sightSearch: (data) => SightSearchScreen(),
     AppRouter.sightFilter: (data) => FiltersScreen(),
     AppRouter.sightCreate: (data) => AddSightScreen(),
