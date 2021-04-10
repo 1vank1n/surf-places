@@ -96,20 +96,22 @@ class _FiltersScreenState extends State<FiltersScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            CategoriesFilterGrid(
-              filteredTypes: _filteredTypes,
-              toggleTypeInFilteredTypes: _toggleTypeInFilteredTypes,
-            ),
-            SizedBox(height: 40.0),
-            RangeSightSlider(
-              startRangeValues: _currentRangeValues,
-              changeCurrentRangeValues: _changeCurrentRangeValues,
-              filterSight: _filterSights,
-            ),
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CategoriesFilterGrid(
+                filteredTypes: _filteredTypes,
+                toggleTypeInFilteredTypes: _toggleTypeInFilteredTypes,
+              ),
+              SizedBox(height: 40.0),
+              RangeSightSlider(
+                startRangeValues: _currentRangeValues,
+                changeCurrentRangeValues: _changeCurrentRangeValues,
+                filterSight: _filterSights,
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: SafeArea(
