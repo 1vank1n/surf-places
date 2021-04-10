@@ -34,6 +34,7 @@ ThemeData lightThemeData = ThemeData(
     subtitle1: subtitle1.copyWith(color: primaryTextColor),
     subtitle2: subtitle2.copyWith(color: primaryTextColor),
     button: button.copyWith(color: Colors.white),
+    caption: subtitle2.copyWith(color: secondaryTextColor.withOpacity(0.56)),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     backgroundColor: Colors.white,
@@ -67,14 +68,14 @@ ThemeData lightThemeData = ThemeData(
       borderRadius: BorderRadius.circular(8.0),
       borderSide: BorderSide(
         width: 1.0,
-        color: successColor.withAlpha(40 * 255 ~/ 100),
+        color: successColor.withOpacity(0.4),
       ),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(8.0),
       borderSide: BorderSide(
         width: 2.0,
-        color: successColor.withAlpha(40 * 255 ~/ 100),
+        color: successColor.withOpacity(0.4),
       ),
     ),
     contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -104,7 +105,7 @@ ThemeData darkThemeData = ThemeData(
     labelStyle: headline4,
     unselectedLabelStyle: headline4,
     labelColor: primaryColor,
-    unselectedLabelColor: secondaryTextColor.withOpacity(.56),
+    unselectedLabelColor: secondaryTextColor.withOpacity(0.56),
     indicator: BoxDecoration(
       borderRadius: BorderRadius.circular(40.0),
       color: Colors.white,
@@ -123,7 +124,7 @@ ThemeData darkThemeData = ThemeData(
     subtitle1: subtitle1.copyWith(color: Colors.white),
     subtitle2: subtitle2.copyWith(color: Colors.white),
     button: button.copyWith(color: Colors.white),
-    caption: subtitle2.copyWith(color: secondaryTextColor.withAlpha(142)),
+    caption: subtitle2.copyWith(color: secondaryTextColor.withOpacity(0.56)),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     backgroundColor: darkBgColor,
@@ -146,7 +147,7 @@ ThemeData darkThemeData = ThemeData(
         return successColor;
       }),
       foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-        if (states.contains(MaterialState.disabled)) return secondaryTextColor.withAlpha(142);
+        if (states.contains(MaterialState.disabled)) return secondaryTextColor.withOpacity(0.56);
         return Colors.white;
       }),
       elevation: MaterialStateProperty.all(0),
@@ -166,18 +167,18 @@ ThemeData darkThemeData = ThemeData(
       borderRadius: BorderRadius.circular(8.0),
       borderSide: BorderSide(
         width: 1.0,
-        color: successColor.withAlpha(40 * 255 ~/ 100),
+        color: successColor.withOpacity(0.4),
       ),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(8.0),
       borderSide: BorderSide(
         width: 2.0,
-        color: successColor.withAlpha(40 * 255 ~/ 100),
+        color: successColor.withOpacity(0.4),
       ),
     ),
     contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-    hintStyle: subtitle1.copyWith(color: secondaryTextColor.withAlpha(142)),
+    hintStyle: subtitle1.copyWith(color: secondaryTextColor.withOpacity(0.56)),
   ),
   textSelectionTheme: TextSelectionThemeData(
     cursorColor: primaryColor,
