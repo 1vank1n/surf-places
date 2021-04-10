@@ -2,9 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/main.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
+import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/sight_details_screen.dart';
+import 'package:provider/provider.dart';
 
 /// Карточка достопримечательности для таба «Хочу посетить»
 class SightWantedCard extends StatelessWidget {
@@ -16,6 +19,13 @@ class SightWantedCard extends StatelessWidget {
     required this.sight,
     required this.removeHandler,
   }) : super(key: key);
+
+  ThemeData _getPickerThemeData(BuildContext context) {
+    return Provider.of<AppModel>(context).theme == lightThemeData
+        ? ThemeData.light().copyWith(colorScheme: ColorScheme.light(primary: primaryColor))
+        : ThemeData.dark().copyWith(
+            colorScheme: ColorScheme.dark(primary: successColor, onBackground: successColor));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,9 +125,6 @@ class SightWantedCard extends StatelessWidget {
                   width: 24.0,
                   height: 24.0,
                   child: IconButton(
-                    onPressed: () {
-                      print('Pressed calendar button');
-                    },
                     padding: EdgeInsets.zero,
                     icon: SvgPicture.asset(
                       iconCalendar,
@@ -125,6 +132,19 @@ class SightWantedCard extends StatelessWidget {
                       width: 24.0,
                       height: 24.0,
                     ),
+                    onPressed: () {
+                      showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                          builder: (BuildContext context, Widget? child) {
+                            return child != null
+                                ? Theme(
+                                    data: _getPickerThemeData(context),
+                                    child: child,
+                                  )
+                                : Container();
+                          });
+                    },
                   ),
                 ),
                 SizedBox(width: 16.0),
