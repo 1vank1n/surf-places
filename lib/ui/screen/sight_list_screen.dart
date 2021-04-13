@@ -37,53 +37,59 @@ class _SightListScreenState extends State<SightListScreen> {
     bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            SliverAppBar(
-              elevation: 0,
-              pinned: true,
-              title: Opacity(
-                opacity: _titleOpacity,
-                child: Text(
-                  'Список интересных мест',
-                  style: Theme.of(context).textTheme.headline3,
-                ),
-              ),
-              expandedHeight: 142.0 + MediaQuery.of(context).padding.top,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: isLandscape ? 0.0 : 16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      isLandscape
-                          ? Text(
-                              'Список интересных мест',
-                              style: Theme.of(context).textTheme.headline3,
-                            )
-                          : Text(
-                              'Список\nинтересных мест',
-                              style: Theme.of(context).textTheme.headline1,
-                            ),
-                      SizedBox(height: 30.0),
-                      SearchBar(
-                        searchTextEditingController: TextEditingController(),
-                        isButton: true,
+      body: OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+          bool isLandscape = orientation == Orientation.landscape;
+
+          return SafeArea(
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                SliverAppBar(
+                  elevation: 0,
+                  pinned: true,
+                  title: Opacity(
+                    opacity: _titleOpacity,
+                    child: Text(
+                      'Список интересных мест',
+                      style: Theme.of(context).textTheme.headline3,
+                    ),
+                  ),
+                  expandedHeight: 142.0 + MediaQuery.of(context).padding.top,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: isLandscape ? 0.0 : 16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          isLandscape
+                              ? Text(
+                                  'Список интересных мест',
+                                  style: Theme.of(context).textTheme.headline3,
+                                )
+                              : Text(
+                                  'Список\nинтересных мест',
+                                  style: Theme.of(context).textTheme.headline1,
+                                ),
+                          SizedBox(height: 30.0),
+                          SearchBar(
+                            searchTextEditingController: TextEditingController(),
+                            isButton: true,
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: 24.0),
+                ),
+                CardLayout(orientation: orientation),
+              ],
             ),
-            SliverToBoxAdapter(
-              child: SizedBox(height: 24.0),
-            ),
-            CardLayout(),
-          ],
-        ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.transparent,
@@ -123,11 +129,16 @@ class _SightListScreenState extends State<SightListScreen> {
 }
 
 class CardLayout extends StatelessWidget {
+  final Orientation orientation;
+
+  const CardLayout({
+    Key? key,
+    required this.orientation,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return MediaQuery.of(context).orientation == Orientation.portrait
-        ? _PortraitCardLayout()
-        : _LandscapeCardLayout();
+    return orientation == Orientation.portrait ? _PortraitCardLayout() : _LandscapeCardLayout();
   }
 }
 
