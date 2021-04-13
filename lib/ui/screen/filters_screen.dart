@@ -6,6 +6,7 @@ import 'package:places/mocks.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/screen/res/constants.dart';
 
 class FiltersScreen extends StatefulWidget {
   @override
@@ -96,38 +97,61 @@ class _FiltersScreenState extends State<FiltersScreen> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              CategoriesFilterGrid(
-                filteredTypes: _filteredTypes,
-                toggleTypeInFilteredTypes: _toggleTypeInFilteredTypes,
+      body: OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+          bool isSmallScreen = MediaQuery.of(context).size.width <= SMALL_SCREEN_WIDTH;
+
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CategoriesFilterGrid(
+                    filteredTypes: _filteredTypes,
+                    toggleTypeInFilteredTypes: _toggleTypeInFilteredTypes,
+                  ),
+                  SizedBox(height: isSmallScreen ? 20.0 : 40.0),
+                  RangeSightSlider(
+                    startRangeValues: _currentRangeValues,
+                    changeCurrentRangeValues: _changeCurrentRangeValues,
+                    filterSight: _filterSights,
+                  ),
+                  if (isSmallScreen) SizedBox(height: 20.0),
+                  if (isSmallScreen) ShowButton(filteredSights: _filteredSights),
+                ],
               ),
-              SizedBox(height: 40.0),
-              RangeSightSlider(
-                startRangeValues: _currentRangeValues,
-                changeCurrentRangeValues: _changeCurrentRangeValues,
-                filterSight: _filterSights,
-              ),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: SizedBox(
-            width: double.infinity,
-            height: 48.0,
-            child: ElevatedButton(
-              onPressed: () {
-                print(_filteredSights);
-              },
-              child: _filteredSights == null
-                  ? CupertinoActivityIndicator()
-                  : Text('ПОКАЗАТЬ (${_filteredSights!.length})'),
             ),
+          );
+        },
+      ),
+      bottomNavigationBar: isSmallScreen ? null : ShowButton(filteredSights: _filteredSights),
+    );
+  }
+}
+
+class ShowButton extends StatelessWidget {
+  const ShowButton({
+    Key? key,
+    required List<Sight>? filteredSights,
+  })   : _filteredSights = filteredSights,
+        super(key: key);
+
+  final List<Sight>? _filteredSights;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: SizedBox(
+          width: double.infinity,
+          height: 48.0,
+          child: ElevatedButton(
+            onPressed: () {
+              print(_filteredSights);
+            },
+            child: _filteredSights == null
+                ? CupertinoActivityIndicator()
+                : Text('ПОКАЗАТЬ (${_filteredSights!.length})'),
           ),
         ),
       ),
@@ -152,7 +176,7 @@ class CategoriesFilterGrid extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       children: [
         ListTile(
-          subtitle: Text('КАТЕГОРИЯ'),
+          subtitle: Text('КАТЕГОРИИ'),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
