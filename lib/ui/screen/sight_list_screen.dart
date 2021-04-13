@@ -34,65 +34,62 @@ class _SightListScreenState extends State<SightListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverAppBar(
-            elevation: 0,
-            pinned: true,
-            title: Opacity(
-              opacity: _titleOpacity,
-              child: Text(
-                'Список интересных мест',
-                style: Theme.of(context).textTheme.headline3,
-              ),
-            ),
-            expandedHeight: 142.0 + MediaQuery.of(context).padding.top,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Список\nинтересных мест',
-                      style: Theme.of(context).textTheme.headline1,
-                    ),
-                    SizedBox(height: 30.0),
-                    SearchBar(
-                      searchTextEditingController: TextEditingController(),
-                      isButton: true,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: SizedBox(height: 24.0),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                Sight sight = SightStorage.sights[index];
+    bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 12.0,
+    return Scaffold(
+      body: OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+          bool isLandscape = orientation == Orientation.landscape;
+
+          return SafeArea(
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                SliverAppBar(
+                  elevation: 0,
+                  pinned: true,
+                  title: Opacity(
+                    opacity: _titleOpacity,
+                    child: Text(
+                      'Список интересных мест',
+                      style: Theme.of(context).textTheme.headline3,
+                    ),
                   ),
-                  child: SightCard(
-                    key: ValueKey(sight),
-                    sight: sight,
+                  expandedHeight: 142.0 + MediaQuery.of(context).padding.top,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: isLandscape ? 0.0 : 16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          isLandscape
+                              ? Text(
+                                  'Список интересных мест',
+                                  style: Theme.of(context).textTheme.headline3,
+                                )
+                              : Text(
+                                  'Список\nинтересных мест',
+                                  style: Theme.of(context).textTheme.headline1,
+                                ),
+                          SizedBox(height: 30.0),
+                          SearchBar(
+                            searchTextEditingController: TextEditingController(),
+                            isButton: true,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                );
-              },
-              childCount: SightStorage.sights.length,
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: 24.0),
+                ),
+                CardLayout(orientation: orientation),
+              ],
             ),
-          ),
-        ],
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.transparent,
@@ -127,6 +124,70 @@ class _SightListScreenState extends State<SightListScreen> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+}
+
+class CardLayout extends StatelessWidget {
+  final Orientation orientation;
+
+  const CardLayout({
+    Key? key,
+    required this.orientation,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return orientation == Orientation.portrait ? _PortraitCardLayout() : _LandscapeCardLayout();
+  }
+}
+
+class _PortraitCardLayout extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          Sight sight = SightStorage.sights[index];
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 12.0,
+            ),
+            child: SightCard(
+              key: ValueKey(sight),
+              sight: sight,
+            ),
+          );
+        },
+        childCount: SightStorage.sights.length,
+      ),
+    );
+  }
+}
+
+class _LandscapeCardLayout extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SliverGrid(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 3 / 2,
+        crossAxisSpacing: 34.0,
+        mainAxisSpacing: 34.0,
+      ),
+      delegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          Sight sight = SightStorage.sights[index];
+
+          return SightCard(
+            key: ValueKey(sight),
+            sight: sight,
+          );
+        },
+        childCount: SightStorage.sights.length,
+      ),
     );
   }
 }
