@@ -6,6 +6,7 @@ import 'package:places/mocks.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/screen/res/constants.dart';
 
 class FiltersScreen extends StatefulWidget {
   @override
@@ -67,8 +68,6 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isSmallScreen = MediaQuery.of(context).size.width <= 320;
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -98,25 +97,31 @@ class _FiltersScreenState extends State<FiltersScreen> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              CategoriesFilterGrid(
-                filteredTypes: _filteredTypes,
-                toggleTypeInFilteredTypes: _toggleTypeInFilteredTypes,
+      body: OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+          bool isSmallScreen = MediaQuery.of(context).size.width <= SMALL_SCREEN_WIDTH;
+
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CategoriesFilterGrid(
+                    filteredTypes: _filteredTypes,
+                    toggleTypeInFilteredTypes: _toggleTypeInFilteredTypes,
+                  ),
+                  SizedBox(height: isSmallScreen ? 20.0 : 40.0),
+                  RangeSightSlider(
+                    startRangeValues: _currentRangeValues,
+                    changeCurrentRangeValues: _changeCurrentRangeValues,
+                    filterSight: _filterSights,
+                  ),
+                  if (isSmallScreen) SizedBox(height: 20.0),
+                  if (isSmallScreen) ShowButton(filteredSights: _filteredSights),
+                ],
               ),
-              SizedBox(height: isSmallScreen ? 20.0 : 40.0),
-              RangeSightSlider(
-                startRangeValues: _currentRangeValues,
-                changeCurrentRangeValues: _changeCurrentRangeValues,
-                filterSight: _filterSights,
-              ),
-              if (isSmallScreen) SizedBox(height: 20.0),
-              if (isSmallScreen) ShowButton(filteredSights: _filteredSights),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
       bottomNavigationBar: isSmallScreen ? null : ShowButton(filteredSights: _filteredSights),
     );
