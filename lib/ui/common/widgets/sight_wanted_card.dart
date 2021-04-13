@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -133,17 +135,34 @@ class SightWantedCard extends StatelessWidget {
                       height: 24.0,
                     ),
                     onPressed: () {
-                      showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                          builder: (BuildContext context, Widget? child) {
-                            return child != null
-                                ? Theme(
-                                    data: _getPickerThemeData(context),
-                                    child: child,
-                                  )
-                                : Container();
-                          });
+                      Platform.isIOS
+                          ? showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Container(
+                                  height: 240.0,
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  child: CupertinoDatePicker(
+                                    minimumDate: DateTime.now(),
+                                    onDateTimeChanged: (DateTime dateTime) {
+                                      print(dateTime);
+                                    },
+                                  ),
+                                );
+                              },
+                            )
+                          : showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                              builder: (BuildContext context, Widget? child) {
+                                return child != null
+                                    ? Theme(
+                                        data: _getPickerThemeData(context),
+                                        child: child,
+                                      )
+                                    : Container();
+                              },
+                            );
                     },
                   ),
                 ),
