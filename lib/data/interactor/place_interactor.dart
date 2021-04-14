@@ -8,7 +8,7 @@ class PlaceInteractor {
     'lng': 30.0,
   };
 
-  static Future<List<Place>> getPlaces(double radius, String category) async {
+  static Future<List<Place>> getPlaces(double radius, String category) {
     var _filter = PlacesFilterRequestDto.withCoords(
       lat: USER_COORDINATES['lat'],
       lng: USER_COORDINATES['lng'],
@@ -18,9 +18,9 @@ class PlaceInteractor {
     return PlaceRepository.postFilteredPlaces(_filter);
   }
 
-  // Place getPlaceDetails(int id) {
-  //   return;
-  // }
+  static Future<Place?> getPlaceDetails(int id) {
+    return PlaceRepository.getPlace(id);
+  }
 
   // List<Place> getFavoritesPlaces() {}
 

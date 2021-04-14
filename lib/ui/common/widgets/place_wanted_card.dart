@@ -110,7 +110,7 @@ class PlaceWantedCard extends StatelessWidget {
                     isScrollControlled: true,
                     context: context,
                     builder: (BuildContext context) {
-                      return PlaceDetailScreen(place: place);
+                      return PlaceDetailScreen(id: place.id);
                     },
                   );
                 },
