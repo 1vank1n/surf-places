@@ -14,12 +14,12 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:provider/provider.dart';
 
-class AddSightScreen extends StatefulWidget {
+class PlaceCreateScreen extends StatefulWidget {
   @override
-  _AddSightScreenState createState() => _AddSightScreenState();
+  _PlaceCreateScreenState createState() => _PlaceCreateScreenState();
 }
 
-class _AddSightScreenState extends State<AddSightScreen> {
+class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
   List<UploadImage> _uploadImages = [];
   TextEditingController _titleTextEditingController = TextEditingController();
   TextEditingController _latTextEditingController = TextEditingController();
@@ -479,32 +479,7 @@ class UploadImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return isCreator
-        ?
-        // TODO реализация нулеовго элемента через OutlinedButton
-        //
-        // Container(
-        //     width: 72.0,
-        //     height: 72.0,
-        //     child: OutlinedButton(
-        //       onPressed: () {
-        //         if (addUploadImage != null) {
-        //           addUploadImage!();
-        //         }
-        //       },
-        //       child: SvgPicture.asset(iconPlus),
-        //       style: OutlinedButton.styleFrom(
-        //         primary: successColor,
-        //         side: BorderSide(
-        //           width: 2.0,
-        //           color: successColor.withOpacity(0.48),
-        //         ),
-        //         shape: RoundedRectangleBorder(
-        //           borderRadius: BorderRadius.circular(12.0),
-        //         ),
-        //       ),
-        //     ),
-        //   )
-        GestureDetector(
+        ? GestureDetector(
             onTap: () {
               if (addUploadImage != null) {
                 addUploadImage!();

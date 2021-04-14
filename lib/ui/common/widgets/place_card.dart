@@ -1,18 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
-import 'package:places/ui/screen/sight_details_screen.dart';
+import 'package:places/ui/screen/place_detail_screen.dart';
 
 /// Карточка достопримечательности. Виджет используется в фиде
-class SightCard extends StatelessWidget {
-  final Sight sight;
+class PlaceCard extends StatelessWidget {
+  final Place place;
 
-  SightCard({
+  PlaceCard({
     Key? key,
-    required this.sight,
+    required this.place,
   }) : super(key: key);
 
   @override
@@ -26,7 +26,7 @@ class SightCard extends StatelessWidget {
             child: Container(
               width: double.infinity,
               child: Image.network(
-                sight.url,
+                place.urls.first,
                 fit: BoxFit.cover,
                 loadingBuilder:
                     (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
@@ -47,7 +47,7 @@ class SightCard extends StatelessWidget {
             top: 16.0,
             left: 16.0,
             child: Text(
-              sight.type.toLowerCase(),
+              place.placeType.toLowerCase(),
               style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.white),
             ),
           ),
@@ -62,14 +62,14 @@ class SightCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    sight.name,
+                    place.name,
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   SizedBox(
                     height: 2.0,
                   ),
                   Text(
-                    sight.details,
+                    place.excerpt(),
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
@@ -89,7 +89,7 @@ class SightCard extends StatelessWidget {
                     isScrollControlled: true,
                     context: context,
                     builder: (BuildContext context) {
-                      return SightDetailsScreen(sight: sight);
+                      return PlaceDetailScreen(place: place);
                     },
                   );
                 },

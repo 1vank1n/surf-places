@@ -16,6 +16,7 @@ class Api {
       InterceptorsWrapper(
         onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
           print('REQUEST[${options.method}] => PATH: ${options.path}');
+          print('REQUEST DATA: ${options.data}');
           return handler.next(options);
         },
         onResponse: (Response response, ResponseInterceptorHandler handler) {

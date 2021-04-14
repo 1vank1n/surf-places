@@ -49,6 +49,14 @@ class Place {
     };
   }
 
+  String excerpt() {
+    const maxLength = 100;
+
+    return this.description.length > maxLength
+        ? '${this.description.substring(0, maxLength)}...'
+        : this.description;
+  }
+
   @override
   String toString() {
     return '${this.name} [${this.lat}, ${this.lng}]';

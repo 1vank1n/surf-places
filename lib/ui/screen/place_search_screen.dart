@@ -8,12 +8,12 @@ import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 
-class SightSearchScreen extends StatefulWidget {
+class PlaceSearchScreen extends StatefulWidget {
   @override
-  _SightSearchScreenState createState() => _SightSearchScreenState();
+  _PlaceSearchScreenState createState() => _PlaceSearchScreenState();
 }
 
-class _SightSearchScreenState extends State<SightSearchScreen> {
+class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
   static const double START_RANGE = 0.0;
   static const double END_RANGE = 5500.0;
   static const Map<String, double> USER_COORDINATES = {

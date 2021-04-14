@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/screen/settings_screen.dart';
-import 'package:places/ui/screen/sight_list_screen.dart';
-import 'package:places/ui/screen/sight_map_screen.dart';
+import 'package:places/ui/screen/place_list_screen.dart';
+import 'package:places/ui/screen/place_map_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 
-class SightNavigationScreen extends StatefulWidget {
+class PlaceNavigationScreen extends StatefulWidget {
   @override
-  _SightNavigationScreenState createState() => _SightNavigationScreenState();
+  _PlaceNavigationScreenState createState() => _PlaceNavigationScreenState();
 }
 
-class _SightNavigationScreenState extends State<SightNavigationScreen> {
+class _PlaceNavigationScreenState extends State<PlaceNavigationScreen> {
   final List<Widget> _screens = [
-    SightListScreen(),
-    SightMapScreen(),
+    PlaceListScreen(),
+    PlaceMapScreen(),
     VisitingScreen(),
     SettingsScreen(),
   ];

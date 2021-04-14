@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
-import 'package:places/mocks.dart';
-import 'package:places/ui/common/widgets/sight_visited_card.dart';
-import 'package:places/ui/common/widgets/sight_wanted_card.dart';
+import 'package:places/ui/common/widgets/place_visited_card.dart';
+import 'package:places/ui/common/widgets/place_wanted_card.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
@@ -19,8 +18,8 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  final List<Sight> _wantedSights = []..addAll(SightStorage.sights);
-  final List<Sight> _visitedSights = []..addAll(SightStorage.sights);
+  final List<Place> _wantedPlaces = [];
+  final List<Place> _visitedPlaces = [];
 
   @override
   Widget build(BuildContext context) {
@@ -75,35 +74,35 @@ class _VisitingScreenState extends State<VisitingScreen> {
   }
 
   Widget _buildWantedList() {
-    return _wantedSights.length > 0
+    return _wantedPlaces.length > 0
         ? ReorderableListView.builder(
             padding: const EdgeInsets.only(
               top: 22.0,
               right: 16.0,
               left: 16.0,
             ),
-            itemCount: _wantedSights.length,
+            itemCount: _wantedPlaces.length,
             physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
-              Sight sight = _wantedSights[index];
+              Place place = _wantedPlaces[index];
 
               return Dismissible(
-                key: ValueKey(sight.name),
+                key: ValueKey(place.name),
                 direction: DismissDirection.endToStart,
                 onDismissed: (_) {
                   setState(() {
-                    _wantedSights.remove(sight);
+                    _wantedPlaces.remove(place);
                   });
                 },
                 background: RemoveBackground(),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: SightWantedCard(
-                    key: ValueKey(sight.name),
-                    sight: sight,
+                  child: PlaceWantedCard(
+                    key: ValueKey(place.id),
+                    place: place,
                     removeHandler: () {
                       setState(() {
-                        _wantedSights.remove(sight);
+                        _wantedPlaces.remove(place);
                       });
                     },
                   ),
@@ -115,8 +114,8 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 newIndex -= 1;
               }
 
-              final Sight sight = _wantedSights.removeAt(oldIndex);
-              _wantedSights.insert(newIndex, sight);
+              final Place place = _wantedPlaces.removeAt(oldIndex);
+              _wantedPlaces.insert(newIndex, place);
             },
           )
         : Center(
@@ -152,35 +151,35 @@ class _VisitingScreenState extends State<VisitingScreen> {
   }
 
   Widget _buildVisitedList() {
-    return _visitedSights.length > 0
+    return _visitedPlaces.length > 0
         ? ReorderableListView.builder(
             padding: const EdgeInsets.only(
               top: 22.0,
               right: 16.0,
               left: 16.0,
             ),
-            itemCount: _visitedSights.length,
+            itemCount: _visitedPlaces.length,
             physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
-              Sight sight = _visitedSights[index];
+              Place place = _visitedPlaces[index];
 
               return Dismissible(
-                key: ValueKey(sight.name),
+                key: ValueKey(place.name),
                 direction: DismissDirection.endToStart,
                 onDismissed: (_) {
                   setState(() {
-                    _visitedSights.remove(sight);
+                    _visitedPlaces.remove(place);
                   });
                 },
                 background: RemoveBackground(),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: SightVisitedCard(
-                    key: ValueKey(sight.name),
-                    sight: sight,
+                  child: PlaceVisitedCard(
+                    key: ValueKey(place.name),
+                    place: place,
                     removeHandler: () {
                       setState(() {
-                        _visitedSights.remove(sight);
+                        _visitedPlaces.remove(place);
                       });
                     },
                   ),
@@ -192,8 +191,8 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 newIndex -= 1;
               }
 
-              final Sight sight = _visitedSights.removeAt(oldIndex);
-              _visitedSights.insert(newIndex, sight);
+              final Place place = _visitedPlaces.removeAt(oldIndex);
+              _visitedPlaces.insert(newIndex, place);
             },
           )
         : Center(

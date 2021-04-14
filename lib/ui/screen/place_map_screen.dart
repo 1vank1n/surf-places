@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SightMapScreen extends StatelessWidget {
+class PlaceMapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(

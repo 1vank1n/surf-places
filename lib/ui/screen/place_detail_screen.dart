@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/domain/sight.dart';
-import 'package:places/mocks.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 
-class SightDetailsScreen extends StatelessWidget {
-  final Sight sight;
+class PlaceDetailScreen extends StatelessWidget {
+  final Place place;
 
-  const SightDetailsScreen({
+  const PlaceDetailScreen({
     Key? key,
-    required this.sight,
+    required this.place,
   }) : super(key: key);
 
   @override
@@ -36,7 +35,7 @@ class SightDetailsScreen extends StatelessWidget {
                 flexibleSpace: FlexibleSpaceBar(
                   background: Stack(
                     children: [
-                      SightImageGallery(),
+                      SightImageGallery(imageUrls: place.urls),
                       Positioned(
                         top: 12.0,
                         left: 0,
@@ -87,7 +86,7 @@ class SightDetailsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        sight.name,
+                        place.name,
                         style: Theme.of(context).textTheme.headline2,
                       ),
                       SizedBox(
@@ -96,7 +95,7 @@ class SightDetailsScreen extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            sight.type.toLowerCase(),
+                            place.placeType.toLowerCase(),
                             style: Theme.of(context).textTheme.headline4,
                           ),
                           SizedBox(
@@ -112,7 +111,7 @@ class SightDetailsScreen extends StatelessWidget {
                         height: 24.0,
                       ),
                       Text(
-                        sight.details,
+                        place.description,
                         style: Theme.of(context).textTheme.bodyText2,
                       ),
                       SizedBox(
@@ -185,6 +184,13 @@ class SightDetailsScreen extends StatelessWidget {
 }
 
 class SightImageGallery extends StatefulWidget {
+  final List<String> imageUrls;
+
+  const SightImageGallery({
+    Key? key,
+    required this.imageUrls,
+  }) : super(key: key);
+
   @override
   _SightImageGalleryState createState() => _SightImageGalleryState();
 }
@@ -208,7 +214,7 @@ class _SightImageGalleryState extends State<SightImageGallery> {
               });
             },
             children: [
-              for (String url in SightStorage.imageList)
+              for (String url in widget.imageUrls)
                 Image.network(
                   url,
                   fit: BoxFit.cover,
@@ -233,7 +239,7 @@ class _SightImageGalleryState extends State<SightImageGallery> {
             child: Container(
               width: (currentPageIndex + 1) *
                   MediaQuery.of(context).size.width /
-                  SightStorage.imageList.length,
+                  widget.imageUrls.length,
               height: 8.0,
               decoration: BoxDecoration(
                 color: overlayBgColor,
