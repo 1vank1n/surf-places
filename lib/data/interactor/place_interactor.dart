@@ -3,6 +3,9 @@ import 'package:places/data/model/places_filter_request_dto.dart';
 import 'package:places/data/repository/place_respository.dart';
 
 class PlaceInteractor {
+  static List<Place> _favoritePlaces = [];
+  static List<Place> _visitedPlaces = [];
+
   static const Map<String, double> USER_COORDINATES = {
     'lat': 60.0,
     'lng': 30.0,
@@ -22,15 +25,41 @@ class PlaceInteractor {
     return PlaceRepository.getPlace(id);
   }
 
-  // List<Place> getFavoritesPlaces() {}
+  static List<Place> getFavoritesPlaces() {
+    return _favoritePlaces;
+  }
 
-  // void addToFavorites(Place place) {}
+  static void addToFavorites(Place place) {
+    if (!_favoritePlaces.contains(place)) {
+      _favoritePlaces.add(place);
+    }
+  }
 
-  // void removeFromFavorites(Place place) {}
+  static void removeFromFavorites(Place place) {
+    if (_favoritePlaces.contains(place)) {
+      _favoritePlaces.remove(place);
+    }
+  }
 
-  // List<Place> getVisitPlaces() {}
+  static List<Place> getVisitPlaces() {
+    return _visitedPlaces;
+  }
 
-  // void addToVisitingPlaces(Place place) {}
+  static void addToVisitingPlaces(Place place) {
+    if (!_visitedPlaces.contains(place)) {
+      _visitedPlaces.add(place);
+    }
+  }
 
-  // void addNewPlace(Place place) {}
+  static void removeFromVisiting(Place place) {
+    if (_visitedPlaces.contains(place)) {
+      _visitedPlaces.remove(place);
+    }
+  }
+
+  // static void addNewPlace(Place place) {
+  //   if (_visitedPlaces.contains(place)) {
+  //     _visitedPlaces.remove(place);
+  //   }
+  // }
 }

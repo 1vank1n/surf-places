@@ -58,6 +58,14 @@ class Place {
   }
 
   @override
+  bool operator ==(other) {
+    return (other is Place) && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
   String toString() {
     return '${this.name} [${this.lat}, ${this.lng}]';
   }

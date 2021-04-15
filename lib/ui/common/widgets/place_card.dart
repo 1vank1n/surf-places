@@ -1,19 +1,39 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/screen/place_detail_screen.dart';
 
 /// Карточка достопримечательности. Виджет используется в фиде
-class PlaceCard extends StatelessWidget {
+class PlaceCard extends StatefulWidget {
   final Place place;
 
   PlaceCard({
     Key? key,
     required this.place,
   }) : super(key: key);
+
+  @override
+  _PlaceCardState createState() => _PlaceCardState();
+}
+
+class _PlaceCardState extends State<PlaceCard> {
+  bool _placeInFavorites(Place place) {
+    return PlaceInteractor.getFavoritesPlaces().contains(place);
+  }
+
+  void _addToFavorites(Place place) {
+    PlaceInteractor.addToFavorites(place);
+    setState(() {});
+  }
+
+  void _removeFromFavorites(Place place) {
+    PlaceInteractor.removeFromFavorites(place);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +46,7 @@ class PlaceCard extends StatelessWidget {
             child: Container(
               width: double.infinity,
               child: Image.network(
-                place.urls.first,
+                widget.place.urls.first,
                 fit: BoxFit.cover,
                 loadingBuilder:
                     (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
@@ -47,7 +67,7 @@ class PlaceCard extends StatelessWidget {
             top: 16.0,
             left: 16.0,
             child: Text(
-              place.placeType.toLowerCase(),
+              widget.place.placeType.toLowerCase(),
               style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.white),
             ),
           ),
@@ -62,14 +82,14 @@ class PlaceCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    place.name,
+                    widget.place.name,
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   SizedBox(
                     height: 2.0,
                   ),
                   Text(
-                    place.excerpt(),
+                    widget.place.excerpt(),
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
@@ -89,7 +109,7 @@ class PlaceCard extends StatelessWidget {
                     isScrollControlled: true,
                     context: context,
                     builder: (BuildContext context) {
-                      return PlaceDetailScreen(id: place.id);
+                      return PlaceDetailScreen(id: widget.place.id);
                     },
                   );
                 },
@@ -105,11 +125,13 @@ class PlaceCard extends StatelessWidget {
               height: 24.0,
               child: IconButton(
                 onPressed: () {
-                  print('Pressed favorite button');
+                  _placeInFavorites(widget.place)
+                      ? _removeFromFavorites(widget.place)
+                      : _addToFavorites(widget.place);
                 },
                 padding: EdgeInsets.zero,
                 icon: SvgPicture.asset(
-                  iconHeart,
+                  _placeInFavorites(widget.place) ? iconHeartFill : iconHeart,
                   color: Colors.white,
                   width: 24.0,
                   height: 24.0,

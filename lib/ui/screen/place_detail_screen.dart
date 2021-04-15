@@ -31,6 +31,20 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
     return PlaceInteractor.getPlaceDetails(widget.id);
   }
 
+  bool _placeInFavorites(Place place) {
+    return PlaceInteractor.getFavoritesPlaces().contains(place);
+  }
+
+  void _addToFavorites(Place place) {
+    PlaceInteractor.addToFavorites(place);
+    setState(() {});
+  }
+
+  void _removeFromFavorites(Place place) {
+    PlaceInteractor.removeFromFavorites(place);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final double maxHeight =
@@ -57,6 +71,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                 );
               } else {
                 final place = snapshot.data!;
+
                 return CustomScrollView(
                   slivers: [
                     SliverAppBar(
@@ -187,10 +202,12 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                     height: 40.0,
                                     child: TextButton.icon(
                                       onPressed: () {
-                                        print('Pressed favorite button');
+                                        _placeInFavorites(place)
+                                            ? _removeFromFavorites(place)
+                                            : _addToFavorites(place);
                                       },
                                       icon: SvgPicture.asset(
-                                        iconHeart,
+                                        _placeInFavorites(place) ? iconHeartFill : iconHeart,
                                         color: Theme.of(context).primaryColor,
                                       ),
                                       label: Text(

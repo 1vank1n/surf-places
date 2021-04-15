@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
 import 'package:places/ui/common/widgets/place_visited_card.dart';
@@ -18,8 +19,18 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  final List<Place> _wantedPlaces = [];
-  final List<Place> _visitedPlaces = [];
+  List<Place> get _wantedPlaces => PlaceInteractor.getFavoritesPlaces();
+  List<Place> get _visitedPlaces => PlaceInteractor.getVisitPlaces();
+
+  void _removeFromWantedPlaces(Place place) {
+    PlaceInteractor.removeFromFavorites(place);
+    setState(() {});
+  }
+
+  void _removeFromVisitedPlaces(Place place) {
+    PlaceInteractor.removeFromVisiting(place);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,34 +76,50 @@ class _VisitingScreenState extends State<VisitingScreen> {
         ),
         body: TabBarView(
           children: [
-            _buildWantedList(),
-            _buildVisitedList(),
+            WantedPlaceList(
+              places: _wantedPlaces,
+              removeHandler: _removeFromWantedPlaces,
+            ),
+            VisitedPlaceList(
+              places: _visitedPlaces,
+              removeHandler: _removeFromWantedPlaces,
+            )
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildWantedList() {
-    return _wantedPlaces.length > 0
+class WantedPlaceList extends StatelessWidget {
+  final List<Place> places;
+  final Function removeHandler;
+
+  WantedPlaceList({
+    Key? key,
+    required this.places,
+    required this.removeHandler,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return places.length > 0
         ? ReorderableListView.builder(
             padding: const EdgeInsets.only(
               top: 22.0,
               right: 16.0,
               left: 16.0,
             ),
-            itemCount: _wantedPlaces.length,
+            itemCount: places.length,
             physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
-              Place place = _wantedPlaces[index];
+              Place place = places[index];
 
               return Dismissible(
                 key: ValueKey(place.name),
                 direction: DismissDirection.endToStart,
                 onDismissed: (_) {
-                  setState(() {
-                    _wantedPlaces.remove(place);
-                  });
+                  removeHandler(place);
                 },
                 background: RemoveBackground(),
                 child: Padding(
@@ -101,9 +128,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
                     key: ValueKey(place.id),
                     place: place,
                     removeHandler: () {
-                      setState(() {
-                        _wantedPlaces.remove(place);
-                      });
+                      removeHandler(place);
                     },
                   ),
                 ),
@@ -114,8 +139,8 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 newIndex -= 1;
               }
 
-              final Place place = _wantedPlaces.removeAt(oldIndex);
-              _wantedPlaces.insert(newIndex, place);
+              final Place place = places.removeAt(oldIndex);
+              places.insert(newIndex, place);
             },
           )
         : Center(
@@ -127,7 +152,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SvgPicture.asset(
-                      iconGo,
+                      iconCamera,
                       width: 64.0,
                       height: 64.0,
                       color: secondaryTextColor,
@@ -139,7 +164,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
                     ),
                     SizedBox(height: 8.0),
                     Text(
-                      'Завершите маршрут, чтобы место попало сюда.',
+                      'Отмечайте понравившиеся места и они появиятся здесь.',
                       style: textBody1,
                       textAlign: TextAlign.center,
                     ),
@@ -149,38 +174,46 @@ class _VisitingScreenState extends State<VisitingScreen> {
             ),
           );
   }
+}
 
-  Widget _buildVisitedList() {
-    return _visitedPlaces.length > 0
+class VisitedPlaceList extends StatelessWidget {
+  final List<Place> places;
+  final Function removeHandler;
+
+  VisitedPlaceList({
+    Key? key,
+    required this.places,
+    required this.removeHandler,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return places.length > 0
         ? ReorderableListView.builder(
             padding: const EdgeInsets.only(
               top: 22.0,
               right: 16.0,
               left: 16.0,
             ),
-            itemCount: _visitedPlaces.length,
+            itemCount: places.length,
             physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
-              Place place = _visitedPlaces[index];
+              Place place = places[index];
 
               return Dismissible(
                 key: ValueKey(place.name),
                 direction: DismissDirection.endToStart,
                 onDismissed: (_) {
-                  setState(() {
-                    _visitedPlaces.remove(place);
-                  });
+                  removeHandler(place);
                 },
                 background: RemoveBackground(),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: PlaceVisitedCard(
-                    key: ValueKey(place.name),
+                    key: ValueKey(place.id),
                     place: place,
                     removeHandler: () {
-                      setState(() {
-                        _visitedPlaces.remove(place);
-                      });
+                      removeHandler(place);
                     },
                   ),
                 ),
@@ -191,8 +224,8 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 newIndex -= 1;
               }
 
-              final Place place = _visitedPlaces.removeAt(oldIndex);
-              _visitedPlaces.insert(newIndex, place);
+              final Place place = places.removeAt(oldIndex);
+              places.insert(newIndex, place);
             },
           )
         : Center(
