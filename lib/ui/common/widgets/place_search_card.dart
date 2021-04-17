@@ -1,17 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/screen/place_detail_screen.dart';
 
 /// Карточка достопримечательности, отображается на экране поиска
-class SightSearchCard extends StatelessWidget {
-  final Sight sight;
+class PlaceSearchCard extends StatelessWidget {
+  final Place place;
   final String highlight;
 
-  SightSearchCard({
-    required this.sight,
+  PlaceSearchCard({
+    Key? key,
+    required this.place,
     this.highlight = '',
-  });
+  }) : super(key: key);
 
   List<String> sliceStringBySubstring(String text, String subtext) {
     int index = text.toLowerCase().indexOf(subtext.toLowerCase());
@@ -47,17 +49,17 @@ class SightSearchCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: renderTitle(
-        title: sight.name,
+        title: place.name,
         hightlightText: highlight,
       ),
-      subtitle: Text(sight.type),
+      subtitle: Text(place.placeType),
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(12.0),
         child: Container(
           width: 56.0,
           height: 56.0,
           child: Image.network(
-            sight.url,
+            place.urls.first,
             fit: BoxFit.cover,
             loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) return child;
@@ -72,6 +74,15 @@ class SightSearchCard extends StatelessWidget {
           ),
         ),
       ),
+      onTap: () {
+        showModalBottomSheet(
+          isScrollControlled: true,
+          context: context,
+          builder: (BuildContext context) {
+            return PlaceDetailScreen(id: place.id);
+          },
+        );
+      },
     );
   }
 }

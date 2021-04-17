@@ -46,11 +46,6 @@ class SearchBar extends StatelessWidget {
       child: Stack(
         children: [
           TextField(
-            onSubmitted: (_) {
-              if (searchHandler != null) {
-                searchHandler!();
-              }
-            },
             onEditingComplete: () {
               if (searchHandler != null) {
                 searchHandler!();
@@ -99,7 +94,7 @@ class SearchBar extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
-                    Navigator.of(context).pushNamed(AppRouter.sightSearch);
+                    Navigator.of(context).pushNamed(AppRouter.placeSearch);
                   },
                   splashColor: successColor.withAlpha(0x88),
                 ),
@@ -111,7 +106,7 @@ class SearchBar extends StatelessWidget {
               right: 0,
               child: IconButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(AppRouter.sightFilter);
+                  Navigator.of(context).pushNamed(AppRouter.placeFilter);
                 },
                 icon: SvgPicture.asset(
                   iconFilter,
