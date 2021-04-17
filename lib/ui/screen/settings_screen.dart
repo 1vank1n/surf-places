@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/main.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/screen/res/themes.dart';
@@ -24,7 +25,7 @@ class SettingsScreen extends StatelessWidget {
                 return SwitchListTile(
                   value: appModel.theme == darkThemeData,
                   onChanged: (_) {
-                    appModel.toggleTheme();
+                    SettingsInteractor.toggleTheme(appModel);
                   },
                   title: Text('Тёмная тема'),
                 );
