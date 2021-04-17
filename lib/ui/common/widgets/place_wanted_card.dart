@@ -1,21 +1,33 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/main.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
-import 'package:places/ui/screen/sight_details_screen.dart';
+import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/screen/place_detail_screen.dart';
+import 'package:provider/provider.dart';
 
-/// Карточка достопримечательности для таба «Посетил»
-class SightVisitedCard extends StatelessWidget {
-  final Sight sight;
+/// Карточка достопримечательности для таба «Хочу посетить»
+class PlaceWantedCard extends StatelessWidget {
+  final Place place;
   final Function removeHandler;
 
-  SightVisitedCard({
+  PlaceWantedCard({
     Key? key,
-    required this.sight,
+    required this.place,
     required this.removeHandler,
   }) : super(key: key);
+
+  ThemeData _getPickerThemeData(BuildContext context) {
+    return Provider.of<AppModel>(context).theme == lightThemeData
+        ? ThemeData.light().copyWith(colorScheme: ColorScheme.light(primary: primaryColor))
+        : ThemeData.dark().copyWith(
+            colorScheme: ColorScheme.dark(primary: successColor, onBackground: successColor));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +40,7 @@ class SightVisitedCard extends StatelessWidget {
             child: Container(
               width: double.infinity,
               child: Image.network(
-                sight.url,
+                place.urls.first,
                 fit: BoxFit.cover,
                 loadingBuilder:
                     (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
@@ -49,7 +61,7 @@ class SightVisitedCard extends StatelessWidget {
             top: 16.0,
             left: 16.0,
             child: Text(
-              sight.type.toLowerCase(),
+              place.placeType.toLowerCase(),
               style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.white),
             ),
           ),
@@ -64,15 +76,15 @@ class SightVisitedCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    sight.name,
+                    place.name,
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   SizedBox(
                     height: 2.0,
                   ),
                   Text(
-                    'Цель достигнута 12 окт. 2020',
-                    style: Theme.of(context).textTheme.bodyText2,
+                    'Запланировано на 12 окт. 2021',
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(color: successColor),
                   ),
                   SizedBox(
                     height: 12.0,
@@ -98,7 +110,7 @@ class SightVisitedCard extends StatelessWidget {
                     isScrollControlled: true,
                     context: context,
                     builder: (BuildContext context) {
-                      return SightDetailsScreen(sight: sight);
+                      return PlaceDetailScreen(id: place.id);
                     },
                   );
                 },
@@ -115,16 +127,43 @@ class SightVisitedCard extends StatelessWidget {
                   width: 24.0,
                   height: 24.0,
                   child: IconButton(
-                    onPressed: () {
-                      print('Pressed share button');
-                    },
                     padding: EdgeInsets.zero,
                     icon: SvgPicture.asset(
-                      iconShare,
+                      iconCalendar,
                       color: Colors.white,
                       width: 24.0,
                       height: 24.0,
                     ),
+                    onPressed: () {
+                      Platform.isIOS
+                          ? showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Container(
+                                  height: 240.0,
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  child: CupertinoDatePicker(
+                                    minimumDate: DateTime.now(),
+                                    onDateTimeChanged: (DateTime dateTime) {
+                                      print(dateTime);
+                                    },
+                                  ),
+                                );
+                              },
+                            )
+                          : showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                              builder: (BuildContext context, Widget? child) {
+                                return child != null
+                                    ? Theme(
+                                        data: _getPickerThemeData(context),
+                                        child: child,
+                                      )
+                                    : Container();
+                              },
+                            );
+                    },
                   ),
                 ),
                 SizedBox(width: 16.0),
