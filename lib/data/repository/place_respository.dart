@@ -47,7 +47,9 @@ class PlaceRepository {
     Place? newPlace;
 
     try {
-      Response response = await Api.client.post(route, data: place.json);
+      Map<String, dynamic> data = place.json;
+      data.remove('id');
+      Response response = await Api.client.post(route, data: data);
       final raw = response.data as Map<String, dynamic>;
       newPlace = Place.fromJson(raw);
     } catch (err) {

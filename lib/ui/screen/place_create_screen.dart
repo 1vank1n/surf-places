@@ -5,9 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
-import 'package:places/mocks.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
@@ -29,7 +29,7 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
   FocusNode _latFocusNode = FocusNode();
   FocusNode _lonFocusNode = FocusNode();
   FocusNode _detailsFocusNode = FocusNode();
-  bool get isValidSightCreateForm {
+  bool get isValidPlaceCreateForm {
     return _titleTextEditingController.text.isNotEmpty &&
         _latTextEditingController.text.isNotEmpty &&
         _lonTextEditingController.text.isNotEmpty;
@@ -71,24 +71,21 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
     }
   }
 
-  Sight createSightFromState() {
-    int lastId = SightStorage.sights.last.id;
-
-    return Sight(
-      id: lastId + 1,
+  Place createPlaceFromState() {
+    return Place(
+      id: 0,
       name: _titleTextEditingController.text,
       lat: double.parse(_latTextEditingController.text),
-      lon: double.parse(_lonTextEditingController.text),
-      url: '',
-      details: '',
-      type: '',
+      lng: double.parse(_lonTextEditingController.text),
+      urls: [],
+      description: _detailsTextEditingController.text,
+      placeType: '',
     );
   }
 
-  void addSightFromStateToStore() {
-    Sight sight = createSightFromState();
-    SightStorage.sights.add(sight);
-    print('Total sights: ${SightStorage.sights.length}, last: ${SightStorage.sights.last}');
+  void addPlaceFromStateToRepository() {
+    Place place = createPlaceFromState();
+    PlaceInteractor.addNewPlace(place);
   }
 
   void _addUploadImage() async {
@@ -329,7 +326,7 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
             width: double.infinity,
             height: 48.0,
             child: ElevatedButton(
-              onPressed: isValidSightCreateForm ? addSightFromStateToStore : null,
+              onPressed: isValidPlaceCreateForm ? addPlaceFromStateToRepository : null,
               child: Text('СОЗДАТЬ'),
             ),
           ),

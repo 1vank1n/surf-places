@@ -57,9 +57,7 @@ class PlaceInteractor {
     }
   }
 
-  // static void addNewPlace(Place place) {
-  //   if (_visitedPlaces.contains(place)) {
-  //     _visitedPlaces.remove(place);
-  //   }
-  // }
+  static Future<Place?> addNewPlace(Place place) {
+    return PlaceRepository.postPlace(place);
+  }
 }

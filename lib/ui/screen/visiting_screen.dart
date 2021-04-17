@@ -82,7 +82,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
             ),
             VisitedPlaceList(
               places: _visitedPlaces,
-              removeHandler: _removeFromWantedPlaces,
+              removeHandler: _removeFromVisitedPlaces,
             )
           ],
         ),
