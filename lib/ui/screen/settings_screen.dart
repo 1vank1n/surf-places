@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:places/main.dart' show AppRouter;
 
 class SettingsScreen extends StatelessWidget {
+  final SettingsInteractor _settingsInteractor = SettingsInteractor();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +27,7 @@ class SettingsScreen extends StatelessWidget {
                 return SwitchListTile(
                   value: appModel.theme == darkThemeData,
                   onChanged: (_) {
-                    SettingsInteractor.toggleTheme(appModel);
+                    _settingsInteractor.toggleTheme(appModel);
                   },
                   title: Text('Тёмная тема'),
                 );
