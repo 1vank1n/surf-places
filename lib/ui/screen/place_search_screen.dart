@@ -14,6 +14,7 @@ class PlaceSearchScreen extends StatefulWidget {
 }
 
 class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
+  final PlaceSearchInteractor _placeSearchInteractor = PlaceSearchInteractor();
   TextEditingController _searchTextEditingController = TextEditingController();
   late Future<List<Place>> _places;
 
@@ -28,7 +29,7 @@ class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
       return Future.value([]);
     }
 
-    return PlaceSearchInteractor.searchPlaces(query);
+    return _placeSearchInteractor.searchPlaces(query);
   }
 
   void _loadQuery(String query) {
