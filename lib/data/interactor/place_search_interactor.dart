@@ -5,10 +5,10 @@ import 'package:places/data/repository/place_respository.dart';
 class PlaceSearchInteractor {
   static List<String> queries = [];
 
-  static Future<List<Place>> searchPlaces(String name) {
+  Future<List<Place>> searchPlaces(String name) {
     var _filter = PlacesFilterRequestDto(nameFilter: name);
     addQuery(name);
-    return PlaceRepository.postFilteredPlaces(_filter);
+    return PlaceRepository().postFilteredPlaces(_filter);
   }
 
   static void addQuery(String query) {

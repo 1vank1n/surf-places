@@ -20,6 +20,7 @@ class PlaceCreateScreen extends StatefulWidget {
 }
 
 class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
+  final PlaceInteractor _placeInteractor = PlaceInteractor();
   List<UploadImage> _uploadImages = [];
   TextEditingController _titleTextEditingController = TextEditingController();
   TextEditingController _latTextEditingController = TextEditingController();
@@ -85,7 +86,7 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
 
   void addPlaceFromStateToRepository() {
     Place place = createPlaceFromState();
-    PlaceInteractor.addNewPlace(place);
+    _placeInteractor.addNewPlace(place);
   }
 
   void _addUploadImage() async {

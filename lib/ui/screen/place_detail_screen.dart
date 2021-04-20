@@ -20,6 +20,7 @@ class PlaceDetailScreen extends StatefulWidget {
 
 class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
   late Future<Place?> _place;
+  final PlaceInteractor _placeInteractor = PlaceInteractor();
 
   @override
   void initState() {
@@ -28,20 +29,20 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
   }
 
   Future<Place?> _getPlace() {
-    return PlaceInteractor.getPlaceDetails(widget.id);
+    return _placeInteractor.getPlaceDetails(widget.id);
   }
 
   bool _placeInFavorites(Place place) {
-    return PlaceInteractor.getFavoritesPlaces().contains(place);
+    return _placeInteractor.getFavoritesPlaces().contains(place);
   }
 
   void _addToFavorites(Place place) {
-    PlaceInteractor.addToFavorites(place);
+    _placeInteractor.addToFavorites(place);
     setState(() {});
   }
 
   void _removeFromFavorites(Place place) {
-    PlaceInteractor.removeFromFavorites(place);
+    _placeInteractor.removeFromFavorites(place);
     setState(() {});
   }
 
