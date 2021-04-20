@@ -1,17 +1,49 @@
 import 'package:dio/dio.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
-import 'package:places/data/network/api.dart';
 
 class PlaceRepository {
   static const route = '/place';
   static const filteredRoute = '/filtered_places';
 
-  static Future<List<Place>> getPlaces() async {
+  late Dio _client;
+
+  PlaceRepository() {
+    Dio dio = Dio(
+      BaseOptions(
+        baseUrl: 'https://test-backend-flutter.surfstudio.ru',
+        connectTimeout: 5000,
+        receiveTimeout: 5000,
+        sendTimeout: 5000,
+        responseType: ResponseType.json,
+      ),
+    );
+
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
+          print('REQUEST[${options.method}] => PATH: ${options.path}');
+          return handler.next(options);
+        },
+        onResponse: (Response response, ResponseInterceptorHandler handler) {
+          print('RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
+          return handler.next(response);
+        },
+        onError: (DioError err, ErrorInterceptorHandler handler) {
+          print('ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
+          return handler.next(err);
+        },
+      ),
+    );
+
+    _client = dio;
+  }
+
+  Future<List<Place>> getPlaces() async {
     List<Place> places = [];
 
     try {
-      Response response = await Api.client.get(route);
+      Response response = await _client.get(route);
       final rawList = response.data as List;
       for (var raw in rawList) {
         try {
@@ -28,12 +60,12 @@ class PlaceRepository {
     return places;
   }
 
-  static Future<Place?> getPlace(int id) async {
+  Future<Place?> getPlace(int id) async {
     Place? place;
 
     try {
       final String url = '$route/$id';
-      Response response = await Api.client.get(url);
+      Response response = await _client.get(url);
       final raw = response.data as Map<String, dynamic>;
       place = Place.fromJson(raw);
     } catch (err) {
@@ -43,13 +75,11 @@ class PlaceRepository {
     return place;
   }
 
-  static Future<Place?> postPlace(Place place) async {
+  Future<Place?> postPlace(Place place) async {
     Place? newPlace;
 
     try {
-      Map<String, dynamic> data = place.json;
-      data.remove('id');
-      Response response = await Api.client.post(route, data: data);
+      Response response = await _client.post(route, data: place.json);
       final raw = response.data as Map<String, dynamic>;
       newPlace = Place.fromJson(raw);
     } catch (err) {
@@ -59,12 +89,12 @@ class PlaceRepository {
     return newPlace;
   }
 
-  static Future<Place?> putPlace(Place place) async {
+  Future<Place?> putPlace(Place place) async {
     Place? updatedPlace;
 
     try {
       final url = '$route/${place.id}';
-      Response response = await Api.client.put(url, data: place.json);
+      Response response = await _client.put(url, data: place.json);
       final raw = response.data as Map<String, dynamic>;
       updatedPlace = Place.fromJson(raw);
     } catch (err) {
@@ -74,12 +104,12 @@ class PlaceRepository {
     return updatedPlace;
   }
 
-  static Future<bool> deletePlace(int id) async {
+  Future<bool> deletePlace(int id) async {
     bool result = false;
 
     try {
       final url = '$route/$id';
-      Response response = await Api.client.delete(url);
+      Response response = await _client.delete(url);
       result = response.statusCode == 200;
     } catch (err) {
       print('Delete place error: $err');
@@ -88,11 +118,11 @@ class PlaceRepository {
     return result;
   }
 
-  static Future<List<Place>> postFilteredPlaces(PlacesFilterRequestDto placesFilter) async {
+  Future<List<Place>> postFilteredPlaces(PlacesFilterRequestDto placesFilter) async {
     List<Place> places = [];
 
     try {
-      Response response = await Api.client.post(filteredRoute, data: placesFilter.json);
+      Response response = await _client.post(filteredRoute, data: placesFilter.json);
       final rawList = response.data as List;
       for (var raw in rawList) {
         try {
