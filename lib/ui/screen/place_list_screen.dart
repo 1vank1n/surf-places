@@ -13,6 +13,7 @@ class PlaceListScreen extends StatefulWidget {
 }
 
 class _PlaceListScreenState extends State<PlaceListScreen> {
+  final PlaceInteractor _placeInteractor = PlaceInteractor();
   late Future<List<Place>> _places;
   ScrollController _scrollController = ScrollController();
   double _titleOpacity = 0;
@@ -37,7 +38,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
   }
 
   Future<List<Place>> _getPlaces() {
-    return PlaceInteractor.getPlaces(40000, '');
+    return _placeInteractor.getPlaces(40000, '');
   }
 
   @override
