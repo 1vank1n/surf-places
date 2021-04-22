@@ -1,36 +1,11 @@
-import 'package:dio/dio.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/data/model/places_filter_request_dto.dart';
 
-class Api {
-  static final _dio = Dio(
-    BaseOptions(
-      baseUrl: 'https://test-backend-flutter.surfstudio.ru',
-      connectTimeout: 5000,
-      receiveTimeout: 5000,
-      sendTimeout: 5000,
-      responseType: ResponseType.json,
-    ),
-  );
-
-  static Dio _addInterceptors(Dio dio) {
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
-          print('REQUEST[${options.method}] => PATH: ${options.path}');
-          print('REQUEST DATA: ${options.data}');
-          return handler.next(options);
-        },
-        onResponse: (Response response, ResponseInterceptorHandler handler) {
-          print('RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
-          return handler.next(response);
-        },
-        onError: (DioError err, ErrorInterceptorHandler handler) {
-          print('ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
-          return handler.next(err);
-        },
-      ),
-    );
-    return dio;
-  }
-
-  static final client = _addInterceptors(_dio);
+abstract class Api {
+  Future<List<Place>> getPlaces();
+  Future<Place?> getPlace(int id);
+  Future<Place?> postPlace(Place place);
+  Future<Place?> putPlace(Place place);
+  Future<bool> deletePlace(int id);
+  Future<List<Place>> postFilteredPlaces(PlacesFilterRequestDto placesFilter);
 }

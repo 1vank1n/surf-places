@@ -1,11 +1,15 @@
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
+import 'package:places/data/network/api.dart';
+import 'package:places/data/network/api_dio.dart';
 import 'package:places/data/repository/place_respository.dart';
 
 class PlaceInteractor {
   static List<Place> _favoritePlaces = [];
   static List<Place> _visitedPlaces = [];
-  Map<String, double> userCoordinates = {
+
+  final Api api = ApiDio();
+  final Map<String, double> userCoordinates = {
     'lat': 60.0,
     'lng': 30.0,
   };
@@ -17,11 +21,11 @@ class PlaceInteractor {
       radius: radius,
     );
 
-    return PlaceRepository().postFilteredPlaces(_filter);
+    return PlaceRepository(api: api).postFilteredPlaces(_filter);
   }
 
   Future<Place?> getPlaceDetails(int id) {
-    return PlaceRepository().getPlace(id);
+    return PlaceRepository(api: api).getPlace(id);
   }
 
   List<Place> getFavoritesPlaces() {
@@ -57,6 +61,6 @@ class PlaceInteractor {
   }
 
   Future<Place?> addNewPlace(Place place) {
-    return PlaceRepository().postPlace(place);
+    return PlaceRepository(api: api).postPlace(place);
   }
 }
