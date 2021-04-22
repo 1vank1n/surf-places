@@ -68,40 +68,40 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: SvgPicture.asset(
-            iconArrow,
-            width: 24.0,
-            height: 24.0,
-            color: Theme.of(context).primaryColor,
-          ),
-          padding: EdgeInsets.zero,
-          color: Colors.white,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: Text(
-              'Очистить',
-              style: subtitle1.copyWith(
-                color: successColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: OrientationBuilder(
-        builder: (BuildContext context, Orientation orientation) {
-          bool isSmallScreen = MediaQuery.of(context).size.width <= SMALL_SCREEN_WIDTH;
+    return OrientationBuilder(
+      builder: (BuildContext context, Orientation orientation) {
+        bool isSmallScreen = MediaQuery.of(context).size.width <= SMALL_SCREEN_WIDTH;
 
-          return SafeArea(
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: SvgPicture.asset(
+                iconArrow,
+                width: 24.0,
+                height: 24.0,
+                color: Theme.of(context).primaryColor,
+              ),
+              padding: EdgeInsets.zero,
+              color: Colors.white,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  'Очистить',
+                  style: subtitle1.copyWith(
+                    color: successColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          body: SafeArea(
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -120,10 +120,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
                 ],
               ),
             ),
-          );
-        },
-      ),
-      bottomNavigationBar: isSmallScreen ? null : ShowButton(filteredSights: _filteredSights),
+          ),
+          bottomNavigationBar: isSmallScreen ? null : ShowButton(filteredSights: _filteredSights),
+        );
+      },
     );
   }
 }
