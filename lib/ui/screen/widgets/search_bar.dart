@@ -46,11 +46,6 @@ class SearchBar extends StatelessWidget {
       child: Stack(
         children: [
           TextField(
-            onSubmitted: (_) {
-              if (searchHandler != null) {
-                searchHandler!();
-              }
-            },
             onEditingComplete: () {
               if (searchHandler != null) {
                 searchHandler!();

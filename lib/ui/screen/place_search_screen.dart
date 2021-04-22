@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/domain/sight.dart';
-import 'package:places/mocks.dart';
-import 'package:places/ui/common/widgets/sight_search_card.dart';
+import 'package:places/data/interactor/place_search_interactor.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/ui/common/widgets/place_search_card.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
@@ -14,47 +14,35 @@ class PlaceSearchScreen extends StatefulWidget {
 }
 
 class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
-  static const double START_RANGE = 0.0;
-  static const double END_RANGE = 5500.0;
-  static const Map<String, double> USER_COORDINATES = {
-    'lat': 43.575402,
-    'lon': 39.728811,
-  };
-
-  final RangeValues _currentRangeValues = RangeValues(START_RANGE, END_RANGE);
+  final PlaceSearchInteractor _placeSearchInteractor = PlaceSearchInteractor();
   TextEditingController _searchTextEditingController = TextEditingController();
-  List<Sight> _sights = [];
-  List<String> _queries = [];
+  late Future<List<Place>> _places;
 
   @override
   void initState() {
     super.initState();
+    _places = Future.value([]);
   }
 
-  List<Sight> _searchByQuery(String query) {
-    List<Sight> storageSights = SightStorage.sights;
-
-    if (query != '') {
-      if (!_queries.contains(query)) {
-        _queries.add(query);
-      } else {
-        _queries.remove(query);
-        _queries.insert(0, query);
-      }
+  Future<List<Place>> _searchByQuery(String query) {
+    if (query == '') {
+      return Future.value([]);
     }
 
-    if (query.length > 0) {
-      return SightStorage.filterSight(
-        sights: storageSights,
-        userLat: USER_COORDINATES['lat']!,
-        userLon: USER_COORDINATES['lon']!,
-        startRange: _currentRangeValues.start,
-        endRange: _currentRangeValues.end,
-        query: query,
-      );
-    }
+    return _placeSearchInteractor.searchPlaces(query);
+  }
 
-    return [];
+  void _loadQuery(String query) {
+    setState(() {
+      _searchTextEditingController.text = query;
+      _searchTextEditingController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _searchTextEditingController.text.length));
+      _places = _searchByQuery(query);
+    });
+  }
+
+  void _refreshState() {
+    setState(() {});
   }
 
   @override
@@ -86,7 +74,7 @@ class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
               searchTextEditingController: _searchTextEditingController,
               searchHandler: () {
                 setState(() {
-                  _sights = _searchByQuery(_searchTextEditingController.text);
+                  _places = _searchByQuery(_searchTextEditingController.text);
                 });
               },
             ),
@@ -94,37 +82,77 @@ class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
         ),
         elevation: 0,
       ),
-      body: _buildBody(),
-    );
-  }
+      body: FutureBuilder(
+        future: _places,
+        builder: (BuildContext context, AsyncSnapshot<List<Place>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else {
+            final places = snapshot.data ?? [];
 
-  Widget _buildQuery() {
-    Widget _sightSearchCardAndDivider(Sight sight) {
-      return Column(
-        children: [
-          SightSearchCard(
-            sight: sight,
-            highlight: _searchTextEditingController.text,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Divider(color: dividerColor),
-          )
-        ],
-      );
-    }
+            if (places.length > 0) {
+              return PlaceFindedList(places: places);
+            }
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(height: 26.0),
-          for (var sight in _sights) _sightSearchCardAndDivider(sight),
-        ],
+            if (_searchTextEditingController.text.isEmpty) {
+              return HistoryQueryList(
+                loadQueryHandler: _loadQuery,
+                refreshStateHandler: _refreshState,
+              );
+            }
+
+            return EmptyQueryList();
+          }
+        },
       ),
     );
   }
+}
 
-  Widget _buildHistory() {
+class PlaceFindedList extends StatelessWidget {
+  final List<Place> places;
+
+  PlaceFindedList({
+    Key? key,
+    required this.places,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      itemCount: places.length,
+      itemBuilder: (BuildContext context, int index) {
+        final place = places[index];
+        return PlaceSearchCard(
+          key: ValueKey(place.id),
+          place: place,
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return Divider(color: dividerColor);
+      },
+    );
+  }
+}
+
+class HistoryQueryList extends StatelessWidget {
+  final Function loadQueryHandler;
+  final Function refreshStateHandler;
+
+  const HistoryQueryList({
+    Key? key,
+    required this.loadQueryHandler,
+    required this.refreshStateHandler,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     Widget _queryAndDivider(query) {
       return Column(
         children: [
@@ -132,15 +160,17 @@ class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
             title: Text(query),
             trailing: IconButton(
               onPressed: () {
-                setState(() {
-                  _queries.remove(query);
-                });
+                PlaceSearchInteractor.removeQuery(query);
+                refreshStateHandler();
               },
               icon: Icon(
                 Icons.close,
                 color: inactiveTrackColor,
               ),
             ),
+            onTap: () {
+              loadQueryHandler(query);
+            },
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -154,12 +184,12 @@ class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (_queries.length > 0)
+          if (PlaceSearchInteractor.queries.length > 0)
             ListTile(
               subtitle: Text('ВЫ ИСКАЛИ'),
             ),
-          for (var query in _queries) _queryAndDivider(query),
-          if (_queries.length > 0)
+          for (var query in PlaceSearchInteractor.queries) _queryAndDivider(query),
+          if (PlaceSearchInteractor.queries.length > 0)
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: TextButton(
@@ -174,9 +204,8 @@ class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 0.0),
                 ),
                 onPressed: () {
-                  setState(() {
-                    _queries = [];
-                  });
+                  PlaceSearchInteractor.cleanQueries();
+                  refreshStateHandler();
                 },
               ),
             ),
@@ -184,8 +213,11 @@ class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
       ),
     );
   }
+}
 
-  Widget _buildEmptyQuery() {
+class EmptyQueryList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -214,17 +246,5 @@ class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
         ),
       ),
     );
-  }
-
-  Widget _buildBody() {
-    if (_sights.length > 0) {
-      return _buildQuery();
-    }
-
-    if (_searchTextEditingController.text.isEmpty) {
-      return _buildHistory();
-    }
-
-    return _buildEmptyQuery();
   }
 }
