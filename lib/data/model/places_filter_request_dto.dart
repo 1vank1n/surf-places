@@ -24,8 +24,8 @@ class PlacesFilterRequestDto {
       'lat': lat,
       'lng': lng,
       'radius': radius,
-      'typeFilter': typeFilter ?? [],
-      'nameFilter': nameFilter ?? '',
+      'typeFilter': typeFilter,
+      'nameFilter': nameFilter,
     };
   }
 }

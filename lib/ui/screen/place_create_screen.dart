@@ -5,21 +5,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
-import 'package:places/mocks.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:provider/provider.dart';
 
-class AddSightScreen extends StatefulWidget {
+class PlaceCreateScreen extends StatefulWidget {
   @override
-  _AddSightScreenState createState() => _AddSightScreenState();
+  _PlaceCreateScreenState createState() => _PlaceCreateScreenState();
 }
 
-class _AddSightScreenState extends State<AddSightScreen> {
+class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
+  final PlaceInteractor _placeInteractor = PlaceInteractor();
   List<UploadImage> _uploadImages = [];
   TextEditingController _titleTextEditingController = TextEditingController();
   TextEditingController _latTextEditingController = TextEditingController();
@@ -29,7 +30,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   FocusNode _latFocusNode = FocusNode();
   FocusNode _lonFocusNode = FocusNode();
   FocusNode _detailsFocusNode = FocusNode();
-  bool get isValidSightCreateForm {
+  bool get isValidPlaceCreateForm {
     return _titleTextEditingController.text.isNotEmpty &&
         _latTextEditingController.text.isNotEmpty &&
         _lonTextEditingController.text.isNotEmpty;
@@ -71,24 +72,21 @@ class _AddSightScreenState extends State<AddSightScreen> {
     }
   }
 
-  Sight createSightFromState() {
-    int lastId = SightStorage.sights.last.id;
-
-    return Sight(
-      id: lastId + 1,
+  Place createPlaceFromState() {
+    return Place(
+      id: 0,
       name: _titleTextEditingController.text,
       lat: double.parse(_latTextEditingController.text),
-      lon: double.parse(_lonTextEditingController.text),
-      url: '',
-      details: '',
-      type: '',
+      lng: double.parse(_lonTextEditingController.text),
+      urls: [],
+      description: _detailsTextEditingController.text,
+      placeType: '',
     );
   }
 
-  void addSightFromStateToStore() {
-    Sight sight = createSightFromState();
-    SightStorage.sights.add(sight);
-    print('Total sights: ${SightStorage.sights.length}, last: ${SightStorage.sights.last}');
+  void addPlaceFromStateToRepository() {
+    Place place = createPlaceFromState();
+    _placeInteractor.addNewPlace(place);
   }
 
   void _addUploadImage() async {
@@ -329,7 +327,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
             width: double.infinity,
             height: 48.0,
             child: ElevatedButton(
-              onPressed: isValidSightCreateForm ? addSightFromStateToStore : null,
+              onPressed: isValidPlaceCreateForm ? addPlaceFromStateToRepository : null,
               child: Text('СОЗДАТЬ'),
             ),
           ),
@@ -479,32 +477,7 @@ class UploadImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return isCreator
-        ?
-        // TODO реализация нулеовго элемента через OutlinedButton
-        //
-        // Container(
-        //     width: 72.0,
-        //     height: 72.0,
-        //     child: OutlinedButton(
-        //       onPressed: () {
-        //         if (addUploadImage != null) {
-        //           addUploadImage!();
-        //         }
-        //       },
-        //       child: SvgPicture.asset(iconPlus),
-        //       style: OutlinedButton.styleFrom(
-        //         primary: successColor,
-        //         side: BorderSide(
-        //           width: 2.0,
-        //           color: successColor.withOpacity(0.48),
-        //         ),
-        //         shape: RoundedRectangleBorder(
-        //           borderRadius: BorderRadius.circular(12.0),
-        //         ),
-        //       ),
-        //     ),
-        //   )
-        GestureDetector(
+        ? GestureDetector(
             onTap: () {
               if (addUploadImage != null) {
                 addUploadImage!();
