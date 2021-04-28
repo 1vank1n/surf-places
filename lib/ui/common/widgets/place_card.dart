@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,6 +24,19 @@ class PlaceCard extends StatefulWidget {
 
 class _PlaceCardState extends State<PlaceCard> {
   final PlaceInteractor _placeInteractor = PlaceInteractor();
+  final StreamController<bool> _favoriteStreamController = StreamController();
+
+  @override
+  void initState() {
+    super.initState();
+    _favoriteStreamController.sink.add(_placeInFavorites(widget.place));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _favoriteStreamController.close();
+  }
 
   bool _placeInFavorites(Place place) {
     return _placeInteractor.getFavoritesPlaces().contains(place);
@@ -29,12 +44,12 @@ class _PlaceCardState extends State<PlaceCard> {
 
   void _addToFavorites(Place place) {
     _placeInteractor.addToFavorites(place);
-    setState(() {});
+    _favoriteStreamController.sink.add(true);
   }
 
   void _removeFromFavorites(Place place) {
     _placeInteractor.removeFromFavorites(place);
-    setState(() {});
+    _favoriteStreamController.sink.add(false);
   }
 
   @override
@@ -132,11 +147,18 @@ class _PlaceCardState extends State<PlaceCard> {
                       : _addToFavorites(widget.place);
                 },
                 padding: EdgeInsets.zero,
-                icon: SvgPicture.asset(
-                  _placeInFavorites(widget.place) ? iconHeartFill : iconHeart,
-                  color: Colors.white,
-                  width: 24.0,
-                  height: 24.0,
+                icon: StreamBuilder<bool>(
+                  stream: _favoriteStreamController.stream,
+                  builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.active)
+                      return SvgPicture.asset(
+                        snapshot.data! ? iconHeartFill : iconHeart,
+                        color: Colors.white,
+                        width: 24.0,
+                        height: 24.0,
+                      );
+                    return Container();
+                  },
                 ),
               ),
             ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
@@ -14,27 +16,33 @@ class PlaceListScreen extends StatefulWidget {
 
 class _PlaceListScreenState extends State<PlaceListScreen> {
   final PlaceInteractor _placeInteractor = PlaceInteractor();
-  late Future<List<Place>> _places;
-  ScrollController _scrollController = ScrollController();
-  double _titleOpacity = 0;
+  final ScrollController _scrollController = ScrollController();
+  final StreamController<double> _titleOpacityStreamController = StreamController();
+  final StreamController<List<Place>> _placesStreamController = StreamController();
 
   @override
   void initState() {
     super.initState();
+    _titleOpacityStreamController.sink.add(0);
     _scrollController.addListener(_scrollControllerHandler);
-    _places = _getPlaces();
+    _getPlaces().then((places) => _placesStreamController.sink.add(places));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _titleOpacityStreamController.close();
+    _placesStreamController.close();
   }
 
   void _scrollControllerHandler() {
-    setState(() {
-      if (_scrollController.offset > 200) {
-        _titleOpacity = 1;
-      } else if (_scrollController.offset < 100) {
-        _titleOpacity = 0;
-      } else {
-        _titleOpacity = (_scrollController.offset - 100) / 100;
-      }
-    });
+    if (_scrollController.offset > 200) {
+      _titleOpacityStreamController.sink.add(1);
+    } else if (_scrollController.offset < 100) {
+      _titleOpacityStreamController.sink.add(0);
+    } else {
+      _titleOpacityStreamController.sink.add((_scrollController.offset - 100) / 100);
+    }
   }
 
   Future<List<Place>> _getPlaces() {
@@ -57,12 +65,19 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                   SliverAppBar(
                     elevation: 0,
                     pinned: true,
-                    title: Opacity(
-                      opacity: _titleOpacity,
-                      child: Text(
-                        'Список интересных мест',
-                        style: Theme.of(context).textTheme.headline3,
-                      ),
+                    title: StreamBuilder<double>(
+                      stream: _titleOpacityStreamController.stream,
+                      builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.active)
+                          return Opacity(
+                            opacity: snapshot.data!,
+                            child: Text(
+                              'Список интересных мест',
+                              style: Theme.of(context).textTheme.headline3,
+                            ),
+                          );
+                        return Container();
+                      },
                     ),
                     expandedHeight: 142.0 + MediaQuery.of(context).padding.top,
                     flexibleSpace: FlexibleSpaceBar(
@@ -94,8 +109,8 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                   SliverToBoxAdapter(
                     child: SizedBox(height: 24.0),
                   ),
-                  FutureBuilder(
-                    future: _places,
+                  StreamBuilder<List<Place>>(
+                    stream: _placesStreamController.stream,
                     builder: (BuildContext context, AsyncSnapshot<List<Place>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return SliverToBoxAdapter(
