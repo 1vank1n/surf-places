@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
 import 'package:places/data/network/api.dart';
+import 'package:places/data/network/exceptions.dart';
 
 class ApiRoutes {
   static const places = '/place';
@@ -34,7 +35,12 @@ class ApiDio implements Api {
         },
         onError: (DioError err, ErrorInterceptorHandler handler) {
           print('ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
-          return handler.next(err);
+
+          throw NetworkException(
+            path: err.requestOptions.path,
+            statusCode: err.response?.statusCode ?? 0,
+            message: err.response?.statusMessage ?? 'Unknown network error',
+          );
         },
       ),
     );
