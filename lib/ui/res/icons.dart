@@ -15,6 +15,7 @@ const String iconClose = 'res/icons/icon-close.svg';
 const String iconCamera = 'res/icons/icon-camera.svg';
 const String iconPhoto = 'res/icons/icon-photo.svg';
 const String iconFile = 'res/icons/icon-file.svg';
+const String iconError = 'res/icons/icon-error.svg';
 
 // Onboarding
 const String iconOnboardingPointer = 'res/icons/icon-onboarding-pointer.svg';

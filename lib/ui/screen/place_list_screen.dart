@@ -1,12 +1,15 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/data/network/exceptions.dart';
 import 'package:places/main.dart';
 import 'package:places/ui/common/widgets/place_card.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/screen/widgets/error_holder.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 
 class PlaceListScreen extends StatefulWidget {
@@ -25,7 +28,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     super.initState();
     _titleOpacityStreamController.sink.add(0);
     _scrollController.addListener(_scrollControllerHandler);
-    _getPlaces().then((places) => _placesStreamController.sink.add(places));
+    _getPlaces();
   }
 
   @override
@@ -45,8 +48,15 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     }
   }
 
-  Future<List<Place>> _getPlaces() {
-    return _placeInteractor.getPlaces(40000, '');
+  void _getPlaces() {
+    _placeInteractor
+        .getPlaces(40000, '')
+        .then((places) => _placesStreamController.sink.add(places))
+        .onError(
+      (error, stackTrace) {
+        if (error != null) _placesStreamController.addError(error);
+      },
+    );
   }
 
   @override
@@ -58,7 +68,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
 
           return SafeArea(
             child: RefreshIndicator(
-              onRefresh: _getPlaces,
+              onRefresh: () => Future(_getPlaces),
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
@@ -119,9 +129,19 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                           ),
                         );
                       } else if (snapshot.hasError) {
-                        return SliverToBoxAdapter(
-                          child: Center(
-                            child: Text('Error: ${snapshot.error}'),
+                        String message;
+
+                        try {
+                          DioError dioError = snapshot.error as DioError;
+                          NetworkException networkException = dioError.error as NetworkException;
+                          message = networkException.toString();
+                        } on TypeError {
+                          message = 'Что-то пошло не так попробуйте позже';
+                        }
+
+                        return SliverFillRemaining(
+                          child: ErrorHolder(
+                            message: message,
                           ),
                         );
                       } else {

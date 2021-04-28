@@ -51,19 +51,14 @@ class ApiDio implements Api {
   Future<List<Place>> getPlaces() async {
     List<Place> places = [];
 
-    try {
-      Response response = await _client.get(ApiRoutes.places);
-      final rawList = response.data as List;
-      for (var raw in rawList) {
-        try {
-          places.add(Place.fromJson(raw));
-        } catch (err) {
-          print('Skip place parsing. Error: $err, data: $raw');
-        }
+    Response<List> response = await _client.get(ApiRoutes.places);
+    final rawList = response.data ?? [];
+    for (var raw in rawList) {
+      try {
+        places.add(Place.fromJson(raw));
+      } on TypeError catch (err) {
+        print('Skip place parsing. Error: $err, data: $raw');
       }
-      places = rawList.map((raw) => Place.fromJson(raw)).toList();
-    } catch (err) {
-      print('Get places error: $err');
     }
 
     return places;
@@ -72,12 +67,12 @@ class ApiDio implements Api {
   Future<Place?> getPlace(int id) async {
     Place? place;
 
+    final String url = '${ApiRoutes.places}/$id';
+    Response<Map<String, dynamic>> response = await _client.get(url);
+
     try {
-      final String url = '${ApiRoutes.places}/$id';
-      Response response = await _client.get(url);
-      final raw = response.data as Map<String, dynamic>;
-      place = Place.fromJson(raw);
-    } catch (err) {
+      place = Place.fromJson(response.data!);
+    } on TypeError catch (err) {
       print('Get place error: $err');
     }
 
@@ -87,13 +82,16 @@ class ApiDio implements Api {
   Future<Place?> postPlace(Place place) async {
     Place? newPlace;
 
+    Map<String, dynamic> data = place.json;
+    data.remove('id');
+    Response<Map<String, dynamic>> response = await _client.post(
+      ApiRoutes.places,
+      data: data,
+    );
+
     try {
-      Map<String, dynamic> data = place.json;
-      data.remove('id');
-      Response response = await _client.post(ApiRoutes.places, data: data);
-      final raw = response.data as Map<String, dynamic>;
-      newPlace = Place.fromJson(raw);
-    } catch (err) {
+      newPlace = Place.fromJson(response.data!);
+    } on TypeError catch (err) {
       print('Post place error: $err');
     }
 
@@ -103,12 +101,15 @@ class ApiDio implements Api {
   Future<Place?> putPlace(Place place) async {
     Place? updatedPlace;
 
+    final url = '${ApiRoutes.places}/${place.id}';
+    final Response<Map<String, dynamic>> response = await _client.put(
+      url,
+      data: place.json,
+    );
+
     try {
-      final url = '${ApiRoutes.places}/${place.id}';
-      Response response = await _client.put(url, data: place.json);
-      final raw = response.data as Map<String, dynamic>;
-      updatedPlace = Place.fromJson(raw);
-    } catch (err) {
+      updatedPlace = Place.fromJson(response.data!);
+    } on TypeError catch (err) {
       print('Put place error: $err');
     }
 
@@ -116,35 +117,26 @@ class ApiDio implements Api {
   }
 
   Future<bool> deletePlace(int id) async {
-    bool result = false;
-
-    try {
-      final url = '${ApiRoutes.places}/$id';
-      Response response = await _client.delete(url);
-      result = response.statusCode == 200;
-    } catch (err) {
-      print('Delete place error: $err');
-    }
-
-    return result;
+    final url = '${ApiRoutes.places}/$id';
+    final Response response = await _client.delete(url);
+    return response.statusCode == 200;
   }
 
   Future<List<Place>> postFilteredPlaces(PlacesFilterRequestDto placesFilter) async {
     List<Place> places = [];
 
-    try {
-      Response response = await _client.post(ApiRoutes.filteredPlaces, data: placesFilter.json);
-      final rawList = response.data as List;
-      for (var raw in rawList) {
-        try {
-          places.add(Place.fromJson(raw));
-        } catch (err) {
-          print('Skip place parsing. Error: $err, data: $raw');
-        }
+    final Response<List> response = await _client.post(
+      ApiRoutes.filteredPlaces,
+      data: placesFilter.json,
+    );
+
+    final rawList = response.data ?? [];
+    for (var raw in rawList) {
+      try {
+        places.add(Place.fromJson(raw));
+      } on TypeError catch (err) {
+        print('Skip place parsing. Error: $err, data: $raw');
       }
-      places = rawList.map((raw) => Place.fromJson(raw)).toList();
-    } catch (err) {
-      print('Get post filtered places error: $err');
     }
 
     return places;
