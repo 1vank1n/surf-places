@@ -1,10 +1,15 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/data/network/exceptions.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
+import 'package:places/ui/screen/widgets/error_holder.dart';
 
 class PlaceDetailScreen extends StatefulWidget {
   final int id;
@@ -19,17 +24,33 @@ class PlaceDetailScreen extends StatefulWidget {
 }
 
 class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
-  late Future<Place?> _place;
   final PlaceInteractor _placeInteractor = PlaceInteractor();
+  final StreamController<Place> _placeStreamController = StreamController();
+  final StreamController<bool> _favoriteStreamController = StreamController();
 
   @override
   void initState() {
     super.initState();
-    _place = _getPlace();
+    _getPlace();
   }
 
-  Future<Place?> _getPlace() {
-    return _placeInteractor.getPlaceDetails(widget.id);
+  void dispose() {
+    super.dispose();
+    _placeStreamController.close();
+    _favoriteStreamController.close();
+  }
+
+  void _getPlace() {
+    _placeInteractor.getPlaceDetails(widget.id).then((place) {
+      if (place != null) {
+        _placeStreamController.sink.add(place);
+        _favoriteStreamController.sink.add(_placeInFavorites(place));
+      }
+    }).onError(
+      (error, stackTrace) {
+        if (error != null) _placeStreamController.addError(error);
+      },
+    );
   }
 
   bool _placeInFavorites(Place place) {
@@ -38,12 +59,12 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
 
   void _addToFavorites(Place place) {
     _placeInteractor.addToFavorites(place);
-    setState(() {});
+    _favoriteStreamController.sink.add(true);
   }
 
   void _removeFromFavorites(Place place) {
     _placeInteractor.removeFromFavorites(place);
-    setState(() {});
+    _favoriteStreamController.sink.add(false);
   }
 
   @override
@@ -59,16 +80,26 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: maxHeight),
         child: Scaffold(
-          body: FutureBuilder(
-            future: _place,
-            builder: (BuildContext context, AsyncSnapshot<Place?> snapshot) {
+          body: StreamBuilder<Place>(
+            stream: _placeStreamController.stream,
+            builder: (BuildContext context, AsyncSnapshot<Place> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
               } else if (snapshot.hasError) {
-                return Center(
-                  child: Text('Error: ${snapshot.error}'),
+                String message;
+
+                try {
+                  DioError dioError = snapshot.error as DioError;
+                  NetworkException networkException = dioError.error as NetworkException;
+                  message = networkException.toString();
+                } on TypeError {
+                  message = 'Что-то пошло не так попробуйте позже';
+                }
+
+                return ErrorHolder(
+                  message: message,
                 );
               } else {
                 final place = snapshot.data!;
@@ -201,21 +232,28 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                 Expanded(
                                   child: SizedBox(
                                     height: 40.0,
-                                    child: TextButton.icon(
-                                      onPressed: () {
-                                        _placeInFavorites(place)
-                                            ? _removeFromFavorites(place)
-                                            : _addToFavorites(place);
-                                      },
-                                      icon: SvgPicture.asset(
-                                        _placeInFavorites(place) ? iconHeartFill : iconHeart,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                      label: Text(
-                                        'В Избранное',
-                                        style: Theme.of(context).textTheme.bodyText1,
-                                      ),
-                                    ),
+                                    child: StreamBuilder<bool>(
+                                        stream: _favoriteStreamController.stream,
+                                        builder:
+                                            (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                                          bool isFavorite = snapshot.data ?? false;
+
+                                          return TextButton.icon(
+                                            onPressed: () {
+                                              isFavorite
+                                                  ? _removeFromFavorites(place)
+                                                  : _addToFavorites(place);
+                                            },
+                                            icon: SvgPicture.asset(
+                                              isFavorite ? iconHeartFill : iconHeart,
+                                              color: Theme.of(context).primaryColor,
+                                            ),
+                                            label: Text(
+                                              'В Избранное',
+                                              style: Theme.of(context).textTheme.bodyText1,
+                                            ),
+                                          );
+                                        }),
                                   ),
                                 ),
                               ],
