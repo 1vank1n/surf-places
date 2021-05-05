@@ -5,9 +5,9 @@ import 'package:places/data/network/api_dio.dart';
 import 'package:places/data/repository/place_respository.dart';
 
 class PlaceInteractor {
-  static List<Place> _favoritePlaces = [];
-  static List<Place> _visitedPlaces = [];
   late final PlaceRepository placeRepository;
+  final List<Place> _favoritePlaces = [];
+  final List<Place> _visitedPlaces = [];
 
   final Map<String, double> userCoordinates = {
     'lat': 60.0,

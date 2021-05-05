@@ -8,6 +8,7 @@ import 'package:places/data/model/place.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/screen/place_detail_screen.dart';
+import 'package:provider/provider.dart';
 
 /// Карточка достопримечательности. Виджет используется в фиде
 class PlaceCard extends StatefulWidget {
@@ -23,12 +24,13 @@ class PlaceCard extends StatefulWidget {
 }
 
 class _PlaceCardState extends State<PlaceCard> {
-  final PlaceInteractor _placeInteractor = PlaceInteractor();
+  late final PlaceInteractor _placeInteractor;
   final StreamController<bool> _favoriteStreamController = StreamController();
 
   @override
   void initState() {
     super.initState();
+    _placeInteractor = context.read<PlaceInteractor>();
     _favoriteStreamController.sink.add(_placeInFavorites(widget.place));
   }
 

@@ -20,7 +20,7 @@ class PlaceCreateScreen extends StatefulWidget {
 }
 
 class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
-  final PlaceInteractor _placeInteractor = PlaceInteractor();
+  late final PlaceInteractor _placeInteractor;
   List<UploadImage> _uploadImages = [];
   TextEditingController _titleTextEditingController = TextEditingController();
   TextEditingController _latTextEditingController = TextEditingController();
@@ -39,6 +39,8 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
   @override
   void initState() {
     super.initState();
+
+    _placeInteractor = context.read<PlaceInteractor>();
 
     _titleTextEditingController.addListener(() {
       setState(() {});
