@@ -2,16 +2,15 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/network/exceptions.dart';
+import 'package:places/data/store/place_store.dart';
 import 'package:places/main.dart';
 import 'package:places/ui/common/widgets/place_card.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/widgets/error_holder.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
-import 'package:provider/provider.dart';
 
 class PlaceListScreen extends StatefulWidget {
   @override
@@ -19,7 +18,7 @@ class PlaceListScreen extends StatefulWidget {
 }
 
 class _PlaceListScreenState extends State<PlaceListScreen> {
-  late final PlaceInteractor _placeInteractor;
+  late final PlaceStore _placeStore;
   final ScrollController _scrollController = ScrollController();
   final StreamController<double> _titleOpacityStreamController = StreamController();
   final StreamController<List<Place>> _placesStreamController = StreamController();
@@ -27,7 +26,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
   @override
   void initState() {
     super.initState();
-    _placeInteractor = context.read<PlaceInteractor>();
+    _placeStore = PlaceStore();
     _titleOpacityStreamController.sink.add(0);
     _scrollController.addListener(_scrollControllerHandler);
     _getPlaces();
@@ -51,7 +50,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
   }
 
   void _getPlaces() {
-    _placeInteractor
+    _placeStore
         .getPlaces(40000, '')
         .then((places) => _placesStreamController.sink.add(places))
         .onError(

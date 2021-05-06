@@ -3,12 +3,11 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/data/store/place_store.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/screen/place_detail_screen.dart';
-import 'package:provider/provider.dart';
 
 /// Карточка достопримечательности. Виджет используется в фиде
 class PlaceCard extends StatefulWidget {
@@ -24,13 +23,13 @@ class PlaceCard extends StatefulWidget {
 }
 
 class _PlaceCardState extends State<PlaceCard> {
-  late final PlaceInteractor _placeInteractor;
+  late final PlaceStore _placeStore;
   final StreamController<bool> _favoriteStreamController = StreamController();
 
   @override
   void initState() {
     super.initState();
-    _placeInteractor = context.read<PlaceInteractor>();
+    _placeStore = PlaceStore();
     _favoriteStreamController.sink.add(_placeInFavorites(widget.place));
   }
 
@@ -41,16 +40,16 @@ class _PlaceCardState extends State<PlaceCard> {
   }
 
   bool _placeInFavorites(Place place) {
-    return _placeInteractor.getFavoritesPlaces().contains(place);
+    return _placeStore.getFavoritesPlaces().contains(place);
   }
 
   void _addToFavorites(Place place) {
-    _placeInteractor.addToFavorites(place);
+    _placeStore.addToFavorites(place);
     _favoriteStreamController.sink.add(true);
   }
 
   void _removeFromFavorites(Place place) {
-    _placeInteractor.removeFromFavorites(place);
+    _placeStore.removeFromFavorites(place);
     _favoriteStreamController.sink.add(false);
   }
 
