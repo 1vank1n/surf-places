@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/interactor/place_search_interactor.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/ui/screen/place_create_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
@@ -13,8 +16,13 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (BuildContext context) => AppModel(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AppModel>(create: (_) => AppModel()),
+        Provider<PlaceInteractor>(create: (_) => PlaceInteractor()),
+        Provider<PlaceSearchInteractor>(create: (_) => PlaceSearchInteractor()),
+        Provider<SettingsInteractor>(create: (_) => SettingsInteractor()),
+      ],
       child: App(),
     ),
   );

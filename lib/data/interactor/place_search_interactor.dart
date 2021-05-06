@@ -5,14 +5,13 @@ import 'package:places/data/network/api_dio.dart';
 import 'package:places/data/repository/place_respository.dart';
 
 class PlaceSearchInteractor {
-  static List<String> queries = [];
   late final PlaceRepository placeRepository;
+  final List<String> queries = [];
 
   PlaceSearchInteractor() {
     Api api = ApiDio();
     placeRepository = PlaceRepository(api: api);
   }
-  final Api api = ApiDio();
 
   Future<List<Place>> searchPlaces(String name) {
     var _filter = PlacesFilterRequestDto(nameFilter: name);
@@ -20,7 +19,7 @@ class PlaceSearchInteractor {
     return placeRepository.postFilteredPlaces(_filter);
   }
 
-  static void addQuery(String query) {
+  void addQuery(String query) {
     if (query != '') {
       if (!queries.contains(query)) {
         queries.add(query);
@@ -31,13 +30,13 @@ class PlaceSearchInteractor {
     }
   }
 
-  static void removeQuery(String query) {
+  void removeQuery(String query) {
     if (queries.contains(query)) {
       queries.remove(query);
     }
   }
 
-  static void cleanQueries() {
+  void cleanQueries() {
     queries.clear();
   }
 }

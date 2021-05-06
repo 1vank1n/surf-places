@@ -19,9 +19,15 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  final PlaceInteractor _placeInteractor = PlaceInteractor();
+  late final PlaceInteractor _placeInteractor;
   List<Place> get _wantedPlaces => _placeInteractor.getFavoritesPlaces();
   List<Place> get _visitedPlaces => _placeInteractor.getVisitPlaces();
+
+  @override
+  void initState() {
+    super.initState();
+    _placeInteractor = context.read<PlaceInteractor>();
+  }
 
   void _removeFromWantedPlaces(Place place) {
     _placeInteractor.removeFromFavorites(place);

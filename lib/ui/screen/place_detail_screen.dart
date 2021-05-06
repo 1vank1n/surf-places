@@ -10,6 +10,7 @@ import 'package:places/data/network/exceptions.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/screen/widgets/error_holder.dart';
+import 'package:provider/provider.dart';
 
 class PlaceDetailScreen extends StatefulWidget {
   final int id;
@@ -24,13 +25,14 @@ class PlaceDetailScreen extends StatefulWidget {
 }
 
 class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
-  final PlaceInteractor _placeInteractor = PlaceInteractor();
+  late final PlaceInteractor _placeInteractor;
   final StreamController<Place> _placeStreamController = StreamController();
   final StreamController<bool> _favoriteStreamController = StreamController();
 
   @override
   void initState() {
     super.initState();
+    _placeInteractor = context.read<PlaceInteractor>();
     _getPlace();
   }
 
