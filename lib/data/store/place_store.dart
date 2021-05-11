@@ -1,8 +1,6 @@
 import 'package:mobx/mobx.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
-import 'package:places/data/network/api.dart';
-import 'package:places/data/network/api_dio.dart';
 import 'package:places/data/repository/place_respository.dart';
 
 part 'place_store.g.dart';
@@ -10,12 +8,9 @@ part 'place_store.g.dart';
 class PlaceStore = PlaceStoreBase with _$PlaceStore;
 
 abstract class PlaceStoreBase with Store {
-  late final PlaceRepository _placeRepository;
+  final PlaceRepository placeRepository;
 
-  PlaceStoreBase() {
-    Api api = ApiDio();
-    _placeRepository = PlaceRepository(api: api);
-  }
+  PlaceStoreBase({required this.placeRepository});
 
   @observable
   List<Place> _favoritePlaces = [];
@@ -33,12 +28,12 @@ abstract class PlaceStoreBase with Store {
       radius: radius,
     );
 
-    return _placeRepository.postFilteredPlaces(_filter);
+    return placeRepository.postFilteredPlaces(_filter);
   }
 
   @action
   Future<Place?> getPlaceDetails(int id) {
-    return _placeRepository.getPlace(id);
+    return placeRepository.getPlace(id);
   }
 
   @action
