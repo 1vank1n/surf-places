@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/main.dart' show AppRouter;
+import 'package:places/main.dart';
 import 'package:places/ui/res/colors.dart';
 
 class SplashScreen extends StatefulWidget {

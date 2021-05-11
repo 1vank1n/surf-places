@@ -1,12 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/interactor/place_search_interactor.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/data/network/exceptions.dart';
 import 'package:places/ui/common/widgets/place_search_card.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/screen/widgets/error_holder.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
+import 'package:provider/provider.dart';
 
 class PlaceSearchScreen extends StatefulWidget {
   @override
@@ -14,13 +18,14 @@ class PlaceSearchScreen extends StatefulWidget {
 }
 
 class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
-  final PlaceSearchInteractor _placeSearchInteractor = PlaceSearchInteractor();
-  TextEditingController _searchTextEditingController = TextEditingController();
+  late final PlaceSearchInteractor _placeSearchInteractor;
   late Future<List<Place>> _places;
+  final TextEditingController _searchTextEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _placeSearchInteractor = context.read<PlaceSearchInteractor>();
     _places = Future.value([]);
   }
 
@@ -90,8 +95,18 @@ class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
+            String message;
+
+            try {
+              DioError dioError = snapshot.error as DioError;
+              NetworkException networkException = dioError.error as NetworkException;
+              message = networkException.toString();
+            } on TypeError {
+              message = 'Что-то пошло не так попробуйте позже';
+            }
+
+            return ErrorHolder(
+              message: message,
             );
           } else {
             final places = snapshot.data ?? [];
@@ -102,6 +117,7 @@ class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
 
             if (_searchTextEditingController.text.isEmpty) {
               return HistoryQueryList(
+                placeSearchInteractor: _placeSearchInteractor,
                 loadQueryHandler: _loadQuery,
                 refreshStateHandler: _refreshState,
               );
@@ -142,11 +158,13 @@ class PlaceFindedList extends StatelessWidget {
 }
 
 class HistoryQueryList extends StatelessWidget {
+  final PlaceSearchInteractor placeSearchInteractor;
   final Function loadQueryHandler;
   final Function refreshStateHandler;
 
   const HistoryQueryList({
     Key? key,
+    required this.placeSearchInteractor,
     required this.loadQueryHandler,
     required this.refreshStateHandler,
   }) : super(key: key);
@@ -160,7 +178,7 @@ class HistoryQueryList extends StatelessWidget {
             title: Text(query),
             trailing: IconButton(
               onPressed: () {
-                PlaceSearchInteractor.removeQuery(query);
+                placeSearchInteractor.removeQuery(query);
                 refreshStateHandler();
               },
               icon: Icon(
@@ -184,12 +202,12 @@ class HistoryQueryList extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (PlaceSearchInteractor.queries.length > 0)
+          if (placeSearchInteractor.queries.length > 0)
             ListTile(
               subtitle: Text('ВЫ ИСКАЛИ'),
             ),
-          for (var query in PlaceSearchInteractor.queries) _queryAndDivider(query),
-          if (PlaceSearchInteractor.queries.length > 0)
+          for (var query in placeSearchInteractor.queries) _queryAndDivider(query),
+          if (placeSearchInteractor.queries.length > 0)
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: TextButton(
@@ -204,7 +222,7 @@ class HistoryQueryList extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 0.0),
                 ),
                 onPressed: () {
-                  PlaceSearchInteractor.cleanQueries();
+                  placeSearchInteractor.cleanQueries();
                   refreshStateHandler();
                 },
               ),

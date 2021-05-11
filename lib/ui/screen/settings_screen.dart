@@ -4,10 +4,20 @@ import 'package:places/main.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:provider/provider.dart';
-import 'package:places/main.dart' show AppRouter;
 
-class SettingsScreen extends StatelessWidget {
-  final SettingsInteractor _settingsInteractor = SettingsInteractor();
+class SettingsScreen extends StatefulWidget {
+  @override
+  _SettingsScreenState createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  late final SettingsInteractor _settingsInteractor;
+
+  @override
+  void initState() {
+    super.initState();
+    _settingsInteractor = context.read<SettingsInteractor>();
+  }
 
   @override
   Widget build(BuildContext context) {

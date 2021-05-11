@@ -11,6 +11,7 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/widgets/error_holder.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
+import 'package:provider/provider.dart';
 
 class PlaceListScreen extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class PlaceListScreen extends StatefulWidget {
 }
 
 class _PlaceListScreenState extends State<PlaceListScreen> {
-  final PlaceInteractor _placeInteractor = PlaceInteractor();
+  late final PlaceInteractor _placeInteractor;
   final ScrollController _scrollController = ScrollController();
   final StreamController<double> _titleOpacityStreamController = StreamController();
   final StreamController<List<Place>> _placesStreamController = StreamController();
@@ -26,6 +27,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
   @override
   void initState() {
     super.initState();
+    _placeInteractor = context.read<PlaceInteractor>();
     _titleOpacityStreamController.sink.add(0);
     _scrollController.addListener(_scrollControllerHandler);
     _getPlaces();
