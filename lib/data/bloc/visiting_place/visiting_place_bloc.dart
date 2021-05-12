@@ -3,16 +3,13 @@ import 'package:places/data/bloc/visiting_place/visiting_place_event.dart';
 import 'package:places/data/bloc/visiting_place/visiting_place_state.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/repository/place_respository.dart';
-import 'package:places/data/storage/place_storage.dart';
 
 class VisitingPlaceBloc extends Bloc<VisitingPlaceEvent, VisitingPlaceState> {
   final PlaceRepository placeRepository;
-  final PlaceStorage placeStorage;
 
   VisitingPlaceBloc({
     required this.placeRepository,
-    required this.placeStorage,
-  }) : super(FavoritePlacesState(favoritePlaces: placeStorage.getFavoritePlaces()));
+  }) : super(FavoritePlacesState(favoritePlaces: placeRepository.getFavoritePlaces()));
 
   @override
   Stream<VisitingPlaceState> mapEventToState(VisitingPlaceEvent event) async* {
@@ -28,26 +25,26 @@ class VisitingPlaceBloc extends Bloc<VisitingPlaceEvent, VisitingPlaceState> {
   }
 
   Stream<VisitingPlaceState> _showFavoritePlaces() async* {
-    List<Place> favoritePlaces = placeStorage.getFavoritePlaces();
+    List<Place> favoritePlaces = placeRepository.getFavoritePlaces();
     yield FavoritePlacesState(favoritePlaces: favoritePlaces);
   }
 
   Stream<VisitingPlaceState> _showVisitedPlaces() async* {
-    var visitedPlaces = placeStorage.getVisitedPlaces();
+    var visitedPlaces = placeRepository.getVisitedPlaces();
     yield VisitedPlacesState(visitedPlaces: visitedPlaces);
   }
 
   Stream<VisitingPlaceState> _removePlaceFromFavoritePlaces(
       RemoveFromFavoritePlacesEvent event) async* {
-    placeStorage.removeFromFavorites(event.place);
-    List<Place> favoritePlaces = placeStorage.getFavoritePlaces();
+    placeRepository.removeFromFavorites(event.place);
+    List<Place> favoritePlaces = placeRepository.getFavoritePlaces();
     yield FavoritePlacesState(favoritePlaces: favoritePlaces);
   }
 
   Stream<VisitingPlaceState> _removePlaceFromVisitedPlaces(
       RemoveFromVisitedPlacesEvent event) async* {
-    placeStorage.removeFromVisited(event.place);
-    List<Place> visitedPlaces = placeStorage.getVisitedPlaces();
+    placeRepository.removeFromVisited(event.place);
+    List<Place> visitedPlaces = placeRepository.getVisitedPlaces();
     yield VisitedPlacesState(visitedPlaces: visitedPlaces);
   }
 }

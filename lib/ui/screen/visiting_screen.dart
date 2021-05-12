@@ -6,7 +6,7 @@ import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
 import 'package:places/ui/common/widgets/place_visited_card.dart';
-import 'package:places/ui/common/widgets/place_wanted_card.dart';
+import 'package:places/ui/common/widgets/place_favorite_card.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
@@ -20,7 +20,7 @@ class VisitingScreen extends StatefulWidget {
 
 class _VisitingScreenState extends State<VisitingScreen> {
   late final PlaceInteractor _placeInteractor;
-  List<Place> get _wantedPlaces => _placeInteractor.getFavoritesPlaces();
+  List<Place> get _favoritePlaces => _placeInteractor.getFavoritesPlaces();
   List<Place> get _visitedPlaces => _placeInteractor.getVisitPlaces();
 
   @override
@@ -29,7 +29,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
     _placeInteractor = context.read<PlaceInteractor>();
   }
 
-  void _removeFromWantedPlaces(Place place) {
+  void _removeFromFavoritePlaces(Place place) {
     _placeInteractor.removeFromFavorites(place);
     setState(() {});
   }
@@ -83,9 +83,9 @@ class _VisitingScreenState extends State<VisitingScreen> {
         ),
         body: TabBarView(
           children: [
-            WantedPlaceList(
-              places: _wantedPlaces,
-              removeHandler: _removeFromWantedPlaces,
+            FavoritePlaceList(
+              places: _favoritePlaces,
+              removeHandler: _removeFromFavoritePlaces,
             ),
             VisitedPlaceList(
               places: _visitedPlaces,
@@ -98,11 +98,11 @@ class _VisitingScreenState extends State<VisitingScreen> {
   }
 }
 
-class WantedPlaceList extends StatelessWidget {
+class FavoritePlaceList extends StatelessWidget {
   final List<Place> places;
   final Function removeHandler;
 
-  WantedPlaceList({
+  FavoritePlaceList({
     Key? key,
     required this.places,
     required this.removeHandler,
@@ -131,7 +131,7 @@ class WantedPlaceList extends StatelessWidget {
                 background: RemoveBackground(),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: PlaceWantedCard(
+                  child: PlaceFavoriteCard(
                     key: ValueKey(place.id),
                     place: place,
                     removeHandler: () {
