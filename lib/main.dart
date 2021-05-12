@@ -22,13 +22,16 @@ void main() {
   Api api = ApiDio();
   PlaceRepository placeRepository = PlaceRepository(api: api);
   PlaceInteractor placeInteractor = PlaceInteractor(placeRepository: placeRepository);
+  PlaceSearchInteractor placeSearchInteractor =
+      PlaceSearchInteractor(placeRepository: placeRepository);
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<AppModel>(create: (_) => AppModel()),
+        Provider<PlaceRepository>(create: (_) => placeRepository),
         Provider<PlaceInteractor>(create: (_) => placeInteractor),
-        Provider<PlaceSearchInteractor>(create: (_) => PlaceSearchInteractor()),
+        Provider<PlaceSearchInteractor>(create: (_) => placeSearchInteractor),
         Provider<SettingsInteractor>(create: (_) => SettingsInteractor()),
       ],
       child: App(),

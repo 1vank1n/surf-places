@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/data/network/api.dart';
-import 'package:places/data/network/api_dio.dart';
 import 'package:places/data/network/exceptions.dart';
 import 'package:places/data/repository/place_respository.dart';
 import 'package:places/data/store/place_store.dart';
@@ -14,6 +12,7 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/widgets/error_holder.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
+import 'package:provider/provider.dart';
 
 class PlaceListScreen extends StatefulWidget {
   @override
@@ -29,8 +28,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
   @override
   void initState() {
     super.initState();
-    Api api = ApiDio();
-    PlaceRepository placeRepository = PlaceRepository(api: api);
+    PlaceRepository placeRepository = context.read<PlaceRepository>();
     _placeStore = PlaceStore(placeRepository: placeRepository);
     _titleOpacityStreamController.sink.add(0);
     _scrollController.addListener(_scrollControllerHandler);

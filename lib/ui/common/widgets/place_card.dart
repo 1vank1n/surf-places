@@ -4,13 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/data/network/api.dart';
-import 'package:places/data/network/api_dio.dart';
 import 'package:places/data/repository/place_respository.dart';
 import 'package:places/data/store/place_store.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/screen/place_detail_screen.dart';
+import 'package:provider/provider.dart';
 
 /// Карточка достопримечательности. Виджет используется в фиде
 class PlaceCard extends StatefulWidget {
@@ -32,8 +31,7 @@ class _PlaceCardState extends State<PlaceCard> {
   @override
   void initState() {
     super.initState();
-    Api api = ApiDio();
-    PlaceRepository placeRepository = PlaceRepository(api: api);
+    PlaceRepository placeRepository = context.read<PlaceRepository>();
     _placeStore = PlaceStore(placeRepository: placeRepository);
     _favoriteStreamController.sink.add(_placeInFavorites(widget.place));
   }
