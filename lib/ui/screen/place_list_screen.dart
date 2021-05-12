@@ -14,7 +14,6 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/widgets/error_holder.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
-import 'package:provider/provider.dart';
 
 class PlaceListScreen extends StatefulWidget {
   @override

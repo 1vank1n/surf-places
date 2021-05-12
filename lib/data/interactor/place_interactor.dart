@@ -1,23 +1,21 @@
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
-import 'package:places/data/network/api.dart';
-import 'package:places/data/network/api_dio.dart';
 import 'package:places/data/repository/place_respository.dart';
+import 'package:places/data/storage/place_storage.dart';
 
 class PlaceInteractor {
-  late final PlaceRepository placeRepository;
-  final List<Place> _favoritePlaces = [];
-  final List<Place> _visitedPlaces = [];
+  final PlaceRepository placeRepository;
+  final PlaceStorage placeStorage;
 
   final Map<String, double> userCoordinates = {
     'lat': 60.0,
     'lng': 30.0,
   };
 
-  PlaceInteractor() {
-    Api api = ApiDio();
-    placeRepository = PlaceRepository(api: api);
-  }
+  PlaceInteractor({
+    required this.placeRepository,
+    required this.placeStorage,
+  });
 
   Future<List<Place>> getPlaces(double radius, String category) {
     PlacesFilterRequestDto _filter = PlacesFilterRequestDto.withCoords(
@@ -34,35 +32,27 @@ class PlaceInteractor {
   }
 
   List<Place> getFavoritesPlaces() {
-    return _favoritePlaces;
+    return placeStorage.getFavoritePlaces();
   }
 
   void addToFavorites(Place place) {
-    if (!_favoritePlaces.contains(place)) {
-      _favoritePlaces.add(place);
-    }
+    placeStorage.addToFavorites(place);
   }
 
   void removeFromFavorites(Place place) {
-    if (_favoritePlaces.contains(place)) {
-      _favoritePlaces.remove(place);
-    }
+    placeStorage.removeFromFavorites(place);
   }
 
   List<Place> getVisitPlaces() {
-    return _visitedPlaces;
+    return placeStorage.getVisitPlaces();
   }
 
   void addToVisitingPlaces(Place place) {
-    if (!_visitedPlaces.contains(place)) {
-      _visitedPlaces.add(place);
-    }
+    placeStorage.addToVisitingPlaces(place);
   }
 
   void removeFromVisiting(Place place) {
-    if (_visitedPlaces.contains(place)) {
-      _visitedPlaces.remove(place);
-    }
+    placeStorage.removeFromVisiting(place);
   }
 
   Future<Place?> addNewPlace(Place place) {

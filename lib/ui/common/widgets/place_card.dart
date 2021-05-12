@@ -11,7 +11,6 @@ import 'package:places/data/store/place_store.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/screen/place_detail_screen.dart';
-import 'package:provider/provider.dart';
 
 /// Карточка достопримечательности. Виджет используется в фиде
 class PlaceCard extends StatefulWidget {
