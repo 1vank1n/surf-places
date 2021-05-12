@@ -9,21 +9,6 @@ part of 'place_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$PlaceStore on PlaceStoreBase, Store {
-  final _$_favoritePlacesAtom = Atom(name: 'PlaceStoreBase._favoritePlaces');
-
-  @override
-  List<Place> get _favoritePlaces {
-    _$_favoritePlacesAtom.reportRead();
-    return super._favoritePlaces;
-  }
-
-  @override
-  set _favoritePlaces(List<Place> value) {
-    _$_favoritePlacesAtom.reportWrite(value, super._favoritePlaces, () {
-      super._favoritePlaces = value;
-    });
-  }
-
   final _$PlaceStoreBaseActionController =
       ActionController(name: 'PlaceStoreBase');
 

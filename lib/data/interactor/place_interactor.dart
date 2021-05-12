@@ -1,11 +1,9 @@
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
 import 'package:places/data/repository/place_respository.dart';
-import 'package:places/data/storage/place_storage.dart';
 
 class PlaceInteractor {
   final PlaceRepository placeRepository;
-  final PlaceStorage placeStorage;
 
   final Map<String, double> userCoordinates = {
     'lat': 60.0,
@@ -14,7 +12,6 @@ class PlaceInteractor {
 
   PlaceInteractor({
     required this.placeRepository,
-    required this.placeStorage,
   });
 
   Future<List<Place>> getPlaces(double radius, String category) {
@@ -32,27 +29,27 @@ class PlaceInteractor {
   }
 
   List<Place> getFavoritesPlaces() {
-    return placeStorage.getFavoritePlaces();
+    return placeRepository.getFavoritePlaces();
   }
 
   void addToFavorites(Place place) {
-    placeStorage.addToFavorites(place);
+    placeRepository.addToFavorites(place);
   }
 
   void removeFromFavorites(Place place) {
-    placeStorage.removeFromFavorites(place);
+    placeRepository.removeFromFavorites(place);
   }
 
   List<Place> getVisitPlaces() {
-    return placeStorage.getVisitPlaces();
+    return placeRepository.getVisitedPlaces();
   }
 
   void addToVisitingPlaces(Place place) {
-    placeStorage.addToVisitingPlaces(place);
+    placeRepository.addToVisitedPlaces(place);
   }
 
   void removeFromVisiting(Place place) {
-    placeStorage.removeFromVisiting(place);
+    placeRepository.removeFromVisited(place);
   }
 
   Future<Place?> addNewPlace(Place place) {

@@ -4,8 +4,6 @@ import 'package:places/data/interactor/place_search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/network/api_dio.dart';
 import 'package:places/data/repository/place_respository.dart';
-import 'package:places/data/storage/place_storage.dart';
-import 'package:places/data/storage/place_storage_session.dart';
 import 'package:places/ui/screen/place_create_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
@@ -23,11 +21,7 @@ import 'data/network/api.dart';
 void main() {
   Api api = ApiDio();
   PlaceRepository placeRepository = PlaceRepository(api: api);
-  PlaceStorage placeStorage = PlaceStorageSession();
-  PlaceInteractor placeInteractor = PlaceInteractor(
-    placeRepository: placeRepository,
-    placeStorage: placeStorage,
-  );
+  PlaceInteractor placeInteractor = PlaceInteractor(placeRepository: placeRepository);
 
   runApp(
     MultiProvider(
