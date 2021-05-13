@@ -36,7 +36,7 @@ abstract class PlaceStoreBase with Store {
   }
 
   @action
-  List<Place> getFavoritesPlaces() {
+  Future<List<Place>> getFavoritesPlaces() {
     return placeRepository.getFavoritePlaces();
   }
 

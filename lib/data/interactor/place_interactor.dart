@@ -28,7 +28,7 @@ class PlaceInteractor {
     return placeRepository.getPlace(id);
   }
 
-  List<Place> getFavoritesPlaces() {
+  Future<List<Place>> getFavoritesPlaces() {
     return placeRepository.getFavoritePlaces();
   }
 
@@ -40,7 +40,7 @@ class PlaceInteractor {
     placeRepository.removeFromFavorites(place);
   }
 
-  List<Place> getVisitPlaces() {
+  Future<List<Place>> getVisitPlaces() {
     return placeRepository.getVisitedPlaces();
   }
 

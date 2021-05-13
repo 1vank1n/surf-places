@@ -35,7 +35,7 @@ mixin _$PlaceStore on PlaceStoreBase, Store {
   }
 
   @override
-  List<Place> getFavoritesPlaces() {
+  Future<List<Place>> getFavoritesPlaces() {
     final _$actionInfo = _$PlaceStoreBaseActionController.startAction(
         name: 'PlaceStoreBase.getFavoritesPlaces');
     try {

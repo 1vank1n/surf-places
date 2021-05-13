@@ -33,8 +33,8 @@ class PlaceRepository {
     return api.postFilteredPlaces(placesFilter);
   }
 
-  List<Place> getFavoritePlaces() {
-    return _favoritePlaces;
+  Future<List<Place>> getFavoritePlaces() {
+    return Future.delayed(Duration(milliseconds: 100), () => _favoritePlaces);
   }
 
   void addToFavorites(Place place) {
@@ -49,8 +49,8 @@ class PlaceRepository {
     }
   }
 
-  List<Place> getVisitedPlaces() {
-    return _visitedPlaces;
+  Future<List<Place>> getVisitedPlaces() {
+    return Future.delayed(Duration(milliseconds: 100), () => _visitedPlaces);
   }
 
   void addToVisitedPlaces(Place place) {

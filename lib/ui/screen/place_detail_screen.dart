@@ -46,7 +46,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
     _placeInteractor.getPlaceDetails(widget.id).then((place) {
       if (place != null) {
         _placeStreamController.sink.add(place);
-        _favoriteStreamController.sink.add(_placeInFavorites(place));
+        _placeInFavorites(place).then((result) => _favoriteStreamController.sink.add(result));
       }
     }).onError(
       (error, stackTrace) {
@@ -55,8 +55,9 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
     );
   }
 
-  bool _placeInFavorites(Place place) {
-    return _placeInteractor.getFavoritesPlaces().contains(place);
+  Future<bool> _placeInFavorites(Place place) async {
+    List<Place> favoritePlaces = await _placeInteractor.getFavoritesPlaces();
+    return favoritePlaces.contains(place);
   }
 
   void _addToFavorites(Place place) {

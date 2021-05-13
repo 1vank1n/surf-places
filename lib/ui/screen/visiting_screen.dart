@@ -1,9 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:places/data/bloc/visiting_place/favorite_place_bloc.dart';
+import 'package:places/data/bloc/visiting_place/favorite_place_event.dart';
+import 'package:places/data/bloc/visiting_place/favorite_place_state.dart';
+import 'package:places/data/bloc/visiting_place/visited_place_bloc.dart';
+import 'package:places/data/bloc/visiting_place/visited_place_event.dart';
+import 'package:places/data/bloc/visiting_place/visited_place_state.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/data/repository/place_respository.dart';
 import 'package:places/main.dart';
 import 'package:places/ui/common/widgets/place_visited_card.dart';
 import 'package:places/ui/common/widgets/place_favorite_card.dart';
@@ -20,18 +28,12 @@ class VisitingScreen extends StatefulWidget {
 
 class _VisitingScreenState extends State<VisitingScreen> {
   late final PlaceInteractor _placeInteractor;
-  List<Place> get _favoritePlaces => _placeInteractor.getFavoritesPlaces();
-  List<Place> get _visitedPlaces => _placeInteractor.getVisitPlaces();
+  List<Place> get _visitedPlaces => [];
 
   @override
   void initState() {
     super.initState();
     _placeInteractor = context.read<PlaceInteractor>();
-  }
-
-  void _removeFromFavoritePlaces(Place place) {
-    _placeInteractor.removeFromFavorites(place);
-    setState(() {});
   }
 
   void _removeFromVisitedPlaces(Place place) {
@@ -41,57 +43,91 @@ class _VisitingScreenState extends State<VisitingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      initialIndex: 0,
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 108.0,
-          title: Text(
-            'Избранное',
-            style: Theme.of(context).textTheme.headline3,
-          ),
-          elevation: 0,
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(40.0),
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-              ),
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                decoration: BoxDecoration(
-                  color: Provider.of<AppModel>(context).theme == lightThemeData
-                      ? lightBgColor
-                      : deepDarkColor,
-                  borderRadius: BorderRadius.circular(40.0),
-                ),
-                child: TabBar(
-                  tabs: [
-                    Tab(
-                      child: Text('Хочу посетить'),
-                    ),
-                    Tab(
-                      child: Text('Посетил'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<FavoritePlaceBloc>(
+          create: (context) => FavoritePlaceBloc(
+            placeRepository: context.read<PlaceRepository>(),
+          )..add(LoadFavoritePlacesEvent()),
         ),
-        body: TabBarView(
-          children: [
-            FavoritePlaceList(
-              places: _favoritePlaces,
-              removeHandler: _removeFromFavoritePlaces,
+        BlocProvider<VisitedPlaceBloc>(
+          create: (context) => VisitedPlaceBloc(
+            placeRepository: context.read<PlaceRepository>(),
+          )..add(LoadVisitedPlacesEvent()),
+        ),
+      ],
+      child: DefaultTabController(
+        length: 2,
+        initialIndex: 0,
+        child: Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 108.0,
+            title: Text(
+              'Избранное',
+              style: Theme.of(context).textTheme.headline3,
             ),
-            VisitedPlaceList(
-              places: _visitedPlaces,
-              removeHandler: _removeFromVisitedPlaces,
-            )
-          ],
+            elevation: 0,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(40.0),
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                ),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  decoration: BoxDecoration(
+                    color: Provider.of<AppModel>(context).theme == lightThemeData
+                        ? lightBgColor
+                        : deepDarkColor,
+                    borderRadius: BorderRadius.circular(40.0),
+                  ),
+                  child: TabBar(
+                    tabs: [
+                      Tab(
+                        child: Text('Хочу посетить'),
+                      ),
+                      Tab(
+                        child: Text('Посетил'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              BlocBuilder<FavoritePlaceBloc, FavoritePlaceState>(
+                  builder: (BuildContext context, FavoritePlaceState state) {
+                if (state is LoadingFavoritePlacesState) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (state is LoadedFavoritePlacesState) {
+                  return FavoritePlaceList(places: state.favoritePlaces);
+                }
+
+                throw ArgumentError('Not cacth FavoritePlaceState');
+              }),
+              BlocBuilder<VisitedPlaceBloc, VisitedPlaceState>(
+                  builder: (BuildContext context, VisitedPlaceState state) {
+                if (state is LoadingVisitedPlacesState) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (state is LoadedVisitedPlacesState) {
+                  return VisitedPlaceList(places: state.visitedPlaces);
+                }
+
+                throw ArgumentError('Not cacth VisitedPlaceState');
+              }),
+            ],
+          ),
         ),
       ),
     );
@@ -100,16 +136,18 @@ class _VisitingScreenState extends State<VisitingScreen> {
 
 class FavoritePlaceList extends StatelessWidget {
   final List<Place> places;
-  final Function removeHandler;
 
   FavoritePlaceList({
     Key? key,
     required this.places,
-    required this.removeHandler,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    void removeHandler(Place place) {
+      context.read<FavoritePlaceBloc>().add(RemoveFromFavoritePlacesEvent(place));
+    }
+
     return places.length > 0
         ? ReorderableListView.builder(
             padding: const EdgeInsets.only(
@@ -185,16 +223,18 @@ class FavoritePlaceList extends StatelessWidget {
 
 class VisitedPlaceList extends StatelessWidget {
   final List<Place> places;
-  final Function removeHandler;
 
   VisitedPlaceList({
     Key? key,
     required this.places,
-    required this.removeHandler,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    void removeHandler(Place place) {
+      context.read<FavoritePlaceBloc>().add(RemoveFromFavoritePlacesEvent(place));
+    }
+
     return places.length > 0
         ? ReorderableListView.builder(
             padding: const EdgeInsets.only(
