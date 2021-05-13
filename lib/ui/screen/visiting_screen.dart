@@ -9,7 +9,6 @@ import 'package:places/data/bloc/visiting_place/favorite_place_state.dart';
 import 'package:places/data/bloc/visiting_place/visited_place_bloc.dart';
 import 'package:places/data/bloc/visiting_place/visited_place_event.dart';
 import 'package:places/data/bloc/visiting_place/visited_place_state.dart';
-import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/repository/place_respository.dart';
 import 'package:places/main.dart';
@@ -21,26 +20,7 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:provider/provider.dart';
 
-class VisitingScreen extends StatefulWidget {
-  @override
-  _VisitingScreenState createState() => _VisitingScreenState();
-}
-
-class _VisitingScreenState extends State<VisitingScreen> {
-  late final PlaceInteractor _placeInteractor;
-  List<Place> get _visitedPlaces => [];
-
-  @override
-  void initState() {
-    super.initState();
-    _placeInteractor = context.read<PlaceInteractor>();
-  }
-
-  void _removeFromVisitedPlaces(Place place) {
-    _placeInteractor.removeFromVisiting(place);
-    setState(() {});
-  }
-
+class VisitingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
