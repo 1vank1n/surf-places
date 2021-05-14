@@ -34,7 +34,7 @@ class PlaceRepository {
   }
 
   Future<List<Place>> getFavoritePlaces() {
-    return Future.delayed(Duration(milliseconds: 100), () => _favoritePlaces);
+    return Future.delayed(Duration(milliseconds: 100), () => _favoritePlaces.toList());
   }
 
   void addToFavorites(Place place) {
@@ -50,7 +50,7 @@ class PlaceRepository {
   }
 
   Future<List<Place>> getVisitedPlaces() {
-    return Future.delayed(Duration(milliseconds: 100), () => _visitedPlaces);
+    return Future.delayed(Duration(milliseconds: 100), () => _visitedPlaces.toList());
   }
 
   void addToVisitedPlaces(Place place) {

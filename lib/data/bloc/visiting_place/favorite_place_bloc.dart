@@ -28,7 +28,6 @@ class FavoritePlaceBloc extends Bloc<FavoritePlaceEvent, FavoritePlaceState> {
   Stream<FavoritePlaceState> _removePlaceFromFavoritePlaces(
       RemoveFromFavoritePlacesEvent event) async* {
     placeRepository.removeFromFavorites(event.place);
-    yield LoadingFavoritePlacesState();
     yield* _mapLoadFavoritePlacesEvent();
   }
 }

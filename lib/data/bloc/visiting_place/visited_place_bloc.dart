@@ -28,7 +28,6 @@ class VisitedPlaceBloc extends Bloc<VisitedPlaceEvent, VisitedPlaceState> {
   Stream<VisitedPlaceState> _removePlaceFromVisitedPlaces(
       RemoveFromVisitedPlacesEvent event) async* {
     placeRepository.removeFromVisited(event.place);
-    yield LoadingVisitedPlacesState();
     yield* _mapLoadVisitedPlacesEvent();
   }
 }
