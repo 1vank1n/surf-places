@@ -12,11 +12,11 @@ import 'package:places/ui/screen/place_detail_screen.dart';
 import 'package:provider/provider.dart';
 
 /// Карточка достопримечательности для таба «Хочу посетить»
-class PlaceWantedCard extends StatelessWidget {
+class PlaceFavoriteCard extends StatelessWidget {
   final Place place;
   final Function removeHandler;
 
-  PlaceWantedCard({
+  PlaceFavoriteCard({
     Key? key,
     required this.place,
     required this.removeHandler,

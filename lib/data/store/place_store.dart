@@ -10,10 +10,9 @@ class PlaceStore = PlaceStoreBase with _$PlaceStore;
 abstract class PlaceStoreBase with Store {
   final PlaceRepository placeRepository;
 
-  PlaceStoreBase({required this.placeRepository});
-
-  @observable
-  List<Place> _favoritePlaces = [];
+  PlaceStoreBase({
+    required this.placeRepository,
+  });
 
   @action
   Future<List<Place>> getPlaces(double radius, String category) {
@@ -37,21 +36,17 @@ abstract class PlaceStoreBase with Store {
   }
 
   @action
-  List<Place> getFavoritesPlaces() {
-    return _favoritePlaces;
+  Future<List<Place>> getFavoritesPlaces() {
+    return placeRepository.getFavoritePlaces();
   }
 
   @action
   void addToFavorites(Place place) {
-    if (!_favoritePlaces.contains(place)) {
-      _favoritePlaces.add(place);
-    }
+    placeRepository.addToFavorites(place);
   }
 
   @action
   void removeFromFavorites(Place place) {
-    if (_favoritePlaces.contains(place)) {
-      _favoritePlaces.remove(place);
-    }
+    placeRepository.removeFromFavorites(place);
   }
 }

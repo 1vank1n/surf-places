@@ -1,23 +1,18 @@
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
-import 'package:places/data/network/api.dart';
-import 'package:places/data/network/api_dio.dart';
 import 'package:places/data/repository/place_respository.dart';
 
 class PlaceInteractor {
-  late final PlaceRepository placeRepository;
-  final List<Place> _favoritePlaces = [];
-  final List<Place> _visitedPlaces = [];
+  final PlaceRepository placeRepository;
 
   final Map<String, double> userCoordinates = {
     'lat': 60.0,
     'lng': 30.0,
   };
 
-  PlaceInteractor() {
-    Api api = ApiDio();
-    placeRepository = PlaceRepository(api: api);
-  }
+  PlaceInteractor({
+    required this.placeRepository,
+  });
 
   Future<List<Place>> getPlaces(double radius, String category) {
     PlacesFilterRequestDto _filter = PlacesFilterRequestDto.withCoords(
@@ -33,36 +28,28 @@ class PlaceInteractor {
     return placeRepository.getPlace(id);
   }
 
-  List<Place> getFavoritesPlaces() {
-    return _favoritePlaces;
+  Future<List<Place>> getFavoritesPlaces() {
+    return placeRepository.getFavoritePlaces();
   }
 
   void addToFavorites(Place place) {
-    if (!_favoritePlaces.contains(place)) {
-      _favoritePlaces.add(place);
-    }
+    placeRepository.addToFavorites(place);
   }
 
   void removeFromFavorites(Place place) {
-    if (_favoritePlaces.contains(place)) {
-      _favoritePlaces.remove(place);
-    }
+    placeRepository.removeFromFavorites(place);
   }
 
-  List<Place> getVisitPlaces() {
-    return _visitedPlaces;
+  Future<List<Place>> getVisitPlaces() {
+    return placeRepository.getVisitedPlaces();
   }
 
   void addToVisitingPlaces(Place place) {
-    if (!_visitedPlaces.contains(place)) {
-      _visitedPlaces.add(place);
-    }
+    placeRepository.addToVisitedPlaces(place);
   }
 
   void removeFromVisiting(Place place) {
-    if (_visitedPlaces.contains(place)) {
-      _visitedPlaces.remove(place);
-    }
+    placeRepository.removeFromVisited(place);
   }
 
   Future<Place?> addNewPlace(Place place) {

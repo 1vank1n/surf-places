@@ -4,8 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/data/network/api.dart';
-import 'package:places/data/network/api_dio.dart';
 import 'package:places/data/repository/place_respository.dart';
 import 'package:places/data/store/place_store.dart';
 import 'package:places/ui/res/colors.dart';
@@ -33,10 +31,9 @@ class _PlaceCardState extends State<PlaceCard> {
   @override
   void initState() {
     super.initState();
-    Api api = ApiDio();
-    PlaceRepository placeRepository = PlaceRepository(api: api);
+    PlaceRepository placeRepository = context.read<PlaceRepository>();
     _placeStore = PlaceStore(placeRepository: placeRepository);
-    _favoriteStreamController.sink.add(_placeInFavorites(widget.place));
+    _placeInFavorites(widget.place).then((result) => _favoriteStreamController.sink.add(result));
   }
 
   @override
@@ -45,8 +42,9 @@ class _PlaceCardState extends State<PlaceCard> {
     _favoriteStreamController.close();
   }
 
-  bool _placeInFavorites(Place place) {
-    return _placeStore.getFavoritesPlaces().contains(place);
+  Future<bool> _placeInFavorites(Place place) async {
+    List<Place> favoritePlaces = await _placeStore.getFavoritesPlaces();
+    return favoritePlaces.contains(place);
   }
 
   void _addToFavorites(Place place) {
@@ -147,27 +145,27 @@ class _PlaceCardState extends State<PlaceCard> {
             child: Container(
               width: 24.0,
               height: 24.0,
-              child: IconButton(
-                onPressed: () {
-                  _placeInFavorites(widget.place)
-                      ? _removeFromFavorites(widget.place)
-                      : _addToFavorites(widget.place);
-                },
-                padding: EdgeInsets.zero,
-                icon: StreamBuilder<bool>(
+              child: StreamBuilder<bool>(
                   stream: _favoriteStreamController.stream,
                   builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                     if (snapshot.connectionState == ConnectionState.active)
-                      return SvgPicture.asset(
-                        snapshot.data! ? iconHeartFill : iconHeart,
-                        color: Colors.white,
-                        width: 24.0,
-                        height: 24.0,
+                      return IconButton(
+                        onPressed: () {
+                          snapshot.data!
+                              ? _removeFromFavorites(widget.place)
+                              : _addToFavorites(widget.place);
+                        },
+                        padding: EdgeInsets.zero,
+                        icon: SvgPicture.asset(
+                          snapshot.data! ? iconHeartFill : iconHeart,
+                          color: Colors.white,
+                          width: 24.0,
+                          height: 24.0,
+                        ),
                       );
+
                     return Container();
-                  },
-                ),
-              ),
+                  }),
             ),
           ),
         ],
