@@ -7,7 +7,7 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:provider/provider.dart';
 
-class SearchBar extends StatelessWidget {
+class SearchBar extends StatefulWidget {
   final TextEditingController searchTextEditingController;
   final bool isButton;
   final Function? searchHandler;
@@ -17,6 +17,20 @@ class SearchBar extends StatelessWidget {
     this.isButton = false,
     this.searchHandler,
   });
+
+  @override
+  _SearchBarState createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
+  @override
+  void initState() {
+    super.initState();
+
+    widget.searchTextEditingController.addListener(() {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +61,12 @@ class SearchBar extends StatelessWidget {
         children: [
           TextField(
             onEditingComplete: () {
-              if (searchHandler != null) {
-                searchHandler!();
+              if (widget.searchHandler != null) {
+                widget.searchHandler!();
               }
             },
-            autofocus: !isButton,
-            controller: searchTextEditingController,
+            autofocus: !widget.isButton,
+            controller: widget.searchTextEditingController,
             decoration: InputDecoration(
               prefixIcon: Container(
                 width: 24.0,
@@ -65,7 +79,7 @@ class SearchBar extends StatelessWidget {
                 ),
               ),
               hintText: 'Поиск',
-              suffixIcon: searchTextEditingController.text.isNotEmpty
+              suffixIcon: widget.searchTextEditingController.text.isNotEmpty
                   ? IconButton(
                       padding: EdgeInsets.zero,
                       iconSize: 20.0,
@@ -74,17 +88,17 @@ class SearchBar extends StatelessWidget {
                         color: Theme.of(context).primaryColor,
                       ),
                       onPressed: () {
-                        searchTextEditingController.text = '';
+                        widget.searchTextEditingController.text = '';
 
-                        if (searchHandler != null) {
-                          searchHandler!();
+                        if (widget.searchHandler != null) {
+                          widget.searchHandler!();
                         }
                       },
                     )
                   : null,
             ),
           ),
-          if (isButton)
+          if (widget.isButton)
             Positioned(
               top: 0,
               right: 0,
@@ -100,7 +114,7 @@ class SearchBar extends StatelessWidget {
                 ),
               ),
             ),
-          if (isButton)
+          if (widget.isButton)
             Positioned(
               top: 0,
               right: 0,
