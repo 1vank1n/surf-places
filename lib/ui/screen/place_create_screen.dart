@@ -5,122 +5,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/data/model/place.dart';
+import 'package:mwwm/mwwm.dart';
+import 'package:places/data/mwwm/place_create_wm.dart';
 import 'package:places/main.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:provider/provider.dart';
+import 'package:relation/relation.dart';
 
-class PlaceCreateScreen extends StatefulWidget {
+class PlaceCreateScreen extends CoreMwwmWidget {
+  PlaceCreateScreen({
+    required WidgetModelBuilder widgetModelBuilder,
+  }) : super(widgetModelBuilder: widgetModelBuilder);
+
   @override
   _PlaceCreateScreenState createState() => _PlaceCreateScreenState();
 }
 
-class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
-  late final PlaceInteractor _placeInteractor;
-  List<UploadImage> _uploadImages = [];
-  TextEditingController _titleTextEditingController = TextEditingController();
-  TextEditingController _latTextEditingController = TextEditingController();
-  TextEditingController _lonTextEditingController = TextEditingController();
-  TextEditingController _detailsTextEditingController = TextEditingController();
-  FocusNode _titleFocusNode = FocusNode();
-  FocusNode _latFocusNode = FocusNode();
-  FocusNode _lonFocusNode = FocusNode();
-  FocusNode _detailsFocusNode = FocusNode();
-  bool get isValidPlaceCreateForm {
-    return _titleTextEditingController.text.isNotEmpty &&
-        _latTextEditingController.text.isNotEmpty &&
-        _lonTextEditingController.text.isNotEmpty;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _placeInteractor = context.read<PlaceInteractor>();
-
-    _titleTextEditingController.addListener(() {
-      setState(() {});
-    });
-
-    _latTextEditingController.addListener(() {
-      setState(() {});
-    });
-
-    _lonTextEditingController.addListener(() {
-      setState(() {});
-    });
-
-    _detailsTextEditingController.addListener(() {
-      setState(() {});
-    });
-
-    _uploadImages.add(
-      UploadImage(
-        isCreator: true,
-        addUploadImage: _addUploadImage,
-      ),
-    );
-  }
-
-  String? requiredValidator(String? value) {
-    if (value != null && value.length > 0) {
-      return null;
-    } else {
-      return 'Поле обязательно';
-    }
-  }
-
-  Place createPlaceFromState() {
-    return Place(
-      id: 0,
-      name: _titleTextEditingController.text,
-      lat: double.parse(_latTextEditingController.text),
-      lng: double.parse(_lonTextEditingController.text),
-      urls: [],
-      description: _detailsTextEditingController.text,
-      placeType: '',
-    );
-  }
-
-  void addPlaceFromStateToRepository() {
-    Place place = createPlaceFromState();
-    _placeInteractor.addNewPlace(place);
-  }
-
-  void _addUploadImage() async {
-    bool? isCreate = await showDialog<bool>(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return ImageSourceDialog();
-      },
-    );
-
-    if (isCreate ?? false) {
-      ValueKey<int> key = ValueKey(Random().nextInt(100));
-
-      setState(() {
-        _uploadImages.insert(
-          1,
-          UploadImage(
-            key: key,
-            deleteUploadImage: _deleteUploadImage,
-          ),
-        );
-      });
-    }
-  }
-
-  void _deleteUploadImage(ValueKey<int> key) {
-    setState(() {
-      _uploadImages.removeWhere((UploadImage uploadImage) => uploadImage.key == key);
-    });
-  }
-
+class _PlaceCreateScreenState extends WidgetState<PlaceCreateWidgetModel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,17 +71,17 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: TextFormField(
-              focusNode: _titleFocusNode,
-              controller: _titleTextEditingController,
+              focusNode: wm.titleFocusNode,
+              controller: wm.titleTextEditingController,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: requiredValidator,
+              validator: wm.requiredValidator,
               textCapitalization: TextCapitalization.sentences,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (_) {
-                _latFocusNode.requestFocus();
+                wm.latFocusNode.requestFocus();
               },
               decoration: InputDecoration(
-                suffixIcon: _titleTextEditingController.text.isNotEmpty
+                suffixIcon: wm.titleTextEditingController.text.isNotEmpty
                     ? IconButton(
                         padding: EdgeInsets.zero,
                         iconSize: 20.0,
@@ -186,7 +90,7 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
                           color: Theme.of(context).primaryColor,
                         ),
                         onPressed: () {
-                          _titleTextEditingController.text = '';
+                          wm.titleTextEditingController.text = '';
                         },
                       )
                     : null,
@@ -206,19 +110,19 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
                         subtitle: Text('ШИРОТА'),
                       ),
                       TextFormField(
-                        focusNode: _latFocusNode,
-                        controller: _latTextEditingController,
+                        focusNode: wm.latFocusNode,
+                        controller: wm.latTextEditingController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: requiredValidator,
+                        validator: wm.requiredValidator,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
                         ],
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
-                          _lonFocusNode.requestFocus();
+                          wm.lonFocusNode.requestFocus();
                         },
                         decoration: InputDecoration(
-                          suffixIcon: _latTextEditingController.text.isNotEmpty
+                          suffixIcon: wm.latTextEditingController.text.isNotEmpty
                               ? IconButton(
                                   padding: EdgeInsets.zero,
                                   iconSize: 20.0,
@@ -227,7 +131,7 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
                                     color: Theme.of(context).primaryColor,
                                   ),
                                   onPressed: () {
-                                    _latTextEditingController.text = '';
+                                    wm.latTextEditingController.text = '';
                                   },
                                 )
                               : null,
@@ -247,19 +151,19 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
                         subtitle: Text('ДОЛГОТА'),
                       ),
                       TextFormField(
-                        focusNode: _lonFocusNode,
-                        controller: _lonTextEditingController,
+                        focusNode: wm.lonFocusNode,
+                        controller: wm.lonTextEditingController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: requiredValidator,
+                        validator: wm.requiredValidator,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
                         ],
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
-                          _detailsFocusNode.requestFocus();
+                          wm.detailsFocusNode.requestFocus();
                         },
                         decoration: InputDecoration(
-                          suffixIcon: _lonTextEditingController.text.isNotEmpty
+                          suffixIcon: wm.lonTextEditingController.text.isNotEmpty
                               ? IconButton(
                                   padding: EdgeInsets.zero,
                                   iconSize: 20.0,
@@ -268,7 +172,7 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
                                     color: Theme.of(context).primaryColor,
                                   ),
                                   onPressed: () {
-                                    _lonTextEditingController.text = '';
+                                    wm.latTextEditingController.text = '';
                                   },
                                 )
                               : null,
@@ -307,12 +211,13 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: TextFormField(
-              focusNode: _detailsFocusNode,
-              controller: _detailsTextEditingController,
+              focusNode: wm.detailsFocusNode,
+              controller: wm.detailsTextEditingController,
+              validator: wm.requiredValidator,
               maxLines: 4,
               textInputAction: TextInputAction.done,
               onFieldSubmitted: (_) {
-                _detailsFocusNode.unfocus();
+                wm.detailsFocusNode.unfocus();
               },
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(16.0),
@@ -328,9 +233,14 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
           child: SizedBox(
             width: double.infinity,
             height: 48.0,
-            child: ElevatedButton(
-              onPressed: isValidPlaceCreateForm ? addPlaceFromStateToRepository : null,
-              child: Text('СОЗДАТЬ'),
+            child: StreamedStateBuilder<bool>(
+              streamedState: wm.isValidPlaceCreateState,
+              builder: (BuildContext context, bool? isValid) {
+                return ElevatedButton(
+                  onPressed: (isValid ?? false) ? wm.addPlaceFromStateToRepository : null,
+                  child: Text('СОЗДАТЬ'),
+                );
+              },
             ),
           ),
         ),
@@ -346,14 +256,21 @@ class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
         right: 16.0,
         left: 16.0,
       ),
-      child: ListView.separated(
-        itemCount: _uploadImages.length,
-        physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (BuildContext context, int index) {
-          return _uploadImages[index];
+      child: StreamedStateBuilder<List<UploadImage>>(
+        streamedState: wm.uploadImageListState,
+        builder: (BuildContext context, List<UploadImage>? uploadImageList) {
+          final uploadImages = uploadImageList ?? [];
+
+          return ListView.separated(
+            itemCount: uploadImages.length,
+            physics: Platform.isIOS ? BouncingScrollPhysics() : ClampingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (BuildContext context, int index) {
+              return uploadImages[index];
+            },
+            separatorBuilder: (BuildContext context, int index) => SizedBox(width: 16.0),
+          );
         },
-        separatorBuilder: (BuildContext context, int index) => SizedBox(width: 16.0),
       ),
     );
   }

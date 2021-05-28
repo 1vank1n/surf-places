@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mwwm/mwwm.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/place_search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
+import 'package:places/data/mwwm/error/error_handler.dart';
+import 'package:places/data/mwwm/place_create_wm.dart';
 import 'package:places/data/network/api_dio.dart';
 import 'package:places/data/repository/place_respository.dart';
 import 'package:places/ui/screen/place_create_screen.dart';
@@ -33,6 +36,11 @@ void main() {
         Provider<PlaceInteractor>(create: (_) => placeInteractor),
         Provider<PlaceSearchInteractor>(create: (_) => placeSearchInteractor),
         Provider<SettingsInteractor>(create: (_) => SettingsInteractor()),
+        Provider<WidgetModelDependencies>(
+          create: (_) => WidgetModelDependencies(
+            errorHandler: StandardErrorHandler(),
+          ),
+        ),
       ],
       child: App(),
     ),
@@ -67,7 +75,9 @@ class AppRouter {
     AppRouter.placeList: (data) => PlaceListScreen(),
     AppRouter.placeSearch: (data) => PlaceSearchScreen(),
     AppRouter.placeFilter: (data) => FiltersScreen(),
-    AppRouter.placeCreate: (data) => PlaceCreateScreen(),
+    AppRouter.placeCreate: (data) => PlaceCreateScreen(
+          widgetModelBuilder: (BuildContext context) => PlaceCreateWidgetModel.builder(context),
+        ),
     AppRouter.placeVisiting: (data) => VisitingScreen(),
     AppRouter.settings: (data) => SettingsScreen(),
   };
