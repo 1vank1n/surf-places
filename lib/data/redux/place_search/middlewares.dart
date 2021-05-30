@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
 import 'package:places/data/network/exceptions.dart';
-import 'package:places/data/redux/actions/place_search_actions.dart';
-import 'package:places/data/redux/states/app_state.dart';
+import 'package:places/data/redux/place_search/actions.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/place_respository.dart';
 import 'package:redux/redux.dart';
 

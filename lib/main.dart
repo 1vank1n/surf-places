@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:mwwm/mwwm.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/place_search_interactor.dart';
@@ -6,18 +7,23 @@ import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/mwwm/error/error_handler.dart';
 import 'package:places/data/mwwm/place_create_wm.dart';
 import 'package:places/data/network/api_dio.dart';
+import 'package:places/data/redux/place_search/middlewares.dart';
+import 'package:places/data/redux/place_search/states.dart';
+import 'package:places/data/redux/reducer.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/place_respository.dart';
-import 'package:places/ui/screen/place_create_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
-import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/settings_screen.dart';
+import 'package:places/ui/screen/place_create_screen.dart';
 import 'package:places/ui/screen/place_list_screen.dart';
 import 'package:places/ui/screen/place_navigation_screen.dart';
 import 'package:places/ui/screen/place_search_screen.dart';
+import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/splash_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:redux/redux.dart';
 
 import 'data/network/api.dart';
 
@@ -27,6 +33,14 @@ void main() {
   PlaceInteractor placeInteractor = PlaceInteractor(placeRepository: placeRepository);
   PlaceSearchInteractor placeSearchInteractor =
       PlaceSearchInteractor(placeRepository: placeRepository);
+
+  Store<AppState> store = Store(
+    appReducer,
+    initialState: AppState(placeSearchState: PlaceSearchState.initial()),
+    middleware: [
+      PlaceSearchMiddleware(placeRepository: placeRepository),
+    ],
+  );
 
   runApp(
     MultiProvider(
@@ -42,7 +56,10 @@ void main() {
           ),
         ),
       ],
-      child: App(),
+      child: StoreProvider<AppState>(
+        store: store,
+        child: App(),
+      ),
     ),
   );
 }
