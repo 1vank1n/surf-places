@@ -1,18 +1,18 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/data/network/exceptions.dart';
-import 'package:places/data/repository/place_respository.dart';
-import 'package:places/data/store/place_store.dart';
+import 'package:places/data/redux/place_list/actions.dart';
+import 'package:places/data/redux/place_list/state.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/main.dart';
 import 'package:places/ui/common/widgets/place_card.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/widgets/error_holder.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
-import 'package:provider/provider.dart';
+import 'package:redux/redux.dart';
 
 class PlaceListScreen extends StatefulWidget {
   @override
@@ -20,26 +20,27 @@ class PlaceListScreen extends StatefulWidget {
 }
 
 class _PlaceListScreenState extends State<PlaceListScreen> {
-  late final PlaceStore _placeStore;
   final ScrollController _scrollController = ScrollController();
   final StreamController<double> _titleOpacityStreamController = StreamController();
-  final StreamController<List<Place>> _placesStreamController = StreamController();
 
   @override
   void initState() {
     super.initState();
-    PlaceRepository placeRepository = context.read<PlaceRepository>();
-    _placeStore = PlaceStore(placeRepository: placeRepository);
     _titleOpacityStreamController.sink.add(0);
     _scrollController.addListener(_scrollControllerHandler);
-    _getPlaces();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Store<AppState> store = StoreProvider.of<AppState>(context);
+    store.dispatch(LoadPlaceListAction());
   }
 
   @override
   void dispose() {
     super.dispose();
     _titleOpacityStreamController.close();
-    _placesStreamController.close();
   }
 
   void _scrollControllerHandler() {
@@ -52,19 +53,12 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     }
   }
 
-  void _getPlaces() {
-    _placeStore
-        .getPlaces(40000, '')
-        .then((places) => _placesStreamController.sink.add(places))
-        .onError(
-      (error, stackTrace) {
-        if (error != null) _placesStreamController.addError(error);
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    // TODO
+    // Store<AppState> store = StoreProvider.of<AppState>(context);
+    // store.dispatch(LoadPlaceListAction());
+
     return Scaffold(
       body: OrientationBuilder(
         builder: (BuildContext context, Orientation orientation) {
@@ -72,7 +66,10 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
 
           return SafeArea(
             child: RefreshIndicator(
-              onRefresh: () => Future(_getPlaces),
+              onRefresh: () => Future(() {
+                Store<AppState> store = StoreProvider.of<AppState>(context);
+                store.dispatch(LoadPlaceListAction());
+              }),
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
@@ -123,36 +120,25 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                   SliverToBoxAdapter(
                     child: SizedBox(height: 24.0),
                   ),
-                  StreamBuilder<List<Place>>(
-                    stream: _placesStreamController.stream,
-                    builder: (BuildContext context, AsyncSnapshot<List<Place>> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
+                  StoreConnector<AppState, PlaceListState>(
+                    converter: (Store<AppState> store) => store.state.placeListState,
+                    builder: (BuildContext context, PlaceListState state) {
+                      if (state.isLoading) {
                         return SliverToBoxAdapter(
                           child: Center(
                             child: CircularProgressIndicator(),
                           ),
                         );
-                      } else if (snapshot.hasError) {
-                        String message;
-
-                        try {
-                          DioError dioError = snapshot.error as DioError;
-                          NetworkException networkException = dioError.error as NetworkException;
-                          message = networkException.toString();
-                        } on TypeError {
-                          message = 'Что-то пошло не так попробуйте позже';
-                        }
-
+                      } else if (state.isError) {
                         return SliverFillRemaining(
                           child: ErrorHolder(
-                            message: message,
+                            message: state.errorMessage,
                           ),
                         );
                       } else {
-                        final places = snapshot.data ?? [];
                         return CardLayout(
                           orientation: orientation,
-                          places: places,
+                          places: state.places,
                         );
                       }
                     },

@@ -7,8 +7,10 @@ import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/mwwm/error/error_handler.dart';
 import 'package:places/data/mwwm/place_create_wm.dart';
 import 'package:places/data/network/api_dio.dart';
+import 'package:places/data/redux/place_list/middlewares.dart';
+import 'package:places/data/redux/place_list/state.dart';
 import 'package:places/data/redux/place_search/middlewares.dart';
-import 'package:places/data/redux/place_search/states.dart';
+import 'package:places/data/redux/place_search/state.dart';
 import 'package:places/data/redux/reducer.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/place_respository.dart';
@@ -36,9 +38,13 @@ void main() {
 
   Store<AppState> store = Store(
     appReducer,
-    initialState: AppState(placeSearchState: PlaceSearchState.initial()),
+    initialState: AppState(
+      placeSearchState: PlaceSearchState.initial(),
+      placeListState: PlaceListState.initial(),
+    ),
     middleware: [
       PlaceSearchMiddleware(placeRepository: placeRepository),
+      PlaceListMiddleware(placeRepository: placeRepository),
     ],
   );
 

@@ -2,28 +2,36 @@ import 'package:dio/dio.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
 import 'package:places/data/network/exceptions.dart';
-import 'package:places/data/redux/place_search/actions.dart';
+import 'package:places/data/redux/place_list/actions.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/place_respository.dart';
 import 'package:redux/redux.dart';
 
-class PlaceSearchMiddleware implements MiddlewareClass<AppState> {
+class PlaceListMiddleware implements MiddlewareClass<AppState> {
   final PlaceRepository placeRepository;
 
-  PlaceSearchMiddleware({required this.placeRepository});
+  PlaceListMiddleware({required this.placeRepository});
 
   @override
   call(Store<AppState> store, action, next) {
-    if (action is SearchPlaceSearchAction) {
-      var _filter = PlacesFilterRequestDto(nameFilter: action.query);
-      store.dispatch(AddQueryToHistoryPlaceSearchAction(action.query));
+    if (action is LoadPlaceListAction) {
+      final Map<String, double> userCoordinates = {
+        'lat': 60.0,
+        'lng': 30.0,
+      };
+
+      PlacesFilterRequestDto _filter = PlacesFilterRequestDto.withCoords(
+        lat: userCoordinates['lat'],
+        lng: userCoordinates['lng'],
+        radius: 40000,
+      );
 
       try {
         placeRepository.postFilteredPlaces(_filter).then(
-              (List<Place> places) => store.dispatch(
-                ShowPlacesPlaceSearchAction(places),
-              ),
-            );
+          (List<Place> places) {
+            store.dispatch(ShowPlaceListAction(places: places));
+          },
+        );
       } on DioError catch (err) {
         String message;
 
@@ -34,7 +42,7 @@ class PlaceSearchMiddleware implements MiddlewareClass<AppState> {
           message = 'Что-то пошло не так попробуйте позже';
         }
 
-        store.dispatch(ErrorPlaceSearchAction(message));
+        store.dispatch(ErrorPlaceListAction(message));
       }
     }
 

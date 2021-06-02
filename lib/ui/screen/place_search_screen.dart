@@ -3,7 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/redux/place_search/actions.dart';
-import 'package:places/data/redux/place_search/states.dart';
+import 'package:places/data/redux/place_search/state.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/ui/common/widgets/place_search_card.dart';
 import 'package:places/ui/res/colors.dart';
@@ -24,7 +24,7 @@ class PlaceSearchScreen extends StatelessWidget {
       _searchTextEditingController.text = query;
       _searchTextEditingController.selection = TextSelection.fromPosition(
           TextPosition(offset: _searchTextEditingController.text.length));
-      _store.dispatch(SearchPlacesAction(query));
+      _store.dispatch(SearchPlaceSearchAction(query));
     }
 
     return Scaffold(
@@ -54,9 +54,9 @@ class PlaceSearchScreen extends StatelessWidget {
               searchTextEditingController: _searchTextEditingController,
               searchHandler: () {
                 if (_searchTextEditingController.text.isEmpty) {
-                  _store.dispatch(ShowQueryHistoryAction());
+                  _store.dispatch(ShowHistoryPlaceSearchAction());
                 } else {
-                  _store.dispatch(SearchPlacesAction(_searchTextEditingController.text));
+                  _store.dispatch(SearchPlaceSearchAction(_searchTextEditingController.text));
                 }
               },
             ),
@@ -141,7 +141,7 @@ class HistoryQueryList extends StatelessWidget {
             title: Text(query),
             trailing: IconButton(
               onPressed: () {
-                _store.dispatch(RemoveQueryFromHistoryAction(query));
+                _store.dispatch(RemoveQueryFromHistoryPlaceSearchAction(query));
               },
               icon: Icon(
                 Icons.close,
@@ -187,7 +187,7 @@ class HistoryQueryList extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 0.0),
                     ),
                     onPressed: () {
-                      _store.dispatch(ClearQueryHistoryAction());
+                      _store.dispatch(ClearQueryHistoryPlaceSearchAction());
                     },
                   ),
                 ),

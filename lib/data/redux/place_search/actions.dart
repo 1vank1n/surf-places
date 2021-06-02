@@ -3,42 +3,42 @@ import 'package:places/data/model/place.dart';
 abstract class PlaceSearchAction {}
 
 /// Показать историю запросов
-class ShowQueryHistoryAction extends PlaceSearchAction {}
+class ShowHistoryPlaceSearchAction extends PlaceSearchAction {}
 
 /// Начать поиск по запросу
-class SearchPlacesAction extends PlaceSearchAction {
+class SearchPlaceSearchAction extends PlaceSearchAction {
   final String query;
 
-  SearchPlacesAction(this.query);
+  SearchPlaceSearchAction(this.query);
 }
 
 /// Отобразить загруженные места
-class ShowSearchedPlacesAction extends PlaceSearchAction {
+class ShowPlacesPlaceSearchAction extends PlaceSearchAction {
   final List<Place> places;
 
-  ShowSearchedPlacesAction(this.places);
+  ShowPlacesPlaceSearchAction(this.places);
 }
 
 /// Отобразить ошибку поиска
-class ShowSearchErrorAction extends PlaceSearchAction {
+class ErrorPlaceSearchAction extends PlaceSearchAction {
   final String message;
 
-  ShowSearchErrorAction(this.message);
+  ErrorPlaceSearchAction(this.message);
 }
 
 /// Добавить запрос в истории
-class AddQueryToHistoryAction extends PlaceSearchAction {
+class AddQueryToHistoryPlaceSearchAction extends PlaceSearchAction {
   final String query;
 
-  AddQueryToHistoryAction(this.query);
+  AddQueryToHistoryPlaceSearchAction(this.query);
 }
 
 /// Удалить запрос из истории
-class RemoveQueryFromHistoryAction extends PlaceSearchAction {
+class RemoveQueryFromHistoryPlaceSearchAction extends PlaceSearchAction {
   final String query;
 
-  RemoveQueryFromHistoryAction(this.query);
+  RemoveQueryFromHistoryPlaceSearchAction(this.query);
 }
 
 /// Очистить историю запросов
-class ClearQueryHistoryAction extends PlaceSearchAction {}
+class ClearQueryHistoryPlaceSearchAction extends PlaceSearchAction {}

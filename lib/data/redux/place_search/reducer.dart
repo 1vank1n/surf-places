@@ -1,24 +1,25 @@
 import 'package:places/data/redux/place_search/actions.dart';
-import 'package:places/data/redux/place_search/states.dart';
+import 'package:places/data/redux/place_search/state.dart';
 import 'package:redux/redux.dart';
 
 final placeSearchReducer = combineReducers<PlaceSearchState>([
-  TypedReducer<PlaceSearchState, ShowQueryHistoryAction>(_showQueryHistory),
-  TypedReducer<PlaceSearchState, ShowSearchedPlacesAction>(_showSearchedPlaces),
-  TypedReducer<PlaceSearchState, AddQueryToHistoryAction>(_addQueryToHistoryReducer),
-  TypedReducer<PlaceSearchState, RemoveQueryFromHistoryAction>(_removeQueryFromHistoryReducer),
-  TypedReducer<PlaceSearchState, ClearQueryHistoryAction>(_clearQueryHistoryReducer),
+  TypedReducer<PlaceSearchState, ShowHistoryPlaceSearchAction>(_showQueryHistory),
+  TypedReducer<PlaceSearchState, ShowPlacesPlaceSearchAction>(_showSearchedPlaces),
+  TypedReducer<PlaceSearchState, AddQueryToHistoryPlaceSearchAction>(_addQueryToHistoryReducer),
+  TypedReducer<PlaceSearchState, RemoveQueryFromHistoryPlaceSearchAction>(
+      _removeQueryFromHistoryReducer),
+  TypedReducer<PlaceSearchState, ClearQueryHistoryPlaceSearchAction>(_clearQueryHistoryReducer),
 ]);
 
 PlaceSearchState _showQueryHistory(
   PlaceSearchState state,
-  ShowQueryHistoryAction action,
+  ShowHistoryPlaceSearchAction action,
 ) =>
     state.copyWith(isShowQueriesHistory: true);
 
 PlaceSearchState _showSearchedPlaces(
   PlaceSearchState state,
-  ShowSearchedPlacesAction action,
+  ShowPlacesPlaceSearchAction action,
 ) =>
     state.copyWith(
       isShowQueriesHistory: false,
@@ -27,7 +28,7 @@ PlaceSearchState _showSearchedPlaces(
 
 PlaceSearchState _addQueryToHistoryReducer(
   PlaceSearchState state,
-  AddQueryToHistoryAction action,
+  AddQueryToHistoryPlaceSearchAction action,
 ) {
   List<String> queries = state.queries.toList();
   String query = action.query;
@@ -46,7 +47,7 @@ PlaceSearchState _addQueryToHistoryReducer(
 
 PlaceSearchState _removeQueryFromHistoryReducer(
   PlaceSearchState state,
-  RemoveQueryFromHistoryAction action,
+  RemoveQueryFromHistoryPlaceSearchAction action,
 ) {
   List<String> queries = state.queries.toList();
   String query = action.query;
@@ -60,6 +61,6 @@ PlaceSearchState _removeQueryFromHistoryReducer(
 
 PlaceSearchState _clearQueryHistoryReducer(
   PlaceSearchState state,
-  ClearQueryHistoryAction action,
+  ClearQueryHistoryPlaceSearchAction action,
 ) =>
     state.copyWith(queries: []);
