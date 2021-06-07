@@ -6,6 +6,8 @@ import 'package:places/data/interactor/place_search_interactor.dart';
 import 'package:places/data/mwwm/error/error_handler.dart';
 import 'package:places/data/mwwm/place_create_wm.dart';
 import 'package:places/data/network/api_dio.dart';
+import 'package:places/data/redux/place_detail/middlewares.dart';
+import 'package:places/data/redux/place_detail/state.dart';
 import 'package:places/data/redux/place_list/middlewares.dart';
 import 'package:places/data/redux/place_list/state.dart';
 import 'package:places/data/redux/place_search/middlewares.dart';
@@ -41,11 +43,13 @@ void main() {
     initialState: AppState(
       placeSearchState: PlaceSearchState.initial(),
       placeListState: PlaceListState.initial(),
+      placeDetailState: PlaceDetailState.initial(),
       settingsState: SettingsState.initial(),
     ),
     middleware: [
       PlaceSearchMiddleware(placeRepository: placeRepository),
       PlaceListMiddleware(placeRepository: placeRepository),
+      PlaceDetailMiddleware(placeRepository: placeRepository),
     ],
   );
 
