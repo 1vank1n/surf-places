@@ -42,7 +42,7 @@ class PlaceListMiddleware implements MiddlewareClass<AppState> {
           message = 'Что-то пошло не так попробуйте позже';
         }
 
-        store.dispatch(ErrorPlaceListAction(message));
+        store.dispatch(ErrorPlaceListAction(message: message));
       }
     }
 

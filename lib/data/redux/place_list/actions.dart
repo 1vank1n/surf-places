@@ -13,5 +13,29 @@ class ShowPlaceListAction extends PlaceListAction {
 class ErrorPlaceListAction extends PlaceListAction {
   final String message;
 
-  ErrorPlaceListAction(this.message);
+  ErrorPlaceListAction({required this.message});
+}
+
+class AddPlaceToFavoritesPlaceListAction extends PlaceListAction {
+  final Place place;
+
+  AddPlaceToFavoritesPlaceListAction({required this.place});
+}
+
+class RemovePlaceFromFavoritesPlaceListAction extends PlaceListAction {
+  final Place place;
+
+  RemovePlaceFromFavoritesPlaceListAction({required this.place});
+}
+
+class AddPlaceToVisitedPlaceListAction extends PlaceListAction {
+  final Place place;
+
+  AddPlaceToVisitedPlaceListAction({required this.place});
+}
+
+class RemovePlaceFromVisitedPlaceListAction extends PlaceListAction {
+  final Place place;
+
+  RemovePlaceFromVisitedPlaceListAction({required this.place});
 }

@@ -55,10 +55,6 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO
-    // Store<AppState> store = StoreProvider.of<AppState>(context);
-    // store.dispatch(LoadPlaceListAction());
-
     return Scaffold(
       body: OrientationBuilder(
         builder: (BuildContext context, Orientation orientation) {

@@ -5,12 +5,16 @@ class PlaceListState {
   final String errorMessage;
   final bool isLoading;
   final List<Place> places;
+  final List<Place> favoritePlaces;
+  final List<Place> visitedPlaces;
 
   PlaceListState({
     required this.isError,
     required this.errorMessage,
     required this.isLoading,
     required this.places,
+    required this.favoritePlaces,
+    required this.visitedPlaces,
   });
 
   factory PlaceListState.initial() => PlaceListState(
@@ -18,6 +22,8 @@ class PlaceListState {
         errorMessage: '',
         isLoading: false,
         places: const [],
+        favoritePlaces: const [],
+        visitedPlaces: const [],
       );
 
   PlaceListState copyWith({
@@ -25,12 +31,16 @@ class PlaceListState {
     String? errorMessage,
     bool? isLoading,
     List<Place>? places,
+    List<Place>? favoritePlaces,
+    List<Place>? visitedPlaces,
   }) {
     return PlaceListState(
       isError: isError ?? this.isError,
       errorMessage: errorMessage ?? this.errorMessage,
       isLoading: isLoading ?? this.isLoading,
       places: places ?? this.places,
+      favoritePlaces: favoritePlaces ?? this.favoritePlaces,
+      visitedPlaces: visitedPlaces ?? this.visitedPlaces,
     );
   }
 }
