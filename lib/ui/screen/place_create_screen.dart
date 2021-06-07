@@ -4,15 +4,16 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mwwm/mwwm.dart';
 import 'package:places/data/mwwm/place_create_wm.dart';
-import 'package:places/main.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:provider/provider.dart';
+import 'package:redux/redux.dart';
 import 'package:relation/relation.dart';
 
 class PlaceCreateScreen extends CoreMwwmWidget {
@@ -283,6 +284,8 @@ class ImageSourceDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Store<AppState> store = StoreProvider.of<AppState>(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 16.0,
@@ -298,9 +301,7 @@ class ImageSourceDialog extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.0),
-              color: Provider.of<AppModel>(context).theme == lightThemeData
-                  ? Colors.white
-                  : deepDarkColor,
+              color: store.state.settingsState.isDark ? deepDarkColor : Colors.white,
             ),
             child: Material(
               color: Colors.transparent,
@@ -310,9 +311,7 @@ class ImageSourceDialog extends StatelessWidget {
                     contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
                     leading: SvgPicture.asset(
                       iconCamera,
-                      color: Provider.of<AppModel>(context).theme == lightThemeData
-                          ? secondaryTextColor
-                          : Colors.white,
+                      color: store.state.settingsState.isDark ? Colors.white : secondaryTextColor,
                     ),
                     minLeadingWidth: 0,
                     title: Text('Камера'),
@@ -325,9 +324,7 @@ class ImageSourceDialog extends StatelessWidget {
                     contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
                     leading: SvgPicture.asset(
                       iconPhoto,
-                      color: Provider.of<AppModel>(context).theme == lightThemeData
-                          ? secondaryTextColor
-                          : Colors.white,
+                      color: store.state.settingsState.isDark ? Colors.white : secondaryTextColor,
                     ),
                     minLeadingWidth: 0,
                     title: Text('Фотография'),
@@ -340,9 +337,7 @@ class ImageSourceDialog extends StatelessWidget {
                     contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
                     leading: SvgPicture.asset(
                       iconFile,
-                      color: Provider.of<AppModel>(context).theme == lightThemeData
-                          ? secondaryTextColor
-                          : Colors.white,
+                      color: store.state.settingsState.isDark ? Colors.white : secondaryTextColor,
                     ),
                     minLeadingWidth: 0,
                     title: Text('Файл'),
@@ -360,9 +355,9 @@ class ImageSourceDialog extends StatelessWidget {
             height: 48.0,
             child: Theme(
               data: ThemeData(
-                elevatedButtonTheme: Provider.of<AppModel>(context).theme == lightThemeData
-                    ? lightCancelElevatedButton
-                    : darkCancelElevatedButton,
+                elevatedButtonTheme: store.state.settingsState.isDark
+                    ? darkCancelElevatedButton
+                    : lightCancelElevatedButton,
               ),
               child: ElevatedButton(
                 child: Text('ОТМЕНА'),

@@ -3,7 +3,6 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:mwwm/mwwm.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/place_search_interactor.dart';
-import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/mwwm/error/error_handler.dart';
 import 'package:places/data/mwwm/place_create_wm.dart';
 import 'package:places/data/network/api_dio.dart';
@@ -12,6 +11,7 @@ import 'package:places/data/redux/place_list/state.dart';
 import 'package:places/data/redux/place_search/middlewares.dart';
 import 'package:places/data/redux/place_search/state.dart';
 import 'package:places/data/redux/reducer.dart';
+import 'package:places/data/redux/settings/state.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/place_respository.dart';
 import 'package:places/ui/screen/filters_screen.dart';
@@ -41,6 +41,7 @@ void main() {
     initialState: AppState(
       placeSearchState: PlaceSearchState.initial(),
       placeListState: PlaceListState.initial(),
+      settingsState: SettingsState.initial(),
     ),
     middleware: [
       PlaceSearchMiddleware(placeRepository: placeRepository),
@@ -51,11 +52,9 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<AppModel>(create: (_) => AppModel()),
         Provider<PlaceRepository>(create: (_) => placeRepository),
         Provider<PlaceInteractor>(create: (_) => placeInteractor),
         Provider<PlaceSearchInteractor>(create: (_) => placeSearchInteractor),
-        Provider<SettingsInteractor>(create: (_) => SettingsInteractor()),
         Provider<WidgetModelDependencies>(
           create: (_) => WidgetModelDependencies(
             errorHandler: StandardErrorHandler(),
@@ -68,15 +67,6 @@ void main() {
       ),
     ),
   );
-}
-
-class AppModel extends ChangeNotifier {
-  ThemeData theme = lightThemeData;
-
-  void toggleTheme() {
-    theme = (theme == lightThemeData) ? darkThemeData : lightThemeData;
-    notifyListeners();
-  }
 }
 
 class AppRouter {
@@ -109,11 +99,16 @@ class AppRouter {
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Surf Places',
-      theme: Provider.of<AppModel>(context).theme,
-      initialRoute: AppRouter.splash,
-      routes: AppRouter.routes,
+    return StoreConnector<AppState, SettingsState>(
+      converter: (Store<AppState> store) => store.state.settingsState,
+      builder: (BuildContext context, SettingsState state) {
+        return MaterialApp(
+          title: 'Surf Places',
+          theme: state.isDark ? darkThemeData : lightThemeData,
+          initialRoute: AppRouter.splash,
+          routes: AppRouter.routes,
+        );
+      },
     );
   }
 }

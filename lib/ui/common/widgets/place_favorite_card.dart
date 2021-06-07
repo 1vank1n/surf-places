@@ -2,14 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/main.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
-import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/place_detail_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:redux/redux.dart';
 
 /// Карточка достопримечательности для таба «Хочу посетить»
 class PlaceFavoriteCard extends StatelessWidget {
@@ -23,10 +23,12 @@ class PlaceFavoriteCard extends StatelessWidget {
   }) : super(key: key);
 
   ThemeData _getPickerThemeData(BuildContext context) {
-    return Provider.of<AppModel>(context).theme == lightThemeData
-        ? ThemeData.light().copyWith(colorScheme: ColorScheme.light(primary: primaryColor))
-        : ThemeData.dark().copyWith(
-            colorScheme: ColorScheme.dark(primary: successColor, onBackground: successColor));
+    Store<AppState> store = StoreProvider.of<AppState>(context);
+
+    return store.state.settingsState.isDark
+        ? ThemeData.dark().copyWith(
+            colorScheme: ColorScheme.dark(primary: successColor, onBackground: successColor))
+        : ThemeData.light().copyWith(colorScheme: ColorScheme.light(primary: primaryColor));
   }
 
   @override

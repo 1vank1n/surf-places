@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/bloc/visiting_place/favorite_place_bloc.dart';
 import 'package:places/data/bloc/visiting_place/favorite_place_event.dart';
@@ -10,19 +11,21 @@ import 'package:places/data/bloc/visiting_place/visited_place_bloc.dart';
 import 'package:places/data/bloc/visiting_place/visited_place_event.dart';
 import 'package:places/data/bloc/visiting_place/visited_place_state.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/place_respository.dart';
-import 'package:places/main.dart';
-import 'package:places/ui/common/widgets/place_visited_card.dart';
 import 'package:places/ui/common/widgets/place_favorite_card.dart';
+import 'package:places/ui/common/widgets/place_visited_card.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screen/res/themes.dart';
 import 'package:provider/provider.dart';
+import 'package:redux/redux.dart';
 
 class VisitingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Store<AppState> store = StoreProvider.of<AppState>(context);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<FavoritePlaceBloc>(
@@ -57,9 +60,7 @@ class VisitingScreen extends StatelessWidget {
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16.0),
                   decoration: BoxDecoration(
-                    color: Provider.of<AppModel>(context).theme == lightThemeData
-                        ? lightBgColor
-                        : deepDarkColor,
+                    color: store.state.settingsState.isDark ? deepDarkColor : lightBgColor,
                     borderRadius: BorderRadius.circular(40.0),
                   ),
                   child: TabBar(
