@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:mwwm/mwwm.dart';
 import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/data/interactor/place_search_interactor.dart';
 import 'package:places/data/mwwm/error/error_handler.dart';
 import 'package:places/data/mwwm/place_create_wm.dart';
 import 'package:places/data/network/api_dio.dart';
@@ -35,8 +34,6 @@ void main() {
   Api api = ApiDio();
   PlaceRepository placeRepository = PlaceRepository(api: api);
   PlaceInteractor placeInteractor = PlaceInteractor(placeRepository: placeRepository);
-  PlaceSearchInteractor placeSearchInteractor =
-      PlaceSearchInteractor(placeRepository: placeRepository);
 
   Store<AppState> store = Store(
     appReducer,
@@ -58,7 +55,6 @@ void main() {
       providers: [
         Provider<PlaceRepository>(create: (_) => placeRepository),
         Provider<PlaceInteractor>(create: (_) => placeInteractor),
-        Provider<PlaceSearchInteractor>(create: (_) => placeSearchInteractor),
         Provider<WidgetModelDependencies>(
           create: (_) => WidgetModelDependencies(
             errorHandler: StandardErrorHandler(),
