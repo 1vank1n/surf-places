@@ -1,3 +1,4 @@
+import 'package:places/data/redux/place_create/state.dart';
 import 'package:places/data/redux/place_detail/state.dart';
 import 'package:places/data/redux/place_list/state.dart';
 import 'package:places/data/redux/place_search/state.dart';
@@ -7,12 +8,14 @@ class AppState {
   final PlaceSearchState placeSearchState;
   final PlaceListState placeListState;
   final PlaceDetailState placeDetailState;
+  final PlaceCreateState placeCreateState;
   final SettingsState settingsState;
 
   AppState({
     required this.placeSearchState,
     required this.placeListState,
     required this.placeDetailState,
+    required this.placeCreateState,
     required this.settingsState,
   });
 
@@ -20,12 +23,14 @@ class AppState {
     PlaceSearchState? placeSearchState,
     PlaceListState? placeListState,
     PlaceDetailState? placeDetailState,
+    PlaceCreateState? placeCreateState,
     SettingsState? settingsState,
   }) {
     return AppState(
       placeSearchState: placeSearchState ?? this.placeSearchState,
       placeListState: placeListState ?? this.placeListState,
       placeDetailState: placeDetailState ?? this.placeDetailState,
+      placeCreateState: placeCreateState ?? this.placeCreateState,
       settingsState: settingsState ?? this.settingsState,
     );
   }

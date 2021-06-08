@@ -1,3 +1,5 @@
+import 'package:places/data/redux/place_create/actions.dart';
+import 'package:places/data/redux/place_create/reducer.dart';
 import 'package:places/data/redux/place_detail/actions.dart';
 import 'package:places/data/redux/place_detail/reducer.dart';
 import 'package:places/data/redux/place_list/actions.dart';
@@ -22,6 +24,11 @@ AppState appReducer(AppState state, dynamic action) {
   if (action is PlaceDetailAction) {
     final nextPlaceDetailState = placeDetailReducer(state.placeDetailState, action);
     return state.copyWith(placeDetailState: nextPlaceDetailState);
+  }
+
+  if (action is PlaceCreateAction) {
+    final nextPlaceCreateState = placeCreateReducer(state.placeCreateState, action);
+    return state.copyWith(placeCreateState: nextPlaceCreateState);
   }
 
   if (action is SettingsAction) {

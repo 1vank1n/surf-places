@@ -6,26 +6,144 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mwwm/mwwm.dart';
-import 'package:places/data/mwwm/place_create_wm.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/data/redux/place_create/actions.dart';
+import 'package:places/data/redux/place_create/state.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:redux/redux.dart';
-import 'package:relation/relation.dart';
 
-class PlaceCreateScreen extends CoreMwwmWidget {
-  PlaceCreateScreen({
-    required WidgetModelBuilder widgetModelBuilder,
-  }) : super(widgetModelBuilder: widgetModelBuilder);
+class PlaceCreateScreen extends StatefulWidget {
+  const PlaceCreateScreen({Key? key}) : super(key: key);
 
   @override
   _PlaceCreateScreenState createState() => _PlaceCreateScreenState();
 }
 
-class _PlaceCreateScreenState extends WidgetState<PlaceCreateWidgetModel> {
+class _PlaceCreateScreenState extends State<PlaceCreateScreen> {
+  late Store<AppState> store;
+  TextEditingController titleTextEditingController = TextEditingController();
+  TextEditingController latTextEditingController = TextEditingController();
+  TextEditingController lonTextEditingController = TextEditingController();
+  TextEditingController detailsTextEditingController = TextEditingController();
+  FocusNode titleFocusNode = FocusNode();
+  FocusNode latFocusNode = FocusNode();
+  FocusNode lonFocusNode = FocusNode();
+  FocusNode detailsFocusNode = FocusNode();
+  bool get isValidPlaceCreateForm {
+    return titleTextEditingController.text.isNotEmpty &&
+        latTextEditingController.text.isNotEmpty &&
+        lonTextEditingController.text.isNotEmpty &&
+        detailsTextEditingController.text.isNotEmpty;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    store = StoreProvider.of<AppState>(context);
+
+    titleTextEditingController.addListener(() {
+      store.dispatch(SetValidPlaceCreateAction(isValid: isValidPlaceCreateForm));
+    });
+
+    latTextEditingController.addListener(() {
+      store.dispatch(SetValidPlaceCreateAction(isValid: isValidPlaceCreateForm));
+    });
+
+    lonTextEditingController.addListener(() {
+      store.dispatch(SetValidPlaceCreateAction(isValid: isValidPlaceCreateForm));
+    });
+
+    detailsTextEditingController.addListener(() {
+      store.dispatch(SetValidPlaceCreateAction(isValid: isValidPlaceCreateForm));
+    });
+
+    store.onChange.listen(
+      (AppState state) {
+        final place = state.placeCreateState.place;
+        if (place != null) {
+          store.dispatch(ResetPlaceCreateAction());
+
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: Text(place.name),
+              content: Text('Место успешно добавлено!'),
+              actions: [
+                TextButton(
+                  child: const Text('Ок'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // alert
+                    Navigator.of(context).pop(); // screen
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+
+        if (state.placeCreateState.isError) {
+          store.dispatch(ResetPlaceCreateAction());
+
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: Text('Ошибка'),
+              content: Text(state.placeCreateState.errorMessage),
+              actions: [
+                TextButton(
+                  child: const Text('Ок'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // alert
+                    Navigator.of(context).pop(); // screen
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  UploadImage getRegularUploadImage() {
+    ValueKey<int> valueKey = ValueKey(Random().nextInt(100));
+    final regularUploadImage = UploadImage(
+      key: valueKey,
+      deleteUploadImage: _removeUploadImage,
+    );
+    return regularUploadImage;
+  }
+
+  void _removeUploadImage(ValueKey valueKey) {
+    store.dispatch(RemoveImagePlaceCreateAction(valueKey: valueKey));
+  }
+
+  String? requiredValidator(String? value) {
+    if (value != null && value.length > 0) {
+      return null;
+    } else {
+      return 'Поле обязательно';
+    }
+  }
+
+  void uploadPlaceToRepository() {
+    final place = Place(
+      id: 0,
+      name: titleTextEditingController.text,
+      lat: double.parse(latTextEditingController.text),
+      lng: double.parse(lonTextEditingController.text),
+      urls: [],
+      description: detailsTextEditingController.text,
+      placeType: '',
+    );
+
+    store.dispatch(UploadPlaceCreateAction(place: place));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,17 +190,17 @@ class _PlaceCreateScreenState extends WidgetState<PlaceCreateWidgetModel> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: TextFormField(
-              focusNode: wm.titleFocusNode,
-              controller: wm.titleTextEditingController,
+              focusNode: titleFocusNode,
+              controller: titleTextEditingController,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: wm.requiredValidator,
+              validator: requiredValidator,
               textCapitalization: TextCapitalization.sentences,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (_) {
-                wm.latFocusNode.requestFocus();
+                latFocusNode.requestFocus();
               },
               decoration: InputDecoration(
-                suffixIcon: wm.titleTextEditingController.text.isNotEmpty
+                suffixIcon: titleTextEditingController.text.isNotEmpty
                     ? IconButton(
                         padding: EdgeInsets.zero,
                         iconSize: 20.0,
@@ -91,7 +209,7 @@ class _PlaceCreateScreenState extends WidgetState<PlaceCreateWidgetModel> {
                           color: Theme.of(context).primaryColor,
                         ),
                         onPressed: () {
-                          wm.titleTextEditingController.text = '';
+                          titleTextEditingController.text = '';
                         },
                       )
                     : null,
@@ -111,19 +229,19 @@ class _PlaceCreateScreenState extends WidgetState<PlaceCreateWidgetModel> {
                         subtitle: Text('ШИРОТА'),
                       ),
                       TextFormField(
-                        focusNode: wm.latFocusNode,
-                        controller: wm.latTextEditingController,
+                        focusNode: latFocusNode,
+                        controller: latTextEditingController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: wm.requiredValidator,
+                        validator: requiredValidator,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
                         ],
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
-                          wm.lonFocusNode.requestFocus();
+                          lonFocusNode.requestFocus();
                         },
                         decoration: InputDecoration(
-                          suffixIcon: wm.latTextEditingController.text.isNotEmpty
+                          suffixIcon: latTextEditingController.text.isNotEmpty
                               ? IconButton(
                                   padding: EdgeInsets.zero,
                                   iconSize: 20.0,
@@ -132,7 +250,7 @@ class _PlaceCreateScreenState extends WidgetState<PlaceCreateWidgetModel> {
                                     color: Theme.of(context).primaryColor,
                                   ),
                                   onPressed: () {
-                                    wm.latTextEditingController.text = '';
+                                    latTextEditingController.text = '';
                                   },
                                 )
                               : null,
@@ -152,19 +270,19 @@ class _PlaceCreateScreenState extends WidgetState<PlaceCreateWidgetModel> {
                         subtitle: Text('ДОЛГОТА'),
                       ),
                       TextFormField(
-                        focusNode: wm.lonFocusNode,
-                        controller: wm.lonTextEditingController,
+                        focusNode: lonFocusNode,
+                        controller: lonTextEditingController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: wm.requiredValidator,
+                        validator: requiredValidator,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
                         ],
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
-                          wm.detailsFocusNode.requestFocus();
+                          detailsFocusNode.requestFocus();
                         },
                         decoration: InputDecoration(
-                          suffixIcon: wm.lonTextEditingController.text.isNotEmpty
+                          suffixIcon: lonTextEditingController.text.isNotEmpty
                               ? IconButton(
                                   padding: EdgeInsets.zero,
                                   iconSize: 20.0,
@@ -173,7 +291,7 @@ class _PlaceCreateScreenState extends WidgetState<PlaceCreateWidgetModel> {
                                     color: Theme.of(context).primaryColor,
                                   ),
                                   onPressed: () {
-                                    wm.latTextEditingController.text = '';
+                                    latTextEditingController.text = '';
                                   },
                                 )
                               : null,
@@ -212,13 +330,13 @@ class _PlaceCreateScreenState extends WidgetState<PlaceCreateWidgetModel> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: TextFormField(
-              focusNode: wm.detailsFocusNode,
-              controller: wm.detailsTextEditingController,
-              validator: wm.requiredValidator,
+              focusNode: detailsFocusNode,
+              controller: detailsTextEditingController,
+              validator: requiredValidator,
               maxLines: 4,
               textInputAction: TextInputAction.done,
               onFieldSubmitted: (_) {
-                wm.detailsFocusNode.unfocus();
+                detailsFocusNode.unfocus();
               },
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(16.0),
@@ -234,12 +352,12 @@ class _PlaceCreateScreenState extends WidgetState<PlaceCreateWidgetModel> {
           child: SizedBox(
             width: double.infinity,
             height: 48.0,
-            child: StreamedStateBuilder<bool>(
-              streamedState: wm.isValidPlaceCreateState,
-              builder: (BuildContext context, bool? isValid) {
+            child: StoreConnector<AppState, PlaceCreateState>(
+              converter: (Store<AppState> store) => store.state.placeCreateState,
+              builder: (BuildContext context, PlaceCreateState state) {
                 return ElevatedButton(
-                  onPressed: (isValid ?? false) ? wm.addPlaceFromStateToRepository : null,
-                  child: Text('СОЗДАТЬ'),
+                  child: state.isUploading ? CircularProgressIndicator() : Text('СОЗДАТЬ'),
+                  onPressed: state.isValid ? uploadPlaceToRepository : null,
                 );
               },
             ),
@@ -257,10 +375,18 @@ class _PlaceCreateScreenState extends WidgetState<PlaceCreateWidgetModel> {
         right: 16.0,
         left: 16.0,
       ),
-      child: StreamedStateBuilder<List<UploadImage>>(
-        streamedState: wm.uploadImageListState,
-        builder: (BuildContext context, List<UploadImage>? uploadImageList) {
-          final uploadImages = uploadImageList ?? [];
+      child: StoreConnector<AppState, PlaceCreateState>(
+        converter: (Store<AppState> store) => store.state.placeCreateState,
+        builder: (BuildContext context, PlaceCreateState state) {
+          final uploadImages = state.uploadImages.toList();
+          final creatorUploadImage = UploadImage(
+            isCreator: true,
+            addUploadImage: () {
+              final regularUploadImage = getRegularUploadImage();
+              store.dispatch(AddImagePlaceCreateAction(uploadImage: regularUploadImage));
+            },
+          );
+          uploadImages.insert(0, creatorUploadImage);
 
           return ListView.separated(
             itemCount: uploadImages.length,

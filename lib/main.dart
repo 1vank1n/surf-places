@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:mwwm/mwwm.dart';
-import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/data/mwwm/error/error_handler.dart';
-import 'package:places/data/mwwm/place_create_wm.dart';
-import 'package:places/data/network/api_dio.dart';
+import 'package:places/data/network/api.dart';
+import 'package:places/data/redux/place_create/state.dart';
 import 'package:places/data/redux/place_detail/middlewares.dart';
 import 'package:places/data/redux/place_detail/state.dart';
 import 'package:places/data/redux/place_list/middlewares.dart';
@@ -25,15 +22,14 @@ import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/splash_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
-import 'package:provider/provider.dart';
 import 'package:redux/redux.dart';
 
 import 'data/network/api.dart';
+import 'data/redux/place_create/middlewares.dart';
 
 void main() {
   Api api = ApiDio();
   PlaceRepository placeRepository = PlaceRepository(api: api);
-  PlaceInteractor placeInteractor = PlaceInteractor(placeRepository: placeRepository);
 
   Store<AppState> store = Store(
     appReducer,
@@ -41,30 +37,21 @@ void main() {
       placeSearchState: PlaceSearchState.initial(),
       placeListState: PlaceListState.initial(),
       placeDetailState: PlaceDetailState.initial(),
+      placeCreateState: PlaceCreateState.initial(),
       settingsState: SettingsState.initial(),
     ),
     middleware: [
       PlaceSearchMiddleware(placeRepository: placeRepository),
       PlaceListMiddleware(placeRepository: placeRepository),
       PlaceDetailMiddleware(placeRepository: placeRepository),
+      PlaceCreateMiddleware(placeRepository: placeRepository),
     ],
   );
 
   runApp(
-    MultiProvider(
-      providers: [
-        Provider<PlaceRepository>(create: (_) => placeRepository),
-        Provider<PlaceInteractor>(create: (_) => placeInteractor),
-        Provider<WidgetModelDependencies>(
-          create: (_) => WidgetModelDependencies(
-            errorHandler: StandardErrorHandler(),
-          ),
-        ),
-      ],
-      child: StoreProvider<AppState>(
-        store: store,
-        child: App(),
-      ),
+    StoreProvider<AppState>(
+      store: store,
+      child: App(),
     ),
   );
 }
@@ -88,9 +75,7 @@ class AppRouter {
     AppRouter.placeList: (data) => PlaceListScreen(),
     AppRouter.placeSearch: (data) => PlaceSearchScreen(),
     AppRouter.placeFilter: (data) => FiltersScreen(),
-    AppRouter.placeCreate: (data) => PlaceCreateScreen(
-          widgetModelBuilder: (BuildContext context) => PlaceCreateWidgetModel.builder(context),
-        ),
+    AppRouter.placeCreate: (data) => PlaceCreateScreen(),
     AppRouter.placeVisiting: (data) => VisitingScreen(),
     AppRouter.settings: (data) => SettingsScreen(),
   };
