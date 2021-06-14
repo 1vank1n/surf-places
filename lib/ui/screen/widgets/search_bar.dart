@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/main.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screen/res/themes.dart';
-import 'package:provider/provider.dart';
+import 'package:redux/redux.dart';
 
 class SearchBar extends StatefulWidget {
   final TextEditingController searchTextEditingController;
@@ -34,6 +35,8 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    Store<AppState> store = StoreProvider.of<AppState>(context);
+
     return Theme(
       data: ThemeData(
         inputDecorationTheme: InputDecorationTheme(
@@ -43,18 +46,16 @@ class _SearchBarState extends State<SearchBar> {
             borderRadius: BorderRadius.circular(12.0),
           ),
           filled: true,
-          fillColor:
-              Provider.of<AppModel>(context).theme == lightThemeData ? lightBgColor : deepDarkColor,
+          fillColor: store.state.settingsState.isDark ? deepDarkColor : lightBgColor,
           hintStyle: subtitle1.copyWith(color: secondaryTextColor.withAlpha(142)),
         ),
         textSelectionTheme: TextSelectionThemeData(
-          cursorColor:
-              Provider.of<AppModel>(context).theme == lightThemeData ? primaryColor : Colors.white,
+          cursorColor: store.state.settingsState.isDark ? Colors.white : primaryColor,
         ),
         textTheme: TextTheme(
-          subtitle1: Provider.of<AppModel>(context).theme == lightThemeData
-              ? subtitle1.copyWith(color: primaryColor)
-              : subtitle1.copyWith(color: Colors.white),
+          subtitle1: store.state.settingsState.isDark
+              ? subtitle1.copyWith(color: Colors.white)
+              : subtitle1.copyWith(color: primaryColor),
         ),
       ),
       child: Stack(

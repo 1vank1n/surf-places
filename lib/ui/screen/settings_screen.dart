@@ -1,24 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:places/data/interactor/settings_interactor.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:places/data/redux/settings/actions.dart';
+import 'package:places/data/redux/settings/state.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/main.dart';
 import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/screen/res/themes.dart';
-import 'package:provider/provider.dart';
+import 'package:redux/redux.dart';
 
-class SettingsScreen extends StatefulWidget {
-  @override
-  _SettingsScreenState createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  late final SettingsInteractor _settingsInteractor;
-
-  @override
-  void initState() {
-    super.initState();
-    _settingsInteractor = context.read<SettingsInteractor>();
-  }
-
+class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,12 +21,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Consumer<AppModel>(
-              builder: (context, appModel, child) {
+            StoreConnector<AppState, SettingsState>(
+              converter: (Store<AppState> store) => store.state.settingsState,
+              builder: (BuildContext context, SettingsState state) {
+                Store<AppState> store = StoreProvider.of<AppState>(context);
+
                 return SwitchListTile(
-                  value: appModel.theme == darkThemeData,
+                  value: state.isDark,
                   onChanged: (_) {
-                    _settingsInteractor.toggleTheme(appModel);
+                    store.dispatch(SetDarkSettingsAction(isDark: !state.isDark));
                   },
                   title: Text('Тёмная тема'),
                 );

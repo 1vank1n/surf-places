@@ -2,110 +2,95 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/data/redux/actions/place_search_actions.dart';
-import 'package:places/data/redux/middlewares/place_search_middleware.dart';
-import 'package:places/data/redux/reducers/place_search_reducer.dart';
-import 'package:places/data/redux/states/app_state.dart';
-import 'package:places/data/redux/states/searched_place_state.dart';
-import 'package:places/data/repository/place_respository.dart';
+import 'package:places/data/redux/place_search/actions.dart';
+import 'package:places/data/redux/place_search/state.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/ui/common/widgets/place_search_card.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/widgets/error_holder.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
-import 'package:provider/provider.dart';
 import 'package:redux/redux.dart';
 
 class PlaceSearchScreen extends StatelessWidget {
-  late final Store<AppState> _store;
   final TextEditingController _searchTextEditingController = TextEditingController();
-
-  void _loadQuery(String query) {
-    _searchTextEditingController.text = query;
-    _searchTextEditingController.selection =
-        TextSelection.fromPosition(TextPosition(offset: _searchTextEditingController.text.length));
-    _store.dispatch(SearchPlacesAction(query));
-  }
 
   @override
   Widget build(BuildContext context) {
-    PlaceRepository placeRepository = context.read<PlaceRepository>();
-    _store = Store(
-      placeSearchReducer,
-      initialState: AppState(),
-      middleware: [
-        PlaceSearchMiddleware(placeRepository: placeRepository),
-      ],
-    );
+    Store<AppState> _store = StoreProvider.of<AppState>(context);
 
-    return StoreProvider<AppState>(
-      store: _store,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: SvgPicture.asset(
-              iconArrow,
-              width: 24.0,
-              height: 24.0,
-              color: Theme.of(context).primaryColor,
-            ),
-            padding: EdgeInsets.zero,
-            color: Colors.white,
+    void _loadQuery(String query) {
+      _searchTextEditingController.text = query;
+      _searchTextEditingController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _searchTextEditingController.text.length));
+      _store.dispatch(SearchPlaceSearchAction(query));
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: SvgPicture.asset(
+            iconArrow,
+            width: 24.0,
+            height: 24.0,
+            color: Theme.of(context).primaryColor,
           ),
-          title: Text(
-            'Список интересных мест',
-            style: Theme.of(context).textTheme.headline3,
-          ),
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(40.0),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: SearchBar(
-                searchTextEditingController: _searchTextEditingController,
-                searchHandler: () {
-                  if (_searchTextEditingController.text.isEmpty) {
-                    _store.dispatch(ShowQueryHistoryAction());
-                  } else {
-                    _store.dispatch(SearchPlacesAction(_searchTextEditingController.text));
-                  }
-                },
-              ),
-            ),
-          ),
-          elevation: 0,
+          padding: EdgeInsets.zero,
+          color: Colors.white,
         ),
-        body: StoreConnector<AppState, SearchedPlacesState>(
-          converter: (Store<AppState> store) => store.state.searchedPlacesState,
-          builder: (BuildContext context, SearchedPlacesState state) {
-            if (state is SearchedPlacesLoadingState) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (state is SearchedPlacesErrorState) {
-              return ErrorHolder(
-                message: state.message,
-              );
-            } else if (state is SearchedPlacesDataState) {
-              final places = state.place;
+        title: Text(
+          'Список интересных мест',
+          style: Theme.of(context).textTheme.headline3,
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(40.0),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: SearchBar(
+              searchTextEditingController: _searchTextEditingController,
+              searchHandler: () {
+                if (_searchTextEditingController.text.isEmpty) {
+                  _store.dispatch(ShowHistoryPlaceSearchAction());
+                } else {
+                  _store.dispatch(SearchPlaceSearchAction(_searchTextEditingController.text));
+                }
+              },
+            ),
+          ),
+        ),
+        elevation: 0,
+      ),
+      body: StoreConnector<AppState, PlaceSearchState>(
+        converter: (Store<AppState> store) => store.state.placeSearchState,
+        builder: (BuildContext context, PlaceSearchState state) {
+          if (state.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state.isError) {
+            return ErrorHolder(
+              message: state.errorMessage,
+            );
+          } else if (state.isShowQueriesHistory == false) {
+            final places = state.places;
 
-              if (places.length > 0) {
-                return PlaceFindedList(places: places);
-              }
-
-              return EmptyQueryList();
-            } else if (state is SearchedPlacesInitialState) {
-              return HistoryQueryList(
-                loadQueryHandler: _loadQuery,
-              );
+            if (places.length > 0) {
+              return PlaceFindedList(places: places);
             }
 
-            throw ArgumentError('Not catch SearchedPlacesState');
-          },
-        ),
+            return EmptyQueryList();
+          } else if (state.isLoading == false) {
+            return HistoryQueryList(
+              loadQueryHandler: _loadQuery,
+            );
+          }
+
+          throw ArgumentError('Not catch SearchedPlacesState');
+        },
       ),
     );
   }
@@ -156,7 +141,7 @@ class HistoryQueryList extends StatelessWidget {
             title: Text(query),
             trailing: IconButton(
               onPressed: () {
-                _store.dispatch(RemoveQueryFromHistoryAction(query));
+                _store.dispatch(RemoveQueryFromHistoryPlaceSearchAction(query));
               },
               icon: Icon(
                 Icons.close,
@@ -176,18 +161,18 @@ class HistoryQueryList extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      child: StoreConnector<AppState, AppState>(
-        converter: (Store<AppState> store) => store.state,
-        builder: (BuildContext context, AppState state) {
+      child: StoreConnector<AppState, List<String>>(
+        converter: (Store<AppState> store) => store.state.placeSearchState.queries,
+        builder: (BuildContext context, List<String> queries) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (state.queries.length > 0)
+              if (queries.length > 0)
                 ListTile(
                   subtitle: Text('ВЫ ИСКАЛИ'),
                 ),
-              for (var query in state.queries) _queryAndDivider(query),
-              if (state.queries.length > 0)
+              for (var query in queries) _queryAndDivider(query),
+              if (queries.length > 0)
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: TextButton(
@@ -202,7 +187,7 @@ class HistoryQueryList extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 0.0),
                     ),
                     onPressed: () {
-                      _store.dispatch(ClearQueryHistoryAction());
+                      _store.dispatch(ClearQueryHistoryPlaceSearchAction());
                     },
                   ),
                 ),

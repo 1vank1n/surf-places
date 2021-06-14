@@ -1,113 +1,98 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/data/bloc/visiting_place/favorite_place_bloc.dart';
-import 'package:places/data/bloc/visiting_place/favorite_place_event.dart';
-import 'package:places/data/bloc/visiting_place/favorite_place_state.dart';
-import 'package:places/data/bloc/visiting_place/visited_place_bloc.dart';
-import 'package:places/data/bloc/visiting_place/visited_place_event.dart';
-import 'package:places/data/bloc/visiting_place/visited_place_state.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/data/repository/place_respository.dart';
-import 'package:places/main.dart';
-import 'package:places/ui/common/widgets/place_visited_card.dart';
+import 'package:places/data/redux/place_list/actions.dart';
+import 'package:places/data/redux/place_list/state.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/ui/common/widgets/place_favorite_card.dart';
+import 'package:places/ui/common/widgets/place_visited_card.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screen/res/themes.dart';
-import 'package:provider/provider.dart';
+import 'package:places/ui/screen/widgets/error_holder.dart';
+import 'package:redux/redux.dart';
 
 class VisitingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<FavoritePlaceBloc>(
-          create: (context) => FavoritePlaceBloc(
-            placeRepository: context.read<PlaceRepository>(),
-          )..add(LoadFavoritePlacesEvent()),
-        ),
-        BlocProvider<VisitedPlaceBloc>(
-          create: (context) => VisitedPlaceBloc(
-            placeRepository: context.read<PlaceRepository>(),
-          )..add(LoadVisitedPlacesEvent()),
-        ),
-      ],
-      child: DefaultTabController(
-        length: 2,
-        initialIndex: 0,
-        child: Scaffold(
-          appBar: AppBar(
-            toolbarHeight: 108.0,
-            title: Text(
-              'Избранное',
-              style: Theme.of(context).textTheme.headline3,
-            ),
-            elevation: 0,
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(40.0),
-              child: Theme(
-                data: Theme.of(context).copyWith(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
+    Store<AppState> store = StoreProvider.of<AppState>(context);
+
+    return DefaultTabController(
+      length: 2,
+      initialIndex: 0,
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 108.0,
+          title: Text(
+            'Избранное',
+            style: Theme.of(context).textTheme.headline3,
+          ),
+          elevation: 0,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(40.0),
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+              ),
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: store.state.settingsState.isDark ? deepDarkColor : lightBgColor,
+                  borderRadius: BorderRadius.circular(40.0),
                 ),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    color: Provider.of<AppModel>(context).theme == lightThemeData
-                        ? lightBgColor
-                        : deepDarkColor,
-                    borderRadius: BorderRadius.circular(40.0),
-                  ),
-                  child: TabBar(
-                    tabs: [
-                      Tab(
-                        child: Text('Хочу посетить'),
-                      ),
-                      Tab(
-                        child: Text('Посетил'),
-                      ),
-                    ],
-                  ),
+                child: TabBar(
+                  tabs: [
+                    Tab(
+                      child: Text('Хочу посетить'),
+                    ),
+                    Tab(
+                      child: Text('Посетил'),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-          body: TabBarView(
-            children: [
-              BlocBuilder<FavoritePlaceBloc, FavoritePlaceState>(
-                  builder: (BuildContext context, FavoritePlaceState state) {
-                if (state is LoadingFavoritePlacesState) {
+        ),
+        body: TabBarView(
+          children: [
+            StoreConnector<AppState, PlaceListState>(
+              converter: (Store<AppState> store) => store.state.placeListState,
+              builder: (BuildContext context, PlaceListState state) {
+                if (state.isLoading) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
-                }
-
-                if (state is LoadedFavoritePlacesState) {
+                } else if (state.isError) {
+                  return ErrorHolder(
+                    message: state.errorMessage,
+                  );
+                } else {
                   return FavoritePlaceList(places: state.favoritePlaces);
                 }
-
-                throw ArgumentError('Not cacth FavoritePlaceState');
-              }),
-              BlocBuilder<VisitedPlaceBloc, VisitedPlaceState>(
-                  builder: (BuildContext context, VisitedPlaceState state) {
-                if (state is LoadingVisitedPlacesState) {
+              },
+            ),
+            StoreConnector<AppState, PlaceListState>(
+              converter: (Store<AppState> store) => store.state.placeListState,
+              builder: (BuildContext context, PlaceListState state) {
+                if (state.isLoading) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
-                }
-
-                if (state is LoadedVisitedPlacesState) {
+                } else if (state.isError) {
+                  return ErrorHolder(
+                    message: state.errorMessage,
+                  );
+                } else {
                   return VisitedPlaceList(places: state.visitedPlaces);
                 }
-
-                throw ArgumentError('Not cacth VisitedPlaceState');
-              }),
-            ],
-          ),
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -125,7 +110,8 @@ class FavoritePlaceList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void removeHandler(Place place) {
-      context.read<FavoritePlaceBloc>().add(RemoveFromFavoritePlacesEvent(place));
+      Store<AppState> store = StoreProvider.of<AppState>(context);
+      store.dispatch(RemovePlaceFromFavoritesPlaceListAction(place: place));
     }
 
     return places.length > 0
@@ -212,7 +198,8 @@ class VisitedPlaceList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void removeHandler(Place place) {
-      context.read<FavoritePlaceBloc>().add(RemoveFromFavoritePlacesEvent(place));
+      Store<AppState> store = StoreProvider.of<AppState>(context);
+      store.dispatch(RemovePlaceFromVisitedPlaceListAction(place: place));
     }
 
     return places.length > 0

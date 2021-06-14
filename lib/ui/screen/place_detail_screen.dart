@@ -1,16 +1,17 @@
-import 'dart:async';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/data/network/exceptions.dart';
+import 'package:places/data/redux/place_detail/actions.dart';
+import 'package:places/data/redux/place_detail/state.dart';
+import 'package:places/data/redux/place_list/actions.dart';
+import 'package:places/data/redux/place_list/state.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/screen/widgets/error_holder.dart';
-import 'package:provider/provider.dart';
+import 'package:redux/redux.dart';
 
 class PlaceDetailScreen extends StatefulWidget {
   final int id;
@@ -25,49 +26,19 @@ class PlaceDetailScreen extends StatefulWidget {
 }
 
 class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
-  late final PlaceInteractor _placeInteractor;
-  final StreamController<Place> _placeStreamController = StreamController();
-  final StreamController<bool> _favoriteStreamController = StreamController();
-
   @override
-  void initState() {
-    super.initState();
-    _placeInteractor = context.read<PlaceInteractor>();
-    _getPlace();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Store<AppState> store = StoreProvider.of<AppState>(context);
+    store.dispatch(LoadPlaceDetailAction(placeId: widget.id));
   }
 
-  void dispose() {
-    super.dispose();
-    _placeStreamController.close();
-    _favoriteStreamController.close();
+  void _addToFavorites(Store<AppState> store, Place place) {
+    store.dispatch(AddPlaceToFavoritesPlaceListAction(place: place));
   }
 
-  void _getPlace() {
-    _placeInteractor.getPlaceDetails(widget.id).then((place) {
-      if (place != null) {
-        _placeStreamController.sink.add(place);
-        _placeInFavorites(place).then((result) => _favoriteStreamController.sink.add(result));
-      }
-    }).onError(
-      (error, stackTrace) {
-        if (error != null) _placeStreamController.addError(error);
-      },
-    );
-  }
-
-  Future<bool> _placeInFavorites(Place place) async {
-    List<Place> favoritePlaces = await _placeInteractor.getFavoritesPlaces();
-    return favoritePlaces.contains(place);
-  }
-
-  void _addToFavorites(Place place) {
-    _placeInteractor.addToFavorites(place);
-    _favoriteStreamController.sink.add(true);
-  }
-
-  void _removeFromFavorites(Place place) {
-    _placeInteractor.removeFromFavorites(place);
-    _favoriteStreamController.sink.add(false);
+  void _removeFromFavorites(Store<AppState> store, Place place) {
+    store.dispatch(RemovePlaceFromFavoritesPlaceListAction(place: place));
   }
 
   @override
@@ -83,29 +54,19 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: maxHeight),
         child: Scaffold(
-          body: StreamBuilder<Place>(
-            stream: _placeStreamController.stream,
-            builder: (BuildContext context, AsyncSnapshot<Place> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
+          body: StoreConnector<AppState, PlaceDetailState>(
+            converter: (Store<AppState> store) => store.state.placeDetailState,
+            builder: (BuildContext context, PlaceDetailState state) {
+              if (state.isLoading) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
-              } else if (snapshot.hasError) {
-                String message;
-
-                try {
-                  DioError dioError = snapshot.error as DioError;
-                  NetworkException networkException = dioError.error as NetworkException;
-                  message = networkException.toString();
-                } on TypeError {
-                  message = 'Что-то пошло не так попробуйте позже';
-                }
-
-                return ErrorHolder(
-                  message: message,
+              } else if (state.isError) {
+                ErrorHolder(
+                  message: state.errorMessage,
                 );
-              } else {
-                final place = snapshot.data!;
+              } else if (state.place != null) {
+                final place = state.place!;
 
                 return CustomScrollView(
                   slivers: [
@@ -235,20 +196,22 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                 Expanded(
                                   child: SizedBox(
                                     height: 40.0,
-                                    child: StreamBuilder<bool>(
-                                        stream: _favoriteStreamController.stream,
-                                        builder:
-                                            (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                                          bool isFavorite = snapshot.data ?? false;
+                                    child: StoreConnector<AppState, PlaceListState>(
+                                        converter: (Store<AppState> store) =>
+                                            store.state.placeListState,
+                                        builder: (BuildContext context, PlaceListState state) {
+                                          bool isFavorited = state.favoritePlaces.contains(place);
+                                          Store<AppState> store =
+                                              StoreProvider.of<AppState>(context);
 
                                           return TextButton.icon(
                                             onPressed: () {
-                                              isFavorite
-                                                  ? _removeFromFavorites(place)
-                                                  : _addToFavorites(place);
+                                              isFavorited
+                                                  ? _removeFromFavorites(store, place)
+                                                  : _addToFavorites(store, place);
                                             },
                                             icon: SvgPicture.asset(
-                                              isFavorite ? iconHeartFill : iconHeart,
+                                              isFavorited ? iconHeartFill : iconHeart,
                                               color: Theme.of(context).primaryColor,
                                             ),
                                             label: Text(
@@ -268,6 +231,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                   ],
                 );
               }
+              return Container();
             },
           ),
         ),

@@ -1,18 +1,18 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/data/repository/place_respository.dart';
-import 'package:places/data/store/place_store.dart';
+import 'package:places/data/redux/place_list/actions.dart';
+import 'package:places/data/redux/place_list/state.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/screen/place_detail_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:redux/redux.dart';
 
 /// Карточка достопримечательности. Виджет используется в фиде
-class PlaceCard extends StatefulWidget {
+class PlaceCard extends StatelessWidget {
   final Place place;
 
   PlaceCard({
@@ -20,41 +20,12 @@ class PlaceCard extends StatefulWidget {
     required this.place,
   }) : super(key: key);
 
-  @override
-  _PlaceCardState createState() => _PlaceCardState();
-}
-
-class _PlaceCardState extends State<PlaceCard> {
-  late final PlaceStore _placeStore;
-  final StreamController<bool> _favoriteStreamController = StreamController();
-
-  @override
-  void initState() {
-    super.initState();
-    PlaceRepository placeRepository = context.read<PlaceRepository>();
-    _placeStore = PlaceStore(placeRepository: placeRepository);
-    _placeInFavorites(widget.place).then((result) => _favoriteStreamController.sink.add(result));
+  void _addToFavorites(Store<AppState> store, Place place) {
+    store.dispatch(AddPlaceToFavoritesPlaceListAction(place: place));
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _favoriteStreamController.close();
-  }
-
-  Future<bool> _placeInFavorites(Place place) async {
-    List<Place> favoritePlaces = await _placeStore.getFavoritesPlaces();
-    return favoritePlaces.contains(place);
-  }
-
-  void _addToFavorites(Place place) {
-    _placeStore.addToFavorites(place);
-    _favoriteStreamController.sink.add(true);
-  }
-
-  void _removeFromFavorites(Place place) {
-    _placeStore.removeFromFavorites(place);
-    _favoriteStreamController.sink.add(false);
+  void _removeFromFavorites(Store<AppState> store, Place place) {
+    store.dispatch(RemovePlaceFromFavoritesPlaceListAction(place: place));
   }
 
   @override
@@ -68,7 +39,7 @@ class _PlaceCardState extends State<PlaceCard> {
             child: Container(
               width: double.infinity,
               child: Image.network(
-                widget.place.urls.first,
+                place.urls.first,
                 fit: BoxFit.cover,
                 loadingBuilder:
                     (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
@@ -89,7 +60,7 @@ class _PlaceCardState extends State<PlaceCard> {
             top: 16.0,
             left: 16.0,
             child: Text(
-              widget.place.placeType.toLowerCase(),
+              place.placeType.toLowerCase(),
               style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.white),
             ),
           ),
@@ -104,14 +75,14 @@ class _PlaceCardState extends State<PlaceCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.place.name,
+                    place.name,
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   SizedBox(
                     height: 2.0,
                   ),
                   Text(
-                    widget.place.excerpt(),
+                    place.excerpt(),
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
@@ -131,7 +102,7 @@ class _PlaceCardState extends State<PlaceCard> {
                     isScrollControlled: true,
                     context: context,
                     builder: (BuildContext context) {
-                      return PlaceDetailScreen(id: widget.place.id);
+                      return PlaceDetailScreen(id: place.id);
                     },
                   );
                 },
@@ -145,27 +116,32 @@ class _PlaceCardState extends State<PlaceCard> {
             child: Container(
               width: 24.0,
               height: 24.0,
-              child: StreamBuilder<bool>(
-                  stream: _favoriteStreamController.stream,
-                  builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.active)
-                      return IconButton(
-                        onPressed: () {
-                          snapshot.data!
-                              ? _removeFromFavorites(widget.place)
-                              : _addToFavorites(widget.place);
-                        },
-                        padding: EdgeInsets.zero,
-                        icon: SvgPicture.asset(
-                          snapshot.data! ? iconHeartFill : iconHeart,
-                          color: Colors.white,
-                          width: 24.0,
-                          height: 24.0,
-                        ),
-                      );
+              child: StoreConnector<AppState, PlaceListState>(
+                converter: (Store<AppState> store) => store.state.placeListState,
+                builder: (BuildContext context, PlaceListState state) {
+                  if (!state.isLoading & !state.isError) {
+                    bool isFavorited = state.favoritePlaces.contains(place);
+                    Store<AppState> store = StoreProvider.of<AppState>(context);
 
-                    return Container();
-                  }),
+                    return IconButton(
+                      onPressed: () {
+                        isFavorited
+                            ? _removeFromFavorites(store, place)
+                            : _addToFavorites(store, place);
+                      },
+                      padding: EdgeInsets.zero,
+                      icon: SvgPicture.asset(
+                        isFavorited ? iconHeartFill : iconHeart,
+                        color: Colors.white,
+                        width: 24.0,
+                        height: 24.0,
+                      ),
+                    );
+                  }
+
+                  return Container();
+                },
+              ),
             ),
           ),
         ],
