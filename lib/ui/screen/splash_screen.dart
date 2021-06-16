@@ -12,7 +12,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
-  static const TIMEOUT_SECONDS = 4;
+  static const TIMEOUT_SECONDS = 2;
   late AnimationController _logoAnimationController;
   late Animation<double> _rotateAnimation;
 
@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _navigateToNext();
     _logoAnimationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: TIMEOUT_SECONDS),
     )..repeat(reverse: false);
 
     _rotateAnimation = Tween<double>(begin: 0, end: -pi * 2).animate(

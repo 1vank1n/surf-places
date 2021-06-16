@@ -64,8 +64,9 @@ class _VisitingScreenState extends State<VisitingScreen> with TickerProviderStat
 
   @override
   void dispose() {
-    super.dispose();
+    _tabController.dispose();
     _tabbarAnimationController.dispose();
+    super.dispose();
   }
 
   @override
