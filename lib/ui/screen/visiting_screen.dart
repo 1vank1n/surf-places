@@ -7,6 +7,7 @@ import 'package:places/data/model/place.dart';
 import 'package:places/data/redux/place_list/actions.dart';
 import 'package:places/data/redux/place_list/state.dart';
 import 'package:places/data/redux/store.dart';
+import 'package:places/ui/common/decorators/text_box_decorator.dart';
 import 'package:places/ui/common/widgets/place_favorite_card.dart';
 import 'package:places/ui/common/widgets/place_visited_card.dart';
 import 'package:places/ui/res/colors.dart';
@@ -15,85 +16,157 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/widgets/error_holder.dart';
 import 'package:redux/redux.dart';
 
-class VisitingScreen extends StatelessWidget {
+class VisitingScreen extends StatefulWidget {
+  @override
+  _VisitingScreenState createState() => _VisitingScreenState();
+}
+
+class _VisitingScreenState extends State<VisitingScreen> with TickerProviderStateMixin {
+  late TabController _tabController;
+  late AnimationController _tabbarAnimationController;
+  late Animation<double> _opacityAnimation;
+  final List<String> _tabs = ['Хочу посетить', 'Посетил'];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _tabbarAnimationController = AnimationController(
+      vsync: this,
+      lowerBound: 0,
+      upperBound: 0.99,
+      duration: Duration(milliseconds: 250),
+    );
+
+    _opacityAnimation = Tween<double>(begin: 1, end: 0).animate(
+      CurvedAnimation(
+        parent: _tabbarAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _tabController = TabController(
+      length: 2,
+      initialIndex: 0,
+      vsync: this,
+    );
+
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        if (_tabController.previousIndex == 0) {
+          _tabbarAnimationController.forward();
+        } else {
+          _tabbarAnimationController.reverse();
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabbarAnimationController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Store<AppState> store = StoreProvider.of<AppState>(context);
 
-    return DefaultTabController(
-      length: 2,
-      initialIndex: 0,
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 108.0,
-          title: Text(
-            'Избранное',
-            style: Theme.of(context).textTheme.headline3,
-          ),
-          elevation: 0,
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(40.0),
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 108.0,
+        title: Text(
+          'Избранное',
+          style: Theme.of(context).textTheme.headline3,
+        ),
+        elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(40.0),
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+            ),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              decoration: BoxDecoration(
+                color: store.state.settingsState.isDark ? deepDarkColor : lightBgColor,
+                borderRadius: BorderRadius.circular(40.0),
               ),
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                decoration: BoxDecoration(
-                  color: store.state.settingsState.isDark ? deepDarkColor : lightBgColor,
-                  borderRadius: BorderRadius.circular(40.0),
-                ),
-                child: TabBar(
-                  tabs: [
-                    Tab(
-                      child: Text('Хочу посетить'),
+              child: AnimatedBuilder(
+                animation: _tabbarAnimationController,
+                builder: (BuildContext context, Widget? widget) {
+                  return TabBar(
+                    controller: _tabController,
+                    indicator: TextBoxDecoration(
+                      text: TextSpan(
+                        text: _tabs[(_tabbarAnimationController.value * _tabs.length).toInt()],
+                        style: headline4,
+                      ),
+                      boxDecoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(40.0),
+                        color: primaryColor,
+                      ),
+                      opacity: (1 - _opacityAnimation.value * _tabs.length).abs(),
                     ),
-                    Tab(
-                      child: Text('Посетил'),
-                    ),
-                  ],
-                ),
+                    tabs: [
+                      Tab(
+                        child: Opacity(
+                          opacity: (_opacityAnimation.value - 1).abs(),
+                          child: Text('Хочу посетить'),
+                        ),
+                      ),
+                      Tab(
+                        child: Opacity(
+                          opacity: _opacityAnimation.value,
+                          child: Text('Посетил'),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ),
         ),
-        body: TabBarView(
-          children: [
-            StoreConnector<AppState, PlaceListState>(
-              converter: (Store<AppState> store) => store.state.placeListState,
-              builder: (BuildContext context, PlaceListState state) {
-                if (state.isLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state.isError) {
-                  return ErrorHolder(
-                    message: state.errorMessage,
-                  );
-                } else {
-                  return FavoritePlaceList(places: state.favoritePlaces);
-                }
-              },
-            ),
-            StoreConnector<AppState, PlaceListState>(
-              converter: (Store<AppState> store) => store.state.placeListState,
-              builder: (BuildContext context, PlaceListState state) {
-                if (state.isLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state.isError) {
-                  return ErrorHolder(
-                    message: state.errorMessage,
-                  );
-                } else {
-                  return VisitedPlaceList(places: state.visitedPlaces);
-                }
-              },
-            ),
-          ],
-        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          StoreConnector<AppState, PlaceListState>(
+            converter: (Store<AppState> store) => store.state.placeListState,
+            builder: (BuildContext context, PlaceListState state) {
+              if (state.isLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state.isError) {
+                return ErrorHolder(
+                  message: state.errorMessage,
+                );
+              } else {
+                return FavoritePlaceList(places: state.favoritePlaces);
+              }
+            },
+          ),
+          StoreConnector<AppState, PlaceListState>(
+            converter: (Store<AppState> store) => store.state.placeListState,
+            builder: (BuildContext context, PlaceListState state) {
+              if (state.isLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state.isError) {
+                return ErrorHolder(
+                  message: state.errorMessage,
+                );
+              } else {
+                return VisitedPlaceList(places: state.visitedPlaces);
+              }
+            },
+          ),
+        ],
       ),
     );
   }
