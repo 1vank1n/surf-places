@@ -121,6 +121,8 @@ class PlaceCard extends StatelessWidget {
                 builder: (BuildContext context, PlaceListState state) {
                   if (!state.isLoading & !state.isError) {
                     bool isFavorited = state.favoritePlaces.contains(place);
+                    CrossFadeState _favoriteCrossFadeState =
+                        isFavorited ? CrossFadeState.showFirst : CrossFadeState.showSecond;
                     Store<AppState> store = StoreProvider.of<AppState>(context);
 
                     return IconButton(
@@ -130,11 +132,21 @@ class PlaceCard extends StatelessWidget {
                             : _addToFavorites(store, place);
                       },
                       padding: EdgeInsets.zero,
-                      icon: SvgPicture.asset(
-                        isFavorited ? iconHeartFill : iconHeart,
-                        color: Colors.white,
-                        width: 24.0,
-                        height: 24.0,
+                      icon: AnimatedCrossFade(
+                        crossFadeState: _favoriteCrossFadeState,
+                        duration: Duration(milliseconds: 300),
+                        firstChild: SvgPicture.asset(
+                          iconHeartFill,
+                          color: Colors.white,
+                          width: 24.0,
+                          height: 24.0,
+                        ),
+                        secondChild: SvgPicture.asset(
+                          iconHeart,
+                          color: Colors.white,
+                          width: 24.0,
+                          height: 24.0,
+                        ),
                       ),
                     );
                   }
