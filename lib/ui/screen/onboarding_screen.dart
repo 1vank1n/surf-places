@@ -11,7 +11,12 @@ class OnboardingScreen extends StatefulWidget {
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerProviderStateMixin {
+  static const ANIMATION_DURATION_MILISECONDS = 300;
+
+  late AnimationController _iconAnimationController;
+  late Animation<double> _scaleAnimation;
+
   final List<OnboardingStep> _onboardingSteps = [
     OnboardingStep(
       icon: iconOnboardingPointer,
@@ -30,6 +35,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     ),
   ];
   int currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _iconAnimationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: ANIMATION_DURATION_MILISECONDS),
+    )..forward();
+
+    _scaleAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _iconAnimationController,
+        curve: Curves.bounceOut,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _iconAnimationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +86,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 onPageChanged: (int index) {
                   setState(() {
                     currentIndex = index;
+                    _iconAnimationController.forward(from: 0.0);
                   });
                 },
                 children: [
@@ -71,9 +99,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SvgPicture.asset(
-                            step.icon,
-                            color: Theme.of(context).primaryColor,
+                          AnimatedBuilder(
+                            animation: _iconAnimationController,
+                            builder: (BuildContext context, Widget? widget) {
+                              return Transform.scale(
+                                scale: _scaleAnimation.value,
+                                child: SvgPicture.asset(
+                                  step.icon,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              );
+                            },
                           ),
                           SizedBox(height: 40.0),
                           Text(
