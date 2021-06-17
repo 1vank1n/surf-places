@@ -6,6 +6,7 @@ import 'package:places/data/model/place.dart';
 import 'package:places/data/redux/place_list/actions.dart';
 import 'package:places/data/redux/place_list/state.dart';
 import 'package:places/data/redux/store.dart';
+import 'package:places/ui/common/widgets/card_image.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/screen/place_detail_screen.dart';
@@ -43,7 +44,7 @@ class PlaceCard extends StatelessWidget {
                 fit: BoxFit.cover,
                 loadingBuilder:
                     (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                  if (loadingProgress == null) return child;
+                  if (loadingProgress == null) return CardImage(child: child);
                   return Center(
                     child: CupertinoActivityIndicator.partiallyRevealed(
                       progress: loadingProgress.expectedTotalBytes != null
