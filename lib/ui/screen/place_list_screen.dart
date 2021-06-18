@@ -7,6 +7,7 @@ import 'package:places/data/redux/place_list/actions.dart';
 import 'package:places/data/redux/place_list/state.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/main.dart';
+import 'package:places/ui/common/widgets/loader.dart';
 import 'package:places/ui/common/widgets/place_card.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
@@ -120,9 +121,9 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                     converter: (Store<AppState> store) => store.state.placeListState,
                     builder: (BuildContext context, PlaceListState state) {
                       if (state.isLoading) {
-                        return SliverToBoxAdapter(
+                        return SliverFillRemaining(
                           child: Center(
-                            child: CircularProgressIndicator(),
+                            child: Loader(),
                           ),
                         );
                       } else if (state.isError) {
