@@ -80,7 +80,10 @@ class PlaceSearchCard extends StatelessWidget {
           isScrollControlled: true,
           context: context,
           builder: (BuildContext context) {
-            return PlaceDetailScreen(id: place.id);
+            return PlaceDetailScreen(
+              id: place.id,
+              firstImageUrl: place.urls.first,
+            );
           },
         );
       },
