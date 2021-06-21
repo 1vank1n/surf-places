@@ -6,6 +6,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/redux/store.dart';
+import 'package:places/ui/common/widgets/card_image.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/screen/place_detail_screen.dart';
@@ -46,7 +47,11 @@ class PlaceFavoriteCard extends StatelessWidget {
                 fit: BoxFit.cover,
                 loadingBuilder:
                     (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                  if (loadingProgress == null) return child;
+                  if (loadingProgress == null)
+                    return CardImage(
+                      heroTag: 'place-${place.id}',
+                      child: child,
+                    );
                   return Center(
                     child: CupertinoActivityIndicator.partiallyRevealed(
                       progress: loadingProgress.expectedTotalBytes != null
@@ -108,12 +113,34 @@ class PlaceFavoriteCard extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  showModalBottomSheet(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return PlaceDetailScreen(id: place.id);
-                    },
+                  // TODO hide modal bottom sheet implementation
+                  //
+                  // showModalBottomSheet(
+                  //   isScrollControlled: true,
+                  //   context: context,
+                  //   builder: (BuildContext context) {
+                  //     return PlaceDetailScreen(id: place.id);
+                  //   },
+                  // );
+                  Navigator.of(context).push(
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) {
+                        return PlaceDetailScreen(
+                          id: place.id,
+                          firstImageUrl: place.urls.first,
+                        );
+                      },
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: Tween<double>(
+                            begin: 0.0,
+                            end: 1.0,
+                          ).animate(animation),
+                          child: child,
+                        );
+                      },
+                      transitionDuration: Duration(milliseconds: 300),
+                    ),
                   );
                 },
                 splashColor: successColor.withAlpha(0x88),

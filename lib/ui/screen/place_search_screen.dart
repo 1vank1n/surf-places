@@ -5,6 +5,7 @@ import 'package:places/data/model/place.dart';
 import 'package:places/data/redux/place_search/actions.dart';
 import 'package:places/data/redux/place_search/state.dart';
 import 'package:places/data/redux/store.dart';
+import 'package:places/ui/common/widgets/loader.dart';
 import 'package:places/ui/common/widgets/place_search_card.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
@@ -69,7 +70,7 @@ class PlaceSearchScreen extends StatelessWidget {
         builder: (BuildContext context, PlaceSearchState state) {
           if (state.isLoading) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: Loader(),
             );
           } else if (state.isError) {
             return ErrorHolder(
