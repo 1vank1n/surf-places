@@ -12,11 +12,13 @@ class SearchBar extends StatefulWidget {
   final TextEditingController searchTextEditingController;
   final bool isButton;
   final Function? searchHandler;
+  final Function? refreshCallback;
 
   SearchBar({
     required this.searchTextEditingController,
     this.isButton = false,
     this.searchHandler,
+    this.refreshCallback,
   });
 
   @override
@@ -120,8 +122,14 @@ class _SearchBarState extends State<SearchBar> {
               top: 0,
               right: 0,
               child: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(AppRouter.placeFilter);
+                onPressed: () async {
+                  final isNeedRefresh =
+                      await Navigator.of(context).pushNamed(AppRouter.placeFilter);
+                  if (isNeedRefresh == true) {
+                    if (widget.refreshCallback != null) {
+                      widget.refreshCallback!();
+                    }
+                  }
                 },
                 icon: SvgPicture.asset(
                   iconFilter,

@@ -1,10 +1,12 @@
+import 'package:places/data/model/filter_category.dart';
+
 class FiltersState {
   final bool isLoading;
   final bool isError;
   final String errorMessage;
   final double startRange;
   final double endRange;
-  final Set<String> filteredTypes;
+  final Set<FilterCategory> filteredTypes;
   final int? count;
 
   FiltersState({
@@ -23,11 +25,7 @@ class FiltersState {
         isLoading: false,
         startRange: 100.0,
         endRange: 5500.0,
-        filteredTypes: {
-          'Здание',
-          'Памятник',
-          'Кафе',
-        },
+        filteredTypes: FilterCategory.initialSet(),
       );
 
   FiltersState copyWith({
@@ -36,7 +34,7 @@ class FiltersState {
     bool? isLoading,
     double? startRange,
     double? endRange,
-    Set<String>? filteredTypes,
+    Set<FilterCategory>? filteredTypes,
     int? count,
   }) {
     return FiltersState(

@@ -10,7 +10,6 @@ class Loader extends StatefulWidget {
 }
 
 class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
-  static const ROTATION_DURATION = 1000;
   static const ROTATION_DURATION = Duration(milliseconds: 1000);
   late AnimationController _animationController;
   late Animation<double> _rotateAnimation;

@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SettingsRepository {
   static const PLACES_FILTER = 'PLACES_FILTER';
 
-  Future<bool> setPlacesFilter(PlacesFilterRequestDto placesFilter) async {
+  Future<bool> setPlacesFilter({required PlacesFilterRequestDto placesFilter}) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.setString(PLACES_FILTER, json.encode(placesFilter.json));
   }

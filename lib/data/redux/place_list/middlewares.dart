@@ -5,6 +5,7 @@ import 'package:places/data/network/exceptions.dart';
 import 'package:places/data/redux/place_list/actions.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/place_respository.dart';
+import 'package:places/data/repository/settings_repository.dart';
 import 'package:redux/redux.dart';
 
 class PlaceListMiddleware implements MiddlewareClass<AppState> {
@@ -13,21 +14,12 @@ class PlaceListMiddleware implements MiddlewareClass<AppState> {
   PlaceListMiddleware({required this.placeRepository});
 
   @override
-  call(Store<AppState> store, action, next) {
+  call(Store<AppState> store, action, next) async {
     if (action is LoadPlaceListAction) {
-      final Map<String, double> userCoordinates = {
-        'lat': 60.0,
-        'lng': 30.0,
-      };
-
-      PlacesFilterRequestDto _filter = PlacesFilterRequestDto.withCoords(
-        lat: userCoordinates['lat'],
-        lng: userCoordinates['lng'],
-        radius: 40000,
-      );
+      final PlacesFilterRequestDto filter = await SettingsRepository().getPlacesFilter();
 
       try {
-        placeRepository.postFilteredPlaces(_filter).then(
+        placeRepository.postFilteredPlaces(filter).then(
           (List<Place> places) {
             store.dispatch(ShowPlaceListAction(places: places));
           },

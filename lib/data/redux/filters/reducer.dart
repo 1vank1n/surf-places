@@ -1,14 +1,16 @@
+import 'package:places/data/model/filter_category.dart';
 import 'package:places/data/redux/filters/actions.dart';
 import 'package:places/data/redux/filters/state.dart';
 import 'package:redux/redux.dart';
 
 final filtersReducer = combineReducers<FiltersState>([
-  TypedReducer<FiltersState, LoadFiltersAction>(_loadPlace),
-  TypedReducer<FiltersState, ShowFiltersAction>(_showPlace),
+  TypedReducer<FiltersState, LoadFiltersAction>(_loadFilter),
+  TypedReducer<FiltersState, UpdateFiltersAction>(_updateFilter),
+  TypedReducer<FiltersState, ShowFiltersAction>(_showFilter),
   TypedReducer<FiltersState, ErrorFiltersAction>(_showError),
 ]);
 
-FiltersState _loadPlace(
+FiltersState _loadFilter(
   FiltersState state,
   LoadFiltersAction action,
 ) =>
@@ -17,7 +19,27 @@ FiltersState _loadPlace(
       isError: false,
     );
 
-FiltersState _showPlace(
+FiltersState _updateFilter(
+  FiltersState state,
+  UpdateFiltersAction action,
+) {
+  final Set<FilterCategory> filteredTypes = state.filteredTypes.toSet();
+  if (action.filterCategory != null) {
+    if (filteredTypes.contains(action.filterCategory)) {
+      filteredTypes.remove(action.filterCategory);
+    } else {
+      filteredTypes.add(action.filterCategory!);
+    }
+  }
+
+  return state.copyWith(
+    startRange: action.startRange,
+    endRange: action.endRange,
+    filteredTypes: filteredTypes,
+  );
+}
+
+FiltersState _showFilter(
   FiltersState state,
   ShowFiltersAction action,
 ) =>
