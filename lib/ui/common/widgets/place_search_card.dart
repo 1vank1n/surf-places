@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/ui/common/widgets/card_image.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/place_detail_screen.dart';
 
@@ -62,7 +63,7 @@ class PlaceSearchCard extends StatelessWidget {
             place.urls.first,
             fit: BoxFit.cover,
             loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-              if (loadingProgress == null) return child;
+              if (loadingProgress == null) return CardImage(child: child);
               return Center(
                 child: CupertinoActivityIndicator.partiallyRevealed(
                   progress: loadingProgress.expectedTotalBytes != null
