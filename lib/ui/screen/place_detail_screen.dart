@@ -8,6 +8,7 @@ import 'package:places/data/redux/place_detail/state.dart';
 import 'package:places/data/redux/place_list/actions.dart';
 import 'package:places/data/redux/place_list/state.dart';
 import 'package:places/data/redux/store.dart';
+import 'package:places/ui/common/widgets/loader.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/screen/widgets/error_holder.dart';
@@ -59,7 +60,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
             builder: (BuildContext context, PlaceDetailState state) {
               if (state.isLoading) {
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: Loader(),
                 );
               } else if (state.isError) {
                 ErrorHolder(
