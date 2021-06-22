@@ -19,6 +19,24 @@ class PlacesFilterRequestDto {
     this.nameFilter,
   });
 
+  PlacesFilterRequestDto.withRadius({
+    this.lat = 43.575402,
+    this.lng = 39.728811,
+    required this.radius,
+  });
+
+  factory PlacesFilterRequestDto.initial() => PlacesFilterRequestDto.withRadius(radius: 40000);
+
+  factory PlacesFilterRequestDto.fromJson(Map<String, dynamic> json) {
+    return PlacesFilterRequestDto.withCoords(
+      lat: json['lat'],
+      lng: json['lng'],
+      radius: json['radius'],
+      typeFilter: json['typeFilter'],
+      nameFilter: json['nameFilter'],
+    );
+  }
+
   Map<String, dynamic> get json {
     return {
       'lat': lat,

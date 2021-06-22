@@ -1,12 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/domain/sight.dart';
-import 'package:places/mocks.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/data/model/places_filter_request_dto.dart';
+import 'package:places/data/redux/filters/actions.dart';
+import 'package:places/data/redux/filters/state.dart';
+import 'package:places/data/redux/store.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/res/constants.dart';
+import 'package:redux/redux.dart';
 
 class FiltersScreen extends StatefulWidget {
   @override
@@ -14,57 +19,63 @@ class FiltersScreen extends StatefulWidget {
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  static const double START_RANGE = 100.0;
-  static const double END_RANGE = 5500.0;
-  static const Map<String, double> USER_COORDINATES = {
-    'lat': 43.575402,
-    'lon': 39.728811,
-  };
+  late Store<AppState> _store;
+  // RangeValues _currentRangeValues = RangeValues(START_RANGE, END_RANGE);
+  // List<Place> _places = [];
+  // List<Place>? _filteredPlaces;
+  // Set<String> _filteredTypes = {
+  //   'Здание',
+  //   'Памятник',
+  //   'Кафе',
+  // };
 
-  RangeValues _currentRangeValues = RangeValues(START_RANGE, END_RANGE);
-  List<Sight> _sights = SightStorage.sights;
-  List<Sight>? _filteredSights;
-  Set<String> _filteredTypes = {
-    'Здание',
-    'Памятник',
-    'Кафе',
-  };
-
-  List<Sight> _filterSights() {
-    return SightStorage.filterSight(
-      sights: _sights,
-      userLat: USER_COORDINATES['lat']!,
-      userLon: USER_COORDINATES['lon']!,
-      startRange: _currentRangeValues.start,
-      endRange: _currentRangeValues.end,
-      types: _filteredTypes,
-    );
-  }
-
-  void _toggleTypeInFilteredTypes(String type) {
-    setState(() {
-      if (_filteredTypes.contains(type)) {
-        _filteredTypes.remove(type);
-      } else {
-        _filteredTypes.add(type);
-      }
-
-      _filteredSights = _filterSights();
-    });
-  }
-
-  void _changeCurrentRangeValues(RangeValues values) {
-    setState(() {
-      _currentRangeValues = values;
-      _filteredSights = _filterSights();
-    });
-  }
+  PlacesFilterRequestDto get _filter => PlacesFilterRequestDto.withRadius(radius: radius);
 
   @override
-  void initState() {
-    super.initState();
-    _filteredSights = _filterSights();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _store = StoreProvider.of<AppState>(context);
+    _store.dispatch(LoadFiltersAction(filter: filter));
   }
+
+  Future<List<Place>> _filterPlaces() async {
+    // TODO
+    // return  SightStorage.filterSight(
+    //   sights: _places,
+    //   userLat: USER_COORDINATES['lat']!,
+    //   userLon: USER_COORDINATES['lon']!,
+    //   startRange: _currentRangeValues.start,
+    //   endRange: _currentRangeValues.end,
+    //   types: _filteredTypes,
+    // );
+    return [];
+  }
+
+  // void _toggleTypeInFilteredTypes(String type) {
+  //   setState(() {
+  //     if (_filteredTypes.contains(type)) {
+  //       _filteredTypes.remove(type);
+  //     } else {
+  //       _filteredTypes.add(type);
+  //     }
+
+  //     _filteredSights = _filterPlaces();
+  //   });
+  // }
+
+  void _changeCurrentRangeValues(RangeValues values) {
+    // TODO
+    // setState(() {
+    //   _currentRangeValues = values;
+    //   _filteredSights = _filterPlaces();
+    // });
+  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _filteredSights = _filterPlaces();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +101,6 @@ class _FiltersScreenState extends State<FiltersScreen> {
             ),
             actions: [
               TextButton(
-                onPressed: () {},
                 child: Text(
                   'Очистить',
                   style: subtitle1.copyWith(
@@ -98,30 +108,47 @@ class _FiltersScreenState extends State<FiltersScreen> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
+                onPressed: () {
+                  // TODO
+                  // _store.dispatch(action);
+                },
               ),
             ],
           ),
           body: SafeArea(
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  CategoriesFilterGrid(
-                    filteredTypes: _filteredTypes,
-                    toggleTypeInFilteredTypes: _toggleTypeInFilteredTypes,
-                  ),
-                  SizedBox(height: isSmallScreen ? 20.0 : 40.0),
-                  RangeSightSlider(
-                    startRangeValues: _currentRangeValues,
-                    changeCurrentRangeValues: _changeCurrentRangeValues,
-                    filterSight: _filterSights,
-                  ),
-                  if (isSmallScreen) SizedBox(height: 20.0),
-                  if (isSmallScreen) ShowButton(filteredSights: _filteredSights),
-                ],
-              ),
+              child: StoreConnector<AppState, FiltersState>(
+                  converter: (store) => store.state.filtersState,
+                  builder: (BuildContext context, FiltersState state) {
+                    RangeValues _currentRangeValues = RangeValues(
+                      state.startRange,
+                      state.endRange,
+                    );
+
+                    return Column(
+                      children: [
+                        CategoriesFilterGrid(filteredTypes: state.filteredTypes),
+                        SizedBox(height: isSmallScreen ? 20.0 : 40.0),
+                        RangeSightSlider(
+                          startRangeValues: _currentRangeValues,
+                          changeCurrentRangeValues: _changeCurrentRangeValues,
+                          filterSight: _filterPlaces,
+                        ),
+                        if (isSmallScreen) SizedBox(height: 20.0),
+                        if (isSmallScreen) ShowButton(count: state.count),
+                      ],
+                    );
+                  }),
             ),
           ),
-          bottomNavigationBar: isSmallScreen ? null : ShowButton(filteredSights: _filteredSights),
+          bottomNavigationBar: isSmallScreen
+              ? null
+              : StoreConnector<AppState, FiltersState>(
+                  converter: (store) => store.state.filtersState,
+                  builder: (BuildContext context, FiltersState state) {
+                    return ShowButton(count: state.count);
+                  },
+                ),
         );
       },
     );
@@ -129,13 +156,12 @@ class _FiltersScreenState extends State<FiltersScreen> {
 }
 
 class ShowButton extends StatelessWidget {
+  final int? count;
+
   const ShowButton({
     Key? key,
-    required List<Sight>? filteredSights,
-  })   : _filteredSights = filteredSights,
-        super(key: key);
-
-  final List<Sight>? _filteredSights;
+    required this.count,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -147,11 +173,10 @@ class ShowButton extends StatelessWidget {
           height: 48.0,
           child: ElevatedButton(
             onPressed: () {
-              print(_filteredSights);
+              // TODO
+              // print(_filteredSights);
             },
-            child: _filteredSights == null
-                ? CupertinoActivityIndicator()
-                : Text('ПОКАЗАТЬ (${_filteredSights!.length})'),
+            child: count == null ? CupertinoActivityIndicator() : Text('ПОКАЗАТЬ ($count)'),
           ),
         ),
       ),
@@ -161,13 +186,16 @@ class ShowButton extends StatelessWidget {
 
 class CategoriesFilterGrid extends StatelessWidget {
   final Set<String> filteredTypes;
-  final Function toggleTypeInFilteredTypes;
 
   CategoriesFilterGrid({
     Key? key,
     required this.filteredTypes,
-    required this.toggleTypeInFilteredTypes,
   }) : super(key: key);
+
+  void toggleTypeInFilteredTypes(String title) {
+    // TODO
+    //
+  }
 
   @override
   Widget build(BuildContext context) {
