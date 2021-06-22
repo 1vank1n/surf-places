@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class CardImage extends StatefulWidget {
   final Widget child;
+  final String? heroTag;
 
   const CardImage({
     Key? key,
     required this.child,
+    this.heroTag,
   }) : super(key: key);
 
   @override
@@ -32,7 +34,7 @@ class _CardImageState extends State<CardImage> {
     return AnimatedOpacity(
       opacity: _opacity,
       duration: Duration(milliseconds: 300),
-      child: widget.child,
+      child: Hero(tag: '${widget.heroTag ?? ""}', child: widget.child),
     );
   }
 }

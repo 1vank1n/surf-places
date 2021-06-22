@@ -16,10 +16,12 @@ import 'package:redux/redux.dart';
 
 class PlaceDetailScreen extends StatefulWidget {
   final int id;
+  final String firstImageUrl;
 
   const PlaceDetailScreen({
     Key? key,
     required this.id,
+    required this.firstImageUrl,
   }) : super(key: key);
 
   @override
@@ -59,8 +61,57 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
             converter: (Store<AppState> store) => store.state.placeDetailState,
             builder: (BuildContext context, PlaceDetailState state) {
               if (state.isLoading) {
-                return Center(
-                  child: Loader(),
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 1,
+                      child: Stack(
+                        children: [
+                          AspectRatio(
+                            aspectRatio: 1,
+                            child: Hero(
+                              tag: 'place-${widget.id}',
+                              child: Image.network(
+                                widget.firstImageUrl,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 46.0,
+                            right: 16.0,
+                            child: Container(
+                              width: 40.0,
+                              height: 40.0,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              child: IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                icon: SvgPicture.asset(
+                                  iconClose,
+                                  width: 24.0,
+                                  height: 24.0,
+                                ),
+                                padding: EdgeInsets.zero,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Loader(),
+                      ),
+                    ),
+                  ],
                 );
               } else if (state.isError) {
                 ErrorHolder(
@@ -78,7 +129,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                       flexibleSpace: FlexibleSpaceBar(
                         background: Stack(
                           children: [
-                            SightImageGallery(imageUrls: place.urls),
+                            SightImageGallery(place: place),
                             Positioned(
                               top: 12.0,
                               left: 0,
@@ -95,7 +146,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                               ),
                             ),
                             Positioned(
-                              top: 16.0,
+                              top: 46.0,
                               right: 16.0,
                               child: Container(
                                 width: 40.0,
@@ -242,11 +293,11 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
 }
 
 class SightImageGallery extends StatefulWidget {
-  final List<String> imageUrls;
+  final Place place;
 
   const SightImageGallery({
     Key? key,
-    required this.imageUrls,
+    required this.place,
   }) : super(key: key);
 
   @override
@@ -264,6 +315,13 @@ class _SightImageGalleryState extends State<SightImageGallery> {
       aspectRatio: 1,
       child: Stack(
         children: [
+          Hero(
+            tag: 'place-${widget.place.id}',
+            child: Image.network(
+              widget.place.urls.first,
+              fit: BoxFit.cover,
+            ),
+          ),
           PageView(
             controller: _galleryPageController,
             onPageChanged: (int index) {
@@ -272,7 +330,7 @@ class _SightImageGalleryState extends State<SightImageGallery> {
               });
             },
             children: [
-              for (String url in widget.imageUrls)
+              for (String url in widget.place.urls)
                 Image.network(
                   url,
                   fit: BoxFit.cover,
@@ -297,7 +355,7 @@ class _SightImageGalleryState extends State<SightImageGallery> {
             child: Container(
               width: (currentPageIndex + 1) *
                   MediaQuery.of(context).size.width /
-                  widget.imageUrls.length,
+                  widget.place.urls.length,
               height: 8.0,
               decoration: BoxDecoration(
                 color: overlayBgColor,
