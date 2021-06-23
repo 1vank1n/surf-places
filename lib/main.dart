@@ -14,6 +14,7 @@ import 'package:places/data/redux/reducer.dart';
 import 'package:places/data/redux/settings/state.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/place_respository.dart';
+import 'package:places/data/repository/settings_repository.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/place_create_screen.dart';
@@ -29,9 +30,12 @@ import 'package:redux/redux.dart';
 import 'data/network/api.dart';
 import 'data/redux/place_create/middlewares.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   Api api = ApiDio();
   PlaceRepository placeRepository = PlaceRepository(api: api);
+  SettingsRepository settingsRepository = SettingsRepository();
+  FiltersState filtersState = await settingsRepository.getFiltersState();
 
   Store<AppState> store = Store(
     appReducer,
@@ -41,7 +45,7 @@ void main() {
       placeDetailState: PlaceDetailState.initial(),
       placeCreateState: PlaceCreateState.initial(),
       settingsState: SettingsState.initial(),
-      filtersState: FiltersState.initial(),
+      filtersState: filtersState,
     ),
     middleware: [
       PlaceSearchMiddleware(placeRepository: placeRepository),
