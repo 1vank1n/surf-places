@@ -28,7 +28,6 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
     final state = await SettingsRepository().getFiltersState();
     _store = StoreProvider.of<AppState>(context);
-    _store.dispatch(SetStateFiltersAction(state: state));
     _store.dispatch(LoadFiltersAction(filter: state.generateFilter()));
   }
 
