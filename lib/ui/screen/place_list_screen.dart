@@ -34,8 +34,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    Store<AppState> store = StoreProvider.of<AppState>(context);
-    store.dispatch(LoadPlaceListAction());
+    _refresh();
   }
 
   @override
@@ -52,6 +51,11 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     } else {
       _titleOpacityStreamController.sink.add((_scrollController.offset - 100) / 100);
     }
+  }
+
+  void _refresh() {
+    Store<AppState> store = StoreProvider.of<AppState>(context);
+    store.dispatch(LoadPlaceListAction());
   }
 
   @override
@@ -108,6 +112,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                             SearchBar(
                               searchTextEditingController: TextEditingController(),
                               isButton: true,
+                              refreshCallback: _refresh,
                             ),
                           ],
                         ),

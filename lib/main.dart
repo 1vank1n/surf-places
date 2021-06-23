@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:places/data/network/api.dart';
+import 'package:places/data/redux/filters/middlewares.dart';
+import 'package:places/data/redux/filters/state.dart';
 import 'package:places/data/redux/place_create/state.dart';
 import 'package:places/data/redux/place_detail/middlewares.dart';
 import 'package:places/data/redux/place_detail/state.dart';
@@ -12,6 +14,7 @@ import 'package:places/data/redux/reducer.dart';
 import 'package:places/data/redux/settings/state.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/place_respository.dart';
+import 'package:places/data/repository/settings_repository.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/place_create_screen.dart';
@@ -27,9 +30,13 @@ import 'package:redux/redux.dart';
 import 'data/network/api.dart';
 import 'data/redux/place_create/middlewares.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   Api api = ApiDio();
   PlaceRepository placeRepository = PlaceRepository(api: api);
+  SettingsRepository settingsRepository = SettingsRepository();
+  SettingsState settingsState = await settingsRepository.getSettingsState();
+  FiltersState filtersState = await settingsRepository.getFiltersState();
 
   Store<AppState> store = Store(
     appReducer,
@@ -38,13 +45,15 @@ void main() {
       placeListState: PlaceListState.initial(),
       placeDetailState: PlaceDetailState.initial(),
       placeCreateState: PlaceCreateState.initial(),
-      settingsState: SettingsState.initial(),
+      settingsState: settingsState,
+      filtersState: filtersState,
     ),
     middleware: [
       PlaceSearchMiddleware(placeRepository: placeRepository),
       PlaceListMiddleware(placeRepository: placeRepository),
       PlaceDetailMiddleware(placeRepository: placeRepository),
       PlaceCreateMiddleware(placeRepository: placeRepository),
+      FiltersMiddleware(placeRepository: placeRepository),
     ],
   );
 
