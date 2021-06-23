@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:places/data/network/api.dart';
+import 'package:places/data/redux/filters/middlewares.dart';
+import 'package:places/data/redux/filters/state.dart';
 import 'package:places/data/redux/place_create/state.dart';
 import 'package:places/data/redux/place_detail/middlewares.dart';
 import 'package:places/data/redux/place_detail/state.dart';
@@ -39,12 +41,14 @@ void main() {
       placeDetailState: PlaceDetailState.initial(),
       placeCreateState: PlaceCreateState.initial(),
       settingsState: SettingsState.initial(),
+      filtersState: FiltersState.initial(),
     ),
     middleware: [
       PlaceSearchMiddleware(placeRepository: placeRepository),
       PlaceListMiddleware(placeRepository: placeRepository),
       PlaceDetailMiddleware(placeRepository: placeRepository),
       PlaceCreateMiddleware(placeRepository: placeRepository),
+      FiltersMiddleware(placeRepository: placeRepository),
     ],
   );
 
