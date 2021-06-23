@@ -1,5 +1,6 @@
 import 'package:places/data/redux/settings/actions.dart';
 import 'package:places/data/redux/settings/state.dart';
+import 'package:places/data/repository/settings_repository.dart';
 import 'package:redux/redux.dart';
 
 final settingsReducer = combineReducers<SettingsState>([
@@ -9,5 +10,8 @@ final settingsReducer = combineReducers<SettingsState>([
 SettingsState _setDark(
   SettingsState state,
   SetDarkSettingsAction action,
-) =>
-    state.copyWith(isDark: action.isDark);
+) {
+  final newState = state.copyWith(isDark: action.isDark);
+  SettingsRepository().setSettingsState(newState);
+  return newState;
+}

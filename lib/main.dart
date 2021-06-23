@@ -35,6 +35,7 @@ void main() async {
   Api api = ApiDio();
   PlaceRepository placeRepository = PlaceRepository(api: api);
   SettingsRepository settingsRepository = SettingsRepository();
+  SettingsState settingsState = await settingsRepository.getSettingsState();
   FiltersState filtersState = await settingsRepository.getFiltersState();
 
   Store<AppState> store = Store(
@@ -44,7 +45,7 @@ void main() async {
       placeListState: PlaceListState.initial(),
       placeDetailState: PlaceDetailState.initial(),
       placeCreateState: PlaceCreateState.initial(),
-      settingsState: SettingsState.initial(),
+      settingsState: settingsState,
       filtersState: filtersState,
     ),
     middleware: [
