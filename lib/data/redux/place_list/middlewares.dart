@@ -6,6 +6,7 @@ import 'package:places/data/redux/place_list/actions.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/place_respository.dart';
 import 'package:places/data/repository/settings_repository.dart';
+import 'package:places/ui/screen/res/constants.dart';
 import 'package:redux/redux.dart';
 
 class PlaceListMiddleware implements MiddlewareClass<AppState> {
@@ -16,12 +17,24 @@ class PlaceListMiddleware implements MiddlewareClass<AppState> {
   @override
   call(Store<AppState> store, action, next) async {
     if (action is LoadPlaceListAction) {
-      final PlacesFilterRequestDto filter = await SettingsRepository().getPlacesFilter();
+      final state = await SettingsRepository().getFiltersState();
+      final PlacesFilterRequestDto filter = state.generateFilter();
 
       try {
         placeRepository.postFilteredPlaces(filter).then(
           (List<Place> places) {
-            store.dispatch(ShowPlaceListAction(places: places));
+            final filteredPlaces = places
+                .where(
+                  (place) => place.isPointInRangeAtUserPoint(
+                    userLat: USER_LAT,
+                    userLng: USER_LNG,
+                    startRange: state.startRange,
+                    endRange: state.endRange,
+                  ),
+                )
+                .toList();
+
+            store.dispatch(ShowPlaceListAction(places: filteredPlaces));
           },
         );
       } on DioError catch (err) {

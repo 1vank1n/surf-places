@@ -26,9 +26,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    final PlacesFilterRequestDto filter = await SettingsRepository().getPlacesFilter();
+    final state = await SettingsRepository().getFiltersState();
     _store = StoreProvider.of<AppState>(context);
-    _store.dispatch(LoadFiltersAction(filter: filter));
+    _store.dispatch(SetStateFiltersAction(state: state));
+    _store.dispatch(LoadFiltersAction(filter: state.generateFilter()));
   }
 
   @override
@@ -124,9 +125,7 @@ class ShowButton extends StatelessWidget {
           height: 48.0,
           child: ElevatedButton(
             onPressed: () async {
-              double radius = store.state.filtersState.endRange;
-              final filter = PlacesFilterRequestDto.withRadius(radius: radius);
-              await SettingsRepository().setPlacesFilter(placesFilter: filter);
+              await SettingsRepository().setFiltersState(store.state.filtersState);
               Navigator.of(context).pop(true);
             },
             child: count == null ? CupertinoActivityIndicator() : Text('ПОКАЗАТЬ ($count)'),
@@ -154,8 +153,10 @@ class CategoriesFilterGrid extends StatelessWidget {
         ListTile(
           subtitle: Text('КАТЕГОРИИ'),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        GridView.count(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          crossAxisCount: 3,
           children: [
             for (var filterCategory in FilterCategory.initialSet())
               CategoryButton(
@@ -200,6 +201,8 @@ class CategoryButton extends StatelessWidget {
                 child: IconButton(
                   onPressed: () {
                     store.dispatch(UpdateFiltersAction(filterCategory: filterCategory));
+                    store.dispatch(
+                        LoadFiltersAction(filter: store.state.filtersState.generateFilter()));
                   },
                   icon: SvgPicture.asset(filterCategory.icon),
                   padding: EdgeInsets.zero,
@@ -220,7 +223,7 @@ class CategoryButton extends StatelessWidget {
 
 class RangeSightSlider extends StatelessWidget {
   static const double MIN_RANGE = 100.0;
-  static const double MAX_RANGE = 10000.0;
+  static const double MAX_RANGE = 30000.0;
   final RangeValues startRangeValues;
 
   RangeSightSlider({
@@ -266,9 +269,7 @@ class RangeSightSlider extends StatelessWidget {
           },
           onChangeEnd: (RangeValues values) {
             store.dispatch(
-              LoadFiltersAction(
-                filter: PlacesFilterRequestDto.withRadius(radius: values.end),
-              ),
+              LoadFiltersAction(filter: store.state.filtersState.generateFilter()),
             );
           },
         ),

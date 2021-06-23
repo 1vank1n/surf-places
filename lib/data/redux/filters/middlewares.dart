@@ -3,6 +3,7 @@ import 'package:places/data/network/exceptions.dart';
 import 'package:places/data/redux/filters/actions.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/place_respository.dart';
+import 'package:places/ui/screen/res/constants.dart';
 import 'package:redux/redux.dart';
 
 class FiltersMiddleware implements MiddlewareClass<AppState> {
@@ -16,7 +17,18 @@ class FiltersMiddleware implements MiddlewareClass<AppState> {
       try {
         placeRepository.postFilteredPlaces(action.filter).then(
           (places) {
-            store.dispatch(ShowFiltersAction(count: places.length));
+            final filteredPlaces = places
+                .where(
+                  (place) => place.isPointInRangeAtUserPoint(
+                    userLat: USER_LAT,
+                    userLng: USER_LNG,
+                    startRange: store.state.filtersState.startRange,
+                    endRange: store.state.filtersState.endRange,
+                  ),
+                )
+                .toList();
+
+            store.dispatch(ShowFiltersAction(count: filteredPlaces.length));
           },
         );
       } on DioError catch (err) {

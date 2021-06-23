@@ -1,5 +1,10 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:places/data/model/filter_category.dart';
+import 'package:places/data/model/places_filter_request_dto.dart';
 
+part 'state.g.dart';
+
+@JsonSerializable()
 class FiltersState {
   final bool isLoading;
   final bool isError;
@@ -45,6 +50,17 @@ class FiltersState {
       endRange: endRange ?? this.endRange,
       filteredTypes: filteredTypes ?? this.filteredTypes,
       count: count ?? this.count,
+    );
+  }
+
+  factory FiltersState.fromJson(Map<String, dynamic> json) => _$FiltersStateFromJson(json);
+  Map<String, dynamic> toJson() => _$FiltersStateToJson(this);
+
+  PlacesFilterRequestDto generateFilter() {
+    final List<String> typeFilter = this.filteredTypes.map((e) => e.placeType).toList();
+    return PlacesFilterRequestDto.withRadius(
+      radius: this.endRange,
+      typeFilter: typeFilter,
     );
   }
 }

@@ -4,11 +4,18 @@ import 'package:places/data/redux/filters/state.dart';
 import 'package:redux/redux.dart';
 
 final filtersReducer = combineReducers<FiltersState>([
+  TypedReducer<FiltersState, SetStateFiltersAction>(_setState),
   TypedReducer<FiltersState, LoadFiltersAction>(_loadFilter),
   TypedReducer<FiltersState, UpdateFiltersAction>(_updateFilter),
   TypedReducer<FiltersState, ShowFiltersAction>(_showFilter),
   TypedReducer<FiltersState, ErrorFiltersAction>(_showError),
 ]);
+
+FiltersState _setState(
+  FiltersState state,
+  SetStateFiltersAction action,
+) =>
+    action.state;
 
 FiltersState _loadFilter(
   FiltersState state,
