@@ -3,7 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/redux/place_search/actions.dart';
-import 'package:places/data/redux/place_search/state.dart';
+import 'package:places/data/redux/place_search/states.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/ui/common/widgets/loader.dart';
 import 'package:places/ui/common/widgets/place_search_card.dart';

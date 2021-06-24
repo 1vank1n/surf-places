@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:places/data/model/filter_category.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
 
-part 'state.g.dart';
+part 'states.g.dart';
 
 @JsonSerializable()
 class FiltersState {

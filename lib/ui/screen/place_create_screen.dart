@@ -8,7 +8,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/redux/place_create/actions.dart';
-import 'package:places/data/redux/place_create/state.dart';
+import 'package:places/data/redux/place_create/states.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';

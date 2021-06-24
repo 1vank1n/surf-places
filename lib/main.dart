@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:places/data/network/api.dart';
 import 'package:places/data/redux/filters/middlewares.dart';
-import 'package:places/data/redux/filters/state.dart';
-import 'package:places/data/redux/place_create/state.dart';
+import 'package:places/data/redux/filters/states.dart';
+import 'package:places/data/redux/place_create/states.dart';
 import 'package:places/data/redux/place_detail/middlewares.dart';
-import 'package:places/data/redux/place_detail/state.dart';
+import 'package:places/data/redux/place_detail/states.dart';
 import 'package:places/data/redux/place_list/middlewares.dart';
-import 'package:places/data/redux/place_list/state.dart';
+import 'package:places/data/redux/place_list/states.dart';
 import 'package:places/data/redux/place_search/middlewares.dart';
-import 'package:places/data/redux/place_search/state.dart';
+import 'package:places/data/redux/place_search/states.dart';
 import 'package:places/data/redux/reducer.dart';
-import 'package:places/data/redux/settings/state.dart';
+import 'package:places/data/redux/settings/states.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/place_respository.dart';
 import 'package:places/data/repository/settings_repository.dart';
@@ -41,12 +41,12 @@ void main() async {
   Store<AppState> store = Store(
     appReducer,
     initialState: AppState(
-      placeSearchState: PlaceSearchState.initial(),
-      placeListState: PlaceListState.initial(),
-      placeDetailState: PlaceDetailState.initial(),
-      placeCreateState: PlaceCreateState.initial(),
-      settingsState: settingsState,
-      filtersState: filtersState,
+      PlaceSearchState(),
+      PlaceListState(),
+      PlaceDetailState(),
+      PlaceCreateState(),
+      settingsState,
+      filtersState,
     ),
     middleware: [
       PlaceSearchMiddleware(placeRepository: placeRepository),

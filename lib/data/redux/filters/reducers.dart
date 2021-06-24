@@ -1,6 +1,6 @@
 import 'package:places/data/model/filter_category.dart';
 import 'package:places/data/redux/filters/actions.dart';
-import 'package:places/data/redux/filters/state.dart';
+import 'package:places/data/redux/filters/states.dart';
 import 'package:redux/redux.dart';
 
 final filtersReducer = combineReducers<FiltersState>([

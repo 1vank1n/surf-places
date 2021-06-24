@@ -1,5 +1,5 @@
 import 'package:places/data/redux/place_search/actions.dart';
-import 'package:places/data/redux/place_search/state.dart';
+import 'package:places/data/redux/place_search/states.dart';
 import 'package:redux/redux.dart';
 
 final placeSearchReducer = combineReducers<PlaceSearchState>([
