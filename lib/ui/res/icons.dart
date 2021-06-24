@@ -1,6 +1,5 @@
 const String iconArrow = 'res/icons/icon-arrow.svg';
 const String iconBucket = 'res/icons/icon-bucket.svg';
-const String iconCafe = 'res/icons/icon-cafe.svg';
 const String iconCalendar = 'res/icons/icon-calendar.svg';
 const String iconCamera = 'res/icons/icon-camera.svg';
 const String iconClear = 'res/icons/icon-clear.svg';
@@ -10,13 +9,19 @@ const String iconFile = 'res/icons/icon-file.svg';
 const String iconFilter = 'res/icons/icon-filter.svg';
 const String iconGo = 'res/icons/icon-go.svg';
 const String iconLoader = 'res/icons/icon-loader.png';
-const String iconMuseum = 'res/icons/icon-museum.svg';
-const String iconPark = 'res/icons/icon-park.svg';
 const String iconPhoto = 'res/icons/icon-photo.svg';
 const String iconPlus = 'res/icons/icon-plus.svg';
 const String iconSearch = 'res/icons/icon-search.svg';
 const String iconShare = 'res/icons/icon-share.svg';
 const String iconWanted = 'res/icons/icon-wanted.svg';
+
+// Categories
+const String iconCafe = 'res/icons/icon-cafe.svg';
+const String iconHotel = 'res/icons/icon-hotel.svg';
+const String iconMuseum = 'res/icons/icon-museum.svg';
+const String iconOther = 'res/icons/icon-other.svg';
+const String iconPark = 'res/icons/icon-park.svg';
+const String iconRestaurant = 'res/icons/icon-restaurant.svg';
 
 // Onboarding
 const String iconOnboardingPointer = 'res/icons/icon-onboarding-pointer.svg';

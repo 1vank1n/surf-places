@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:places/data/repository/settings_repository.dart';
 import 'package:places/main.dart';
 import 'package:places/ui/res/colors.dart';
 
@@ -19,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
+
     _navigateToNext();
     _logoAnimationController = AnimationController(
       vsync: this,
@@ -40,8 +42,16 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   void _navigateToNext() {
-    Future.delayed(Duration(seconds: TIMEOUT_SECONDS), () {
-      Navigator.of(context).pushReplacementNamed(AppRouter.onboarding);
+    Future.delayed(Duration(seconds: TIMEOUT_SECONDS), () async {
+      SettingsRepository settingsRepository = SettingsRepository();
+      final bool isOnboardingShow = await settingsRepository.getIsOnboardingShow();
+
+      if (isOnboardingShow) {
+        Navigator.of(context).pushReplacementNamed(AppRouter.placeList);
+      } else {
+        Navigator.of(context).pushReplacementNamed(AppRouter.onboarding);
+        await settingsRepository.setIsOnboardingShow(true);
+      }
     });
   }
 

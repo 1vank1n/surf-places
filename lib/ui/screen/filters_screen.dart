@@ -1,12 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:places/domain/sight.dart';
-import 'package:places/mocks.dart';
+import 'package:places/data/model/filter_category.dart';
+import 'package:places/data/model/places_filter_request_dto.dart';
+import 'package:places/data/redux/filters/actions.dart';
+import 'package:places/data/redux/filters/state.dart';
+import 'package:places/data/redux/store.dart';
+import 'package:places/data/repository/settings_repository.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/icons.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screen/res/constants.dart';
+import 'package:redux/redux.dart';
 
 class FiltersScreen extends StatefulWidget {
   @override
@@ -14,56 +20,15 @@ class FiltersScreen extends StatefulWidget {
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  static const double START_RANGE = 100.0;
-  static const double END_RANGE = 5500.0;
-  static const Map<String, double> USER_COORDINATES = {
-    'lat': 43.575402,
-    'lon': 39.728811,
-  };
-
-  RangeValues _currentRangeValues = RangeValues(START_RANGE, END_RANGE);
-  List<Sight> _sights = SightStorage.sights;
-  List<Sight>? _filteredSights;
-  Set<String> _filteredTypes = {
-    'Здание',
-    'Памятник',
-    'Кафе',
-  };
-
-  List<Sight> _filterSights() {
-    return SightStorage.filterSight(
-      sights: _sights,
-      userLat: USER_COORDINATES['lat']!,
-      userLon: USER_COORDINATES['lon']!,
-      startRange: _currentRangeValues.start,
-      endRange: _currentRangeValues.end,
-      types: _filteredTypes,
-    );
-  }
-
-  void _toggleTypeInFilteredTypes(String type) {
-    setState(() {
-      if (_filteredTypes.contains(type)) {
-        _filteredTypes.remove(type);
-      } else {
-        _filteredTypes.add(type);
-      }
-
-      _filteredSights = _filterSights();
-    });
-  }
-
-  void _changeCurrentRangeValues(RangeValues values) {
-    setState(() {
-      _currentRangeValues = values;
-      _filteredSights = _filterSights();
-    });
-  }
+  late Store<AppState> _store;
 
   @override
-  void initState() {
-    super.initState();
-    _filteredSights = _filterSights();
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    final state = await SettingsRepository().getFiltersState();
+    _store = StoreProvider.of<AppState>(context);
+    _store.dispatch(LoadFiltersAction(filter: state.generateFilter()));
   }
 
   @override
@@ -90,7 +55,6 @@ class _FiltersScreenState extends State<FiltersScreen> {
             ),
             actions: [
               TextButton(
-                onPressed: () {},
                 child: Text(
                   'Очистить',
                   style: subtitle1.copyWith(
@@ -98,30 +62,42 @@ class _FiltersScreenState extends State<FiltersScreen> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
+                onPressed: () {
+                  _store.dispatch(LoadFiltersAction(filter: PlacesFilterRequestDto.initial()));
+                },
               ),
             ],
           ),
           body: SafeArea(
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  CategoriesFilterGrid(
-                    filteredTypes: _filteredTypes,
-                    toggleTypeInFilteredTypes: _toggleTypeInFilteredTypes,
-                  ),
-                  SizedBox(height: isSmallScreen ? 20.0 : 40.0),
-                  RangeSightSlider(
-                    startRangeValues: _currentRangeValues,
-                    changeCurrentRangeValues: _changeCurrentRangeValues,
-                    filterSight: _filterSights,
-                  ),
-                  if (isSmallScreen) SizedBox(height: 20.0),
-                  if (isSmallScreen) ShowButton(filteredSights: _filteredSights),
-                ],
-              ),
+              child: StoreConnector<AppState, FiltersState>(
+                  converter: (store) => store.state.filtersState,
+                  builder: (BuildContext context, FiltersState state) {
+                    RangeValues _currentRangeValues = RangeValues(
+                      state.startRange,
+                      state.endRange,
+                    );
+
+                    return Column(
+                      children: [
+                        CategoriesFilterGrid(filteredTypes: state.filteredTypes),
+                        SizedBox(height: isSmallScreen ? 20.0 : 40.0),
+                        RangeSightSlider(startRangeValues: _currentRangeValues),
+                        if (isSmallScreen) SizedBox(height: 20.0),
+                        if (isSmallScreen) ShowButton(count: state.count),
+                      ],
+                    );
+                  }),
             ),
           ),
-          bottomNavigationBar: isSmallScreen ? null : ShowButton(filteredSights: _filteredSights),
+          bottomNavigationBar: isSmallScreen
+              ? null
+              : StoreConnector<AppState, FiltersState>(
+                  converter: (store) => store.state.filtersState,
+                  builder: (BuildContext context, FiltersState state) {
+                    return ShowButton(count: state.count);
+                  },
+                ),
         );
       },
     );
@@ -129,16 +105,17 @@ class _FiltersScreenState extends State<FiltersScreen> {
 }
 
 class ShowButton extends StatelessWidget {
+  final int? count;
+
   const ShowButton({
     Key? key,
-    required List<Sight>? filteredSights,
-  })   : _filteredSights = filteredSights,
-        super(key: key);
-
-  final List<Sight>? _filteredSights;
+    required this.count,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final store = StoreProvider.of<AppState>(context);
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -146,12 +123,11 @@ class ShowButton extends StatelessWidget {
           width: double.infinity,
           height: 48.0,
           child: ElevatedButton(
-            onPressed: () {
-              print(_filteredSights);
+            onPressed: () async {
+              await SettingsRepository().setFiltersState(store.state.filtersState);
+              Navigator.of(context).pop(true);
             },
-            child: _filteredSights == null
-                ? CupertinoActivityIndicator()
-                : Text('ПОКАЗАТЬ (${_filteredSights!.length})'),
+            child: count == null ? CupertinoActivityIndicator() : Text('ПОКАЗАТЬ ($count)'),
           ),
         ),
       ),
@@ -160,13 +136,11 @@ class ShowButton extends StatelessWidget {
 }
 
 class CategoriesFilterGrid extends StatelessWidget {
-  final Set<String> filteredTypes;
-  final Function toggleTypeInFilteredTypes;
+  final Set<FilterCategory> filteredTypes;
 
   CategoriesFilterGrid({
     Key? key,
     required this.filteredTypes,
-    required this.toggleTypeInFilteredTypes,
   }) : super(key: key);
 
   @override
@@ -178,36 +152,16 @@ class CategoriesFilterGrid extends StatelessWidget {
         ListTile(
           subtitle: Text('КАТЕГОРИИ'),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        GridView.count(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          crossAxisCount: 3,
           children: [
-            CategoryButton(
-              context: context,
-              iconAsset: iconMuseum,
-              title: 'Здания',
-              onPressed: () {
-                toggleTypeInFilteredTypes('Здание');
-              },
-              isSelected: filteredTypes.contains('Здание'),
-            ),
-            CategoryButton(
-              context: context,
-              iconAsset: iconPark,
-              title: 'Памятники',
-              onPressed: () {
-                toggleTypeInFilteredTypes('Памятник');
-              },
-              isSelected: filteredTypes.contains('Памятник'),
-            ),
-            CategoryButton(
-              context: context,
-              iconAsset: iconCafe,
-              title: 'Кафе',
-              onPressed: () {
-                toggleTypeInFilteredTypes('Кафе');
-              },
-              isSelected: filteredTypes.contains('Кафе'),
-            ),
+            for (var filterCategory in FilterCategory.initialSet())
+              CategoryButton(
+                context: context,
+                filterCategory: filterCategory,
+              ),
           ],
         ),
       ],
@@ -217,42 +171,48 @@ class CategoriesFilterGrid extends StatelessWidget {
 
 class CategoryButton extends StatelessWidget {
   final BuildContext context;
-  final String iconAsset;
-  final String title;
-  final VoidCallback onPressed;
-  final bool isSelected;
+  final FilterCategory filterCategory;
 
   const CategoryButton({
     Key? key,
     required this.context,
-    required this.iconAsset,
-    required this.title,
-    required this.onPressed,
-    this.isSelected = false,
+    required this.filterCategory,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final store = StoreProvider.of<AppState>(context);
+
     return Column(
       children: [
-        Container(
-          width: 64.0,
-          height: 64.0,
-          decoration: BoxDecoration(
-            color: isSelected ? successColor.withAlpha(0x6f) : successColor.withAlpha(0x20),
-            borderRadius: BorderRadius.circular(32.0),
-          ),
-          child: IconButton(
-            onPressed: onPressed,
-            icon: SvgPicture.asset(iconAsset),
-            padding: EdgeInsets.zero,
-          ),
-        ),
+        StoreConnector<AppState, Set<FilterCategory>>(
+            converter: (store) => store.state.filtersState.filteredTypes,
+            builder: (BuildContext context, Set<FilterCategory> filteredTypes) {
+              bool isSelected = filteredTypes.contains(filterCategory);
+
+              return Container(
+                width: 64.0,
+                height: 64.0,
+                decoration: BoxDecoration(
+                  color: isSelected ? successColor.withAlpha(0x6f) : successColor.withAlpha(0x20),
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    store.dispatch(UpdateFiltersAction(filterCategory: filterCategory));
+                    store.dispatch(
+                        LoadFiltersAction(filter: store.state.filtersState.generateFilter()));
+                  },
+                  icon: SvgPicture.asset(filterCategory.icon),
+                  padding: EdgeInsets.zero,
+                ),
+              );
+            }),
         SizedBox(
           height: 12.0,
         ),
         Text(
-          title,
+          filterCategory.title,
           style: Theme.of(context).textTheme.subtitle2,
         ),
       ],
@@ -262,16 +222,12 @@ class CategoryButton extends StatelessWidget {
 
 class RangeSightSlider extends StatelessWidget {
   static const double MIN_RANGE = 100.0;
-  static const double MAX_RANGE = 10000.0;
+  static const double MAX_RANGE = 30000.0;
   final RangeValues startRangeValues;
-  final Function changeCurrentRangeValues;
-  final Function filterSight;
 
   RangeSightSlider({
     Key? key,
     required this.startRangeValues,
-    required this.changeCurrentRangeValues,
-    required this.filterSight,
   }) : super(key: key);
 
   String formatRange(double value) {
@@ -285,6 +241,8 @@ class RangeSightSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final store = StoreProvider.of<AppState>(context);
+
     return ListView(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
@@ -301,10 +259,17 @@ class RangeSightSlider extends StatelessWidget {
           min: RangeSightSlider.MIN_RANGE,
           max: RangeSightSlider.MAX_RANGE,
           onChanged: (RangeValues values) {
-            changeCurrentRangeValues(values);
+            store.dispatch(
+              UpdateFiltersAction(
+                startRange: values.start,
+                endRange: values.end,
+              ),
+            );
           },
           onChangeEnd: (RangeValues values) {
-            filterSight();
+            store.dispatch(
+              LoadFiltersAction(filter: store.state.filtersState.generateFilter()),
+            );
           },
         ),
       ],

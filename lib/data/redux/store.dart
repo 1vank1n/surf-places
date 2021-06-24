@@ -1,3 +1,4 @@
+import 'package:places/data/redux/filters/state.dart';
 import 'package:places/data/redux/place_create/state.dart';
 import 'package:places/data/redux/place_detail/state.dart';
 import 'package:places/data/redux/place_list/state.dart';
@@ -10,6 +11,7 @@ class AppState {
   final PlaceDetailState placeDetailState;
   final PlaceCreateState placeCreateState;
   final SettingsState settingsState;
+  final FiltersState filtersState;
 
   AppState({
     required this.placeSearchState,
@@ -17,6 +19,7 @@ class AppState {
     required this.placeDetailState,
     required this.placeCreateState,
     required this.settingsState,
+    required this.filtersState,
   });
 
   AppState copyWith({
@@ -25,6 +28,7 @@ class AppState {
     PlaceDetailState? placeDetailState,
     PlaceCreateState? placeCreateState,
     SettingsState? settingsState,
+    FiltersState? filtersState,
   }) {
     return AppState(
       placeSearchState: placeSearchState ?? this.placeSearchState,
@@ -32,6 +36,7 @@ class AppState {
       placeDetailState: placeDetailState ?? this.placeDetailState,
       placeCreateState: placeCreateState ?? this.placeCreateState,
       settingsState: settingsState ?? this.settingsState,
+      filtersState: filtersState ?? this.filtersState,
     );
   }
 }
