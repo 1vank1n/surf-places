@@ -1,4 +1,11 @@
+import 'dart:math';
+
+import 'package:json_annotation/json_annotation.dart';
+
+part 'place.g.dart';
+
 /// Модель данных мест (достопримечательностей)
+@JsonSerializable()
 class Place {
   int id;
   double lat;
@@ -20,34 +27,8 @@ class Place {
     this.distance,
   });
 
-  factory Place.fromJson(Map<String, dynamic> json) {
-    final List<String> urls = [];
-    for (var url in json['urls']) {
-      urls.add(url as String);
-    }
-
-    return Place(
-      id: json['id'],
-      lat: json['lat'],
-      lng: json['lng'],
-      name: json['name'],
-      urls: urls,
-      placeType: json['placeType'],
-      description: json['description'],
-      distance: json['distance'],
-    );
-  }
-
-  Map<String, dynamic> get json {
-    return {
-      'lat': lat,
-      'lng': lng,
-      'name': name,
-      'urls': urls,
-      'placeType': placeType,
-      'description': description,
-    };
-  }
+  factory Place.fromJson(Map<String, dynamic> json) => _$PlaceFromJson(json);
+  Map<String, dynamic> toJson() => _$PlaceToJson(this);
 
   String excerpt() {
     const maxLength = 100;
@@ -55,6 +36,21 @@ class Place {
     return this.description.length > maxLength
         ? '${this.description.substring(0, maxLength)}...'
         : this.description;
+  }
+
+  bool isPointInRangeAtUserPoint({
+    required double userLat,
+    required double userLng,
+    required double startRange,
+    required double endRange,
+  }) {
+    const double ky = 40000000 / 360;
+    double kx = cos(pi * userLat / 180.0) * ky;
+    double dx = (userLng - this.lng).abs() * kx;
+    double dy = (userLat - this.lat).abs() * ky;
+    double distance = sqrt(dx * dx + dy * dy);
+    if (startRange <= 100.0) startRange = 0;
+    return startRange <= distance && distance <= endRange;
   }
 
   @override

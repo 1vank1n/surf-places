@@ -113,7 +113,7 @@ class ApiDio implements Api {
     final url = '${ApiRoutes.places}/${place.id}';
     final Response<Map<String, dynamic>> response = await _client.put(
       url,
-      data: place.json,
+      data: place.toJson(),
     );
 
     try {
@@ -136,7 +136,7 @@ class ApiDio implements Api {
 
     final Response<List> response = await _client.post(
       ApiRoutes.filteredPlaces,
-      data: placesFilter.json,
+      data: placesFilter.toJson(),
     );
 
     final rawList = response.data ?? [];
