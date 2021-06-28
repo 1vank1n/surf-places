@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:places/data/database/database.dart';
 import 'package:places/data/network/api.dart';
 import 'package:places/data/redux/filters/middlewares.dart';
 import 'package:places/data/redux/filters/states.dart';
@@ -8,6 +9,7 @@ import 'package:places/data/redux/place_detail/middlewares.dart';
 import 'package:places/data/redux/place_detail/states.dart';
 import 'package:places/data/redux/place_list/middlewares.dart';
 import 'package:places/data/redux/place_list/states.dart';
+import 'package:places/data/redux/place_search/actions.dart';
 import 'package:places/data/redux/place_search/middlewares.dart';
 import 'package:places/data/redux/place_search/states.dart';
 import 'package:places/data/redux/reducer.dart';
@@ -33,6 +35,7 @@ import 'data/redux/place_create/middlewares.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Api api = ApiDio();
+  AppDB appDB = AppDB();
   PlaceRepository placeRepository = PlaceRepository(api: api);
   SettingsRepository settingsRepository = SettingsRepository();
   SettingsState settingsState = await settingsRepository.getSettingsState();
@@ -49,13 +52,16 @@ void main() async {
       filtersState,
     ),
     middleware: [
-      PlaceSearchMiddleware(placeRepository: placeRepository),
+      PlaceSearchMiddleware(placeRepository: placeRepository, appDB: appDB),
       PlaceListMiddleware(placeRepository: placeRepository),
       PlaceDetailMiddleware(placeRepository: placeRepository),
       PlaceCreateMiddleware(placeRepository: placeRepository),
       FiltersMiddleware(placeRepository: placeRepository),
     ],
   );
+
+  List<String> queries = await appDB.allSearchRequestStrings();
+  store.dispatch(ShowQueryHistoryPlaceSearchAction(queries));
 
   runApp(
     StoreProvider<AppState>(

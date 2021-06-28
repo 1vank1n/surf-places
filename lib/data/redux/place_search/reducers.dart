@@ -9,6 +9,7 @@ final placeSearchReducer = combineReducers<PlaceSearchState>([
   TypedReducer<PlaceSearchState, RemoveQueryFromHistoryPlaceSearchAction>(
       _removeQueryFromHistoryReducer),
   TypedReducer<PlaceSearchState, ClearQueryHistoryPlaceSearchAction>(_clearQueryHistoryReducer),
+  TypedReducer<PlaceSearchState, ShowQueryHistoryPlaceSearchAction>(_showQueryHistoryReducer),
 ]);
 
 PlaceSearchState _showQueryHistory(
@@ -64,3 +65,9 @@ PlaceSearchState _clearQueryHistoryReducer(
   ClearQueryHistoryPlaceSearchAction action,
 ) =>
     state.copyWith(queries: []);
+
+PlaceSearchState _showQueryHistoryReducer(
+  PlaceSearchState state,
+  ShowQueryHistoryPlaceSearchAction action,
+) =>
+    state.copyWith(queries: action.queries);
