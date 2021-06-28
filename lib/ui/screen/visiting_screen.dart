@@ -5,7 +5,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/redux/place_list/actions.dart';
-import 'package:places/data/redux/place_list/state.dart';
+import 'package:places/data/redux/place_list/states.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/ui/common/decorators/text_box_decorator.dart';
 import 'package:places/ui/common/widgets/loader.dart';
