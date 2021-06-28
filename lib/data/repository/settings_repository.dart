@@ -1,28 +1,12 @@
 import 'dart:convert';
 
 import 'package:places/data/redux/filters/state.dart';
+import 'package:places/data/redux/settings/state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsRepository {
-  // static const PLACES_FILTER = 'PLACES_FILTER';
-
-  // Future<bool> setPlacesFilter({required PlacesFilterRequestDto placesFilter}) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   return prefs.setString(PLACES_FILTER, json.encode(placesFilter.toJson()));
-  // }
-
-  // Future<PlacesFilterRequestDto> getPlacesFilter() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final String? rawString = prefs.getString(PLACES_FILTER);
-  //   if (rawString == null) {
-  //     return PlacesFilterRequestDto.initial();
-  //   }
-
-  //   final Map<String, dynamic> rawJson = json.decode(rawString);
-  //   return PlacesFilterRequestDto.fromJson(rawJson);
-  // }
-
   static const FILTER_STATE = 'FILTER_STATE';
+  static const SETTINGS_STATE = 'SETTINGS_STATE';
 
   Future<bool> setFiltersState(FiltersState state) async {
     final prefs = await SharedPreferences.getInstance();
@@ -38,5 +22,21 @@ class SettingsRepository {
 
     final Map<String, dynamic> rawJson = json.decode(rawString);
     return FiltersState.fromJson(rawJson);
+  }
+
+  Future<bool> setSettingsState(SettingsState state) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.setString(SETTINGS_STATE, json.encode(state.toJson()));
+  }
+
+  Future<SettingsState> getSettingsState() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? rawString = prefs.getString(SETTINGS_STATE);
+    if (rawString == null) {
+      return SettingsState.initial();
+    }
+
+    final Map<String, dynamic> rawJson = json.decode(rawString);
+    return SettingsState.fromJson(rawJson);
   }
 }
