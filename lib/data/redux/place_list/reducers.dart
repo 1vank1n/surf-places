@@ -1,5 +1,5 @@
 import 'package:places/data/redux/place_list/actions.dart';
-import 'package:places/data/redux/place_list/state.dart';
+import 'package:places/data/redux/place_list/states.dart';
 import 'package:redux/redux.dart';
 
 final placeListReducer = combineReducers<PlaceListState>([

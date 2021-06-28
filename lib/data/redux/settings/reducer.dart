@@ -1,5 +1,5 @@
 import 'package:places/data/redux/settings/actions.dart';
-import 'package:places/data/redux/settings/state.dart';
+import 'package:places/data/redux/settings/states.dart';
 import 'package:places/data/repository/settings_repository.dart';
 import 'package:redux/redux.dart';
 

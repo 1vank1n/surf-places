@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:places/data/redux/filters/state.dart';
-import 'package:places/data/redux/settings/state.dart';
+import 'package:places/data/redux/filters/states.dart';
+import 'package:places/data/redux/settings/states.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsRepository {
@@ -34,7 +34,7 @@ class SettingsRepository {
     final prefs = await SharedPreferences.getInstance();
     final String? rawString = prefs.getString(SETTINGS_STATE);
     if (rawString == null) {
-      return SettingsState.initial();
+      return SettingsState();
     }
 
     final Map<String, dynamic> rawJson = json.decode(rawString);

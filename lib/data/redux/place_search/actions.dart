@@ -42,3 +42,10 @@ class RemoveQueryFromHistoryPlaceSearchAction extends PlaceSearchAction {
 
 /// Очистить историю запросов
 class ClearQueryHistoryPlaceSearchAction extends PlaceSearchAction {}
+
+/// Отобразить историю запросов
+class ShowQueryHistoryPlaceSearchAction extends PlaceSearchAction {
+  final List<String> queries;
+
+  ShowQueryHistoryPlaceSearchAction(this.queries);
+}
