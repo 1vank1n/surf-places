@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SettingsRepository {
   static const FILTER_STATE = 'FILTER_STATE';
   static const SETTINGS_STATE = 'SETTINGS_STATE';
+  static const IS_ONBOARDING_SHOWN = 'IS_ONBOARDING_SHOWN';
 
   Future<bool> setFiltersState(FiltersState state) async {
     final prefs = await SharedPreferences.getInstance();
@@ -38,5 +39,15 @@ class SettingsRepository {
 
     final Map<String, dynamic> rawJson = json.decode(rawString);
     return SettingsState.fromJson(rawJson);
+  }
+
+  Future<bool> setIsOnboardingShow(bool isOnboardingShow) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.setBool(IS_ONBOARDING_SHOWN, isOnboardingShow);
+  }
+
+  Future<bool> getIsOnboardingShow() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(IS_ONBOARDING_SHOWN) ?? false;
   }
 }
