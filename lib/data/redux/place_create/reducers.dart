@@ -1,5 +1,5 @@
 import 'package:places/data/redux/place_create/actions.dart';
-import 'package:places/data/redux/place_create/state.dart';
+import 'package:places/data/redux/place_create/states.dart';
 import 'package:places/ui/screen/place_create_screen.dart';
 import 'package:redux/redux.dart';
 
@@ -70,4 +70,4 @@ PlaceCreateState _reset(
   PlaceCreateState state,
   ResetPlaceCreateAction action,
 ) =>
-    PlaceCreateState.initial();
+    PlaceCreateState();

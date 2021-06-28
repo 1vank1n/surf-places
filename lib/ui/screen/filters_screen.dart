@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:places/data/model/filter_category.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
 import 'package:places/data/redux/filters/actions.dart';
-import 'package:places/data/redux/filters/state.dart';
+import 'package:places/data/redux/filters/states.dart';
 import 'package:places/data/redux/store.dart';
 import 'package:places/data/repository/settings_repository.dart';
 import 'package:places/ui/res/colors.dart';
